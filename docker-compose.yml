@@ -1,0 +1,100 @@
+# ============================================
+# 深象 OPCS - Docker Compose 生产部署
+# 适用于阿里云 ECS
+# ============================================
+version: "3.9"
+
+services:
+  # --- 应用服务 ---
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: opcs-app
+    restart: always
+    env_file:
+      - .env.production
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - REDIS_URL=redis://redis:6379
+    ports:
+      - "3000:3000"
+    depends_on:
+      redis:
+        condition: service_healthy
+    networks:
+      - opcs-network
+    logging:
+      driver: json-file
+      options:
+        max-size: "50m"
+        max-file: "5"
+
+  # --- Redis 缓存 ---
+  redis:
+    image: redis:7-alpine
+    container_name: opcs-redis
+    restart: always
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    volumes:
+      - redis-data:/data
+    ports:
+      - "127.0.0.1:6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - opcs-network
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # --- Nginx 反向代理 ---
+  nginx:
+    image: nginx:1.25-alpine
+    container_name: opcs-nginx
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./deploy/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./deploy/nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./deploy/certbot/conf:/etc/letsencrypt:ro
+      - ./deploy/certbot/www:/var/www/certbot:ro
+      - nginx-logs:/var/log/nginx
+    depends_on:
+      - app
+    networks:
+      - opcs-network
+    logging:
+      driver: json-file
+      options:
+        max-size: "20m"
+        max-file: "5"
+
+  # --- Let's Encrypt 证书自动续期 ---
+  certbot:
+    image: certbot/certbot
+    container_name: opcs-certbot
+    volumes:
+      - ./deploy/certbot/conf:/etc/letsencrypt
+      - ./deploy/certbot/www:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+    networks:
+      - opcs-network
+
+volumes:
+  redis-data:
+    driver: local
+  nginx-logs:
+    driver: local
+
+networks:
+  opcs-network:
+    driver: bridge

@@ -1,5 +1,27 @@
 {
   "version": "7",
   "dialect": "mysql",
-  "entries": []
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1775739483421,
+      "tag": "0000_loud_genesis",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1775739970395,
+      "tag": "0001_light_night_thrasher",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1775741105529,
+      "tag": "0002_eminent_black_bolt",
+      "breakpoints": true
+    }
+  ]
 }

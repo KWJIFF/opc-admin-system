@@ -1,0 +1,54 @@
+name: 深象 OPCS - 自动部署到阿里云 ECS
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+env:
+  DOCKER_IMAGE: opcs-app
+  DEPLOY_PATH: /opt/opcs
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 设置 Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: 安装 pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.4.1
+
+      - name: 安装依赖
+        run: pnpm install --frozen-lockfile
+
+      - name: 类型检查
+        run: pnpm run check
+
+      - name: 运行测试
+        run: pnpm test
+        continue-on-error: true
+
+      - name: 构建项目
+        run: pnpm run build
+
+      - name: 部署到阿里云 ECS
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.ECS_HOST }}
+          username: ${{ secrets.ECS_USERNAME }}
+          key: ${{ secrets.ECS_SSH_KEY }}
+          script: |
+            cd ${{ env.DEPLOY_PATH }}
+            git pull origin main
+            docker compose down
+            docker compose up -d --build
+            docker compose ps
+            echo "部署完成: $(date)"
