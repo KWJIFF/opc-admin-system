@@ -232,3 +232,61 @@
 .animate-fade-in {
   animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
+
+/* ── 移动端全局优化 ── */
+
+/* 消除移动端点击高亮 */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* 移动端安全区域适配（刘海屏、底部横条） */
+@supports (padding: env(safe-area-inset-bottom)) {
+  body {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+/* 移动端文字大小优化 - 防止横屏时字体缩放 */
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+/* 移动端平滑滚动 */
+html {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* 移动端触摸优化 - 增大可点击区域的最小尺寸 */
+@media (max-width: 640px) {
+  a, button {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  /* 移动端阅读优化 - 更大的行高 */
+  p, li {
+    line-height: 1.75;
+  }
+
+  /* 移动端卡片触摸反馈 */
+  .card-elevated:active {
+    transform: scale(0.98);
+    box-shadow:
+      0 0 0 1px oklch(0 0 0 / 0.04),
+      0 1px 2px oklch(0 0 0 / 0.04),
+      0 2px 8px oklch(0 0 0 / 0.04);
+  }
+  .card-elevated:hover {
+    transform: none;
+  }
+}
+
+/* 移动端图片自适应 */
+img {
+  max-width: 100%;
+  height: auto;
+}
