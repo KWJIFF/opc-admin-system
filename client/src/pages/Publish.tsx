@@ -1,7 +1,8 @@
 import { useState } from "react";
 import PageShell from "@/components/PageShell";
 import { StatusBadge } from "@/components/DataTable";
-import { Send, ChevronDown, ChevronUp, Check, Clock, RotateCcw, ExternalLink, Zap } from "lucide-react";
+import { Send, ChevronDown, ChevronUp, Check, Clock, RotateCcw, ExternalLink, Zap, Eye } from "lucide-react";
+import PlatformPreviewPanel from "@/components/PlatformPreview";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
@@ -95,9 +96,34 @@ function PlatformStatusDot({ status }: { status: string }) {
   return <span className={`inline-block w-2 h-2 rounded-full ${colors[status] || colors.idle}`} />;
 }
 
+const mockContentMap: Record<number, { body: string; tags: string[] }> = {
+  1: { body: "一人公司正在成为全球创业的重要趋势。在 AI 技术的加持下，个人创业者可以独立完成从产品开发到市场推广的全流程。\n\n本报告深入分析了 2026 年一人公司的发展趋势、核心挑战与机遇。", tags: ["一人公司", "趋势报告"] },
+  2: { body: "AI 正在重新定义内容生产的方式。从选题到撰写，从排版到分发，AI 工具可以显著提升内容创作者的效率。", tags: ["AI", "内容生产"] },
+  3: { body: "小红书爆款标题的核心公式：数字 + 痛点 + 解决方案。", tags: ["小红书", "运营"] },
+  4: { body: "本周要闻：OpenAI 发布新模型，国内自媒体平台政策更新。", tags: ["周报"] },
+  5: { body: "随着数据安全法规的不断完善，一人公司创业者也需要重视数据合规问题。", tags: ["数据安全", "合规"] },
+};
+
+/** 平台 ID 到 PlatformPreview 组件支持的 platform 值的映射 */
+const platformIdToPreviewPlatform: Record<string, string> = {
+  wechat: "wechat_mp",
+  zhihu: "website",
+  xiaohongshu: "xiaohongshu",
+  douyin: "douyin",
+  bilibili: "website",
+  website: "website",
+  toutiao: "website",
+  weibo: "website",
+};
+
 function PublishCard({ item }: { item: PublishItem }) {
   const [expanded, setExpanded] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
+  const [previewPlatformId, setPreviewPlatformId] = useState<string>(
+    () => item.platforms.find(p => p.enabled)?.id || "wechat"
+  );
   const [platforms, setPlatforms] = useState(item.platforms);
+  const contentInfo = mockContentMap[item.id] || { body: "", tags: [] };
 
   const enabledCount = platforms.filter(p => p.enabled).length;
   const publishedCount = platforms.filter(p => p.status === "published").length;
@@ -166,12 +192,68 @@ function PublishCard({ item }: { item: PublishItem }) {
         <Button
           variant="ghost"
           size="sm"
+          className="text-muted-foreground rounded-xl btn-press h-8 w-8 p-0"
+          onClick={(e) => { e.stopPropagation(); setShowPreview(!showPreview); }}
+          title="预览"
+        >
+          <Eye className="h-4 w-4" />
+        </Button>
+        <Button
+          variant="ghost"
+          size="sm"
           className="text-muted-foreground rounded-xl btn-press"
           onClick={(e) => { e.stopPropagation(); setExpanded(!expanded); }}
         >
           {expanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
         </Button>
       </div>
+
+      {/* Preview Panel */}
+      <AnimatePresence>
+        {showPreview && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="overflow-hidden"
+          >
+            <div className="px-5 pb-4 border-t border-border/30 pt-4">
+              {/* 平台切换按钮 */}
+              <div className="flex items-center gap-2 mb-3">
+                <span className="text-xs text-muted-foreground">预览平台：</span>
+                <div className="flex gap-1.5 flex-wrap">
+                  {platforms.filter(p => p.enabled).map(p => (
+                    <button
+                      key={p.id}
+                      onClick={() => setPreviewPlatformId(p.id)}
+                      className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium transition-all ${
+                        previewPlatformId === p.id
+                          ? "bg-primary/10 text-primary border border-primary/30"
+                          : "bg-muted/30 text-muted-foreground border border-transparent hover:bg-muted/50"
+                      }`}
+                    >
+                      <span>{p.icon}</span> {p.name}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <PlatformPreviewPanel
+                content={{
+                  title: item.title,
+                  body: contentInfo.body,
+                  author: "深象科技",
+                  publishDate: item.createdAt,
+                  tags: contentInfo.tags,
+                  platform: platformIdToPreviewPlatform[previewPlatformId] || "wechat_mp",
+                }}
+                defaultPlatform={platformIdToPreviewPlatform[previewPlatformId] || "wechat_mp"}
+                onClose={() => setShowPreview(false)}
+              />
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Expanded distribution panel */}
       <AnimatePresence>

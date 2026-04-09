@@ -4,12 +4,16 @@ import DataTable, { StatusBadge } from "@/components/DataTable";
 import {
   Globe, Bot, Sparkles, Pencil, Image, LayoutTemplate, Search, Share2,
   Settings2, Clock, CheckCircle2, AlertCircle, Play, Pause, ChevronDown, ChevronUp,
-  FileText, TrendingUp, Zap, History
+  FileText, TrendingUp, Zap, History, Eye, ArrowLeft, ExternalLink
 } from "lucide-react";
+import ContentEditor, { type EditorContent } from "@/components/ContentEditor";
+import PlatformPreviewPanel from "@/components/PlatformPreview";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
+import { MOCK_ARTICLES as SITE_ARTICLES } from "@shared/siteConfig";
 
 /* ── Status Maps ── */
 const statusMap: Record<string, { label: string; variant: string }> = {
@@ -27,30 +31,42 @@ const sourceMap: Record<string, { label: string; variant: string }> = {
   ai_curated: { label: "AI转载", variant: "bg-amber-100 text-amber-700" },
 };
 
-/* ── Mock Data ── */
+/* ── Mock Data（ID 与 siteConfig.ts 前台文章 ID 对齐） ── */
 const mockArticles = [
-  { id: 1, title: "2026年一人公司趋势报告", slug: "/blog/opc-trends-2026", category: "趋势报告", status: "published", source: "manual", publishedAt: "2026-04-09" },
-  { id: 2, title: "AI 辅助内容生产实践指南", slug: "/blog/ai-content-guide", category: "实操指南", status: "published", source: "manual", publishedAt: "2026-04-07" },
-  { id: 3, title: "通义千问 3.0 发布：一人公司如何用好新能力", slug: "/blog/qwen3-for-opc", category: "AI动态", status: "ai_generated", source: "ai_original", publishedAt: "2026-04-09" },
-  { id: 4, title: "[转载] Y Combinator 2026春季批次趋势分析", slug: "/blog/yc-2026-spring", category: "行业洞察", status: "ai_pending", source: "ai_curated", publishedAt: "-" },
-  { id: 5, title: "数据安全合规白皮书", slug: "/blog/data-security", category: "白皮书", status: "draft", source: "manual", publishedAt: "-" },
-  { id: 6, title: "深象科技产品更新日志", slug: "/blog/changelog", category: "产品动态", status: "published", source: "manual", publishedAt: "2026-04-05" },
-  { id: 7, title: "Solopreneur 工具链 2026 年度盘点", slug: "/blog/tools-2026", category: "资源推荐", status: "ai_generated", source: "ai_rewrite", publishedAt: "2026-04-08" },
-  { id: 8, title: "创业者工具箱推荐", slug: "/blog/tools", category: "资源推荐", status: "archived", source: "manual", publishedAt: "2026-03-28" },
+  { id: 601, title: "2026年一人公司趋势报告", slug: "/blog/opc-trends-2026", category: "趋势报告", status: "published", source: "manual", publishedAt: "2026-04-09", siteArticleId: 601 },
+  { id: 303, title: "AI 辅助内容生产实践指南", slug: "/blog/ai-content-guide", category: "实操指南", status: "published", source: "manual", publishedAt: "2026-04-07", siteArticleId: 303 },
+  { id: 101, title: "通义千问 3.0 发布：一人公司如何用好新能力", slug: "/blog/qwen3-for-opc", category: "AI动态", status: "ai_generated", source: "ai_original", publishedAt: "2026-04-09", siteArticleId: 101 },
+  { id: 202, title: "[转载] Y Combinator 2026春季批次趋势分析", slug: "/blog/yc-2026-spring", category: "行业洞察", status: "ai_pending", source: "ai_curated", publishedAt: "-", siteArticleId: 202 },
+  { id: 403, title: "数据安全合规白皮书", slug: "/blog/data-security", category: "白皮书", status: "draft", source: "manual", publishedAt: "-", siteArticleId: 403 },
+  { id: 602, title: "深象科技产品更新日志", slug: "/blog/changelog", category: "产品动态", status: "published", source: "manual", publishedAt: "2026-04-05", siteArticleId: 602 },
+  { id: 701, title: "Solopreneur 工具链 2026 年度盘点", slug: "/blog/tools-2026", category: "资源推荐", status: "ai_generated", source: "ai_rewrite", publishedAt: "2026-04-08", siteArticleId: 701 },
+  { id: 703, title: "创业者工具箱推荐", slug: "/blog/tools", category: "资源推荐", status: "archived", source: "manual", publishedAt: "2026-03-28", siteArticleId: 703 },
 ];
 
-const columns = [
-  { key: "title", label: "标题", render: (row: typeof mockArticles[0]) => (
-    <div>
-      <span className="font-medium text-foreground">{row.title}</span>
-      <span className="block text-xs text-muted-foreground font-mono mt-0.5">{row.slug}</span>
-    </div>
-  )},
-  { key: "category", label: "分类" },
-  { key: "source", label: "来源", render: (row: typeof mockArticles[0]) => <StatusBadge status={row.source} map={sourceMap} /> },
-  { key: "status", label: "状态", render: (row: typeof mockArticles[0]) => <StatusBadge status={row.status} map={statusMap} /> },
-  { key: "publishedAt", label: "发布时间" },
-];
+interface ArticleItem {
+  id: number;
+  title: string;
+  slug: string;
+  category: string;
+  status: string;
+  source: string;
+  publishedAt: string;
+  body?: string;
+  tags?: string[];
+  siteArticleId?: number;
+}
+
+const mockArticlesTyped: ArticleItem[] = mockArticles.map(a => {
+  // 尝试从前台 siteConfig 获取完整文章内容
+  const siteArticle = SITE_ARTICLES.find(sa => sa.id === a.siteArticleId);
+  return {
+    ...a,
+    body: siteArticle
+      ? `${siteArticle.summary}\n\n${siteArticle.content || "深象科技致力于为一人公司创业者提供专业的内容运营服务。"}`
+      : "这是一篇关于" + a.title + "的详细内容。\n\n深象科技致力于为一人公司创业者提供专业的内容运营服务。",
+    tags: siteArticle ? siteArticle.tags : [a.category],
+  };
+});
 
 /* ── AI Autopilot Pipeline Steps ── */
 interface PipelineStep {
@@ -334,8 +350,139 @@ function AIAutopilotPanel() {
   );
 }
 
+/* ── Article Detail View ── */
+function ArticleDetail({ item, onBack }: { item: ArticleItem; onBack: () => void }) {
+  const [showPreview, setShowPreview] = useState(false);
+  const [editorContent, setEditorContent] = useState<EditorContent>({
+    title: item.title,
+    body: item.body || "",
+    summary: "",
+    tags: item.tags || [],
+  });
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: 20 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -20 }}
+      transition={{ duration: 0.25 }}
+      className="space-y-5"
+    >
+      <div className="flex items-center justify-between flex-wrap gap-3">
+        <div className="flex items-center gap-3">
+          <Button variant="ghost" size="sm" className="h-8 w-8 p-0 rounded-xl btn-press" onClick={onBack}>
+            <ArrowLeft className="h-4 w-4" />
+          </Button>
+          <div>
+            <h2 className="font-semibold text-lg">{item.title}</h2>
+            <div className="flex items-center gap-2 mt-0.5">
+              <StatusBadge status={item.status} map={statusMap} />
+              <StatusBadge status={item.source} map={sourceMap} />
+              <span className="text-xs text-muted-foreground">{item.category}</span>
+            </div>
+          </div>
+        </div>
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            className="h-8 text-xs rounded-xl border-border/50 btn-press"
+            onClick={() => setShowPreview(!showPreview)}
+          >
+            <Eye className="h-3.5 w-3.5 mr-1.5" /> {showPreview ? "关闭预览" : "多平台预览"}
+          </Button>
+          <a
+            href={`/site/article/${item.siteArticleId || item.id}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 h-8 px-3 text-xs rounded-xl border border-border/50 hover:bg-muted/30 transition-colors btn-press"
+          >
+            <ExternalLink className="h-3.5 w-3.5" /> 前台预览
+          </a>
+          <Button
+            size="sm"
+            className="h-8 text-xs rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground btn-press shadow-sm shadow-primary/20"
+            onClick={() => toast.success("文章已保存")}
+          >
+            保存
+          </Button>
+        </div>
+      </div>
+
+      <AnimatePresence>
+        {showPreview && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.25 }}
+          >
+            <Card className="card-elevated border-border/30 rounded-2xl overflow-hidden">
+              <CardContent className="p-0">
+                <PlatformPreviewPanel
+                  content={{
+                    title: editorContent.title,
+                    body: editorContent.body,
+                    author: "深象科技",
+                    publishDate: item.publishedAt,
+                    tags: editorContent.tags,
+                    platform: "website",
+                  }}
+                  onClose={() => setShowPreview(false)}
+                />
+              </CardContent>
+            </Card>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <Card className="card-elevated border-border/30 rounded-2xl">
+        <CardContent className="p-6">
+          <ContentEditor initialContent={editorContent} onChange={setEditorContent} />
+        </CardContent>
+      </Card>
+    </motion.div>
+  );
+}
+
 /* ── Main Page ── */
 export default function Website() {
+  const [selectedArticle, setSelectedArticle] = useState<ArticleItem | null>(null);
+
+  const columns = [
+    { key: "title", label: "标题", render: (row: ArticleItem) => (
+      <button
+        className="text-left"
+        onClick={() => setSelectedArticle(row)}
+      >
+        <span className="font-medium text-foreground hover:text-primary transition-colors">{row.title}</span>
+        <span className="block text-xs text-muted-foreground font-mono mt-0.5">{row.slug}</span>
+      </button>
+    )},
+    { key: "category", label: "分类" },
+    { key: "source", label: "来源", render: (row: ArticleItem) => <StatusBadge status={row.source} map={sourceMap} /> },
+    { key: "status", label: "状态", render: (row: ArticleItem) => <StatusBadge status={row.status} map={statusMap} /> },
+    { key: "publishedAt", label: "发布时间" },
+    { key: "actions", label: "操作", render: (row: ArticleItem) => (
+      <div className="flex gap-1">
+        <Button variant="ghost" size="sm" className="h-7 w-7 p-0 rounded-lg btn-press" onClick={() => setSelectedArticle(row)}>
+          <Pencil className="h-3.5 w-3.5" />
+        </Button>
+        <a href={`/site/article/${row.siteArticleId || row.id}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center h-7 w-7 rounded-lg hover:bg-muted/30 transition-colors">
+          <ExternalLink className="h-3.5 w-3.5 text-muted-foreground" />
+        </a>
+      </div>
+    )},
+  ];
+
+  if (selectedArticle) {
+    return (
+      <PageShell title="网站文章" description="管理官方网站内容发布，支持 AI 全自动托管" icon={<Globe className="h-5 w-5" />}>
+        <ArticleDetail item={selectedArticle} onBack={() => setSelectedArticle(null)} />
+      </PageShell>
+    );
+  }
+
   return (
     <PageShell
       title="网站文章"
@@ -344,7 +491,7 @@ export default function Website() {
       action={{ label: "新建文章", onClick: () => toast.info("新建文章功能即将上线") }}
     >
       <AIAutopilotPanel />
-      <DataTable columns={columns} data={mockArticles} searchPlaceholder="搜索文章..." />
+      <DataTable columns={columns} data={mockArticlesTyped} searchPlaceholder="搜索文章..." />
     </PageShell>
   );
 }

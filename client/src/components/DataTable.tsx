@@ -26,7 +26,8 @@ const rowVariants = {
   show: { opacity: 1, transition: { duration: 0.2 } },
 };
 
-export default function DataTable<T extends Record<string, unknown>>({
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export default function DataTable<T extends Record<string, any>>({
   columns,
   data,
   searchPlaceholder = "搜索...",

@@ -29,6 +29,7 @@ import {
   LayoutDashboard,
   LogOut,
   PanelLeft,
+  ExternalLink,
   Radar,
   Lightbulb,
   FileText,
@@ -318,6 +319,13 @@ function DashboardLayoutContent({
           </SidebarContent>
 
           <SidebarFooter className="p-3 border-t border-sidebar-border/60">
+            <a
+              href="/site"
+              className="flex items-center gap-3 rounded-xl px-2 py-2 hover:bg-sidebar-accent/80 transition-all duration-200 w-full text-left text-sidebar-foreground/60 hover:text-sidebar-foreground group-data-[collapsible=icon]:justify-center mb-1"
+            >
+              <ExternalLink className="h-4 w-4 shrink-0" />
+              <span className="text-[13px] group-data-[collapsible=icon]:hidden">访问官网</span>
+            </a>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <button className="flex items-center gap-3 rounded-xl px-2 py-2.5 hover:bg-sidebar-accent/80 transition-all duration-200 w-full text-left group-data-[collapsible=icon]:justify-center focus:outline-none active:scale-[0.98]">
