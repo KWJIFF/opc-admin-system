@@ -1,0 +1,18 @@
+[Unit]
+Description=深象 OPCS GitHub Webhook 自动部署服务
+After=network.target docker.service
+Wants=docker.service
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/opcs/deploy/scripts
+Environment=WEBHOOK_SECRET=your-webhook-secret-change-me
+Environment=WEBHOOK_PORT=9000
+Environment=DEPLOY_PATH=/opt/opcs
+ExecStart=/usr/bin/node /opt/opcs/deploy/scripts/webhook-server.mjs
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

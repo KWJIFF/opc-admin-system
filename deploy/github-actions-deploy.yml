@@ -1,0 +1,37 @@
+# ============================================
+# 深象 OPCS - GitHub Actions 自动部署
+# 
+# 使用方法：
+# 1. 在 GitHub 仓库页面点击 Actions 标签
+# 2. 点击 "set up a workflow yourself"
+# 3. 将此文件内容粘贴进去
+# 4. 在仓库 Settings → Secrets 中添加以下密钥：
+#    - ECS_HOST: 你的 ECS 公网 IP
+#    - ECS_USERNAME: root
+#    - ECS_SSH_KEY: SSH 私钥内容
+# ============================================
+
+name: 自动部署到阿里云 ECS
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 部署到阿里云 ECS
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.ECS_HOST }}
+          username: ${{ secrets.ECS_USERNAME }}
+          key: ${{ secrets.ECS_SSH_KEY }}
+          script: |
+            cd /opt/opcs
+            git pull origin main
+            docker compose down
+            docker compose up -d --build
+            docker image prune -f
+            echo "✅ 部署完成: $(date)"
