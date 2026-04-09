@@ -52,18 +52,18 @@ export default function ContentCalendar() {
       icon={<Calendar className="h-5 w-5" />}
       action={{ label: "新建排期", onClick: () => toast.info("新建排期功能即将上线") }}
     >
-      <Card className="border-border/50 shadow-sm">
+      <Card className="card-elevated border-border/30">
         <CardHeader className="pb-3">
           <div className="flex items-center justify-between">
             <CardTitle className="text-base font-semibold">{currentMonth}</CardTitle>
             <div className="flex gap-1">
-              <Button variant="outline" size="sm" className="h-8 w-8 p-0 border-border/60">
+              <Button variant="outline" size="sm" className="h-8 w-8 p-0 border-border/30">
                 <ChevronLeft className="h-4 w-4" />
               </Button>
-              <Button variant="outline" size="sm" className="h-8 px-3 border-border/60 text-xs">
+              <Button variant="outline" size="sm" className="h-8 px-3 border-border/30 text-xs">
                 今天
               </Button>
-              <Button variant="outline" size="sm" className="h-8 w-8 p-0 border-border/60">
+              <Button variant="outline" size="sm" className="h-8 w-8 p-0 border-border/30">
                 <ChevronRight className="h-4 w-4" />
               </Button>
             </div>
@@ -107,7 +107,7 @@ export default function ContentCalendar() {
                     {dayEvents.map((event) => (
                       <div
                         key={event.id}
-                        className="flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] bg-muted/40 hover:bg-muted/60 transition-colors cursor-pointer truncate"
+                        className="flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] bg-muted/25 hover:bg-muted/60 transition-colors cursor-pointer truncate"
                         onClick={() => toast.info(`${event.title}`)}
                       >
                         <div className={`w-1.5 h-1.5 rounded-full shrink-0 ${eventColors[event.eventType]}`} />

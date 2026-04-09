@@ -33,7 +33,7 @@ export default function Team() {
       icon={<Users className="h-5 w-5" />}
       action={{ label: "邀请成员", onClick: () => toast.info("邀请成员功能即将上线") }}
     >
-      <Card className="border-border/50 shadow-sm">
+      <Card className="card-elevated border-border/30">
         <CardContent className="p-0">
           <div className="divide-y divide-border/40">
             {mockMembers.map((member, i) => (
@@ -45,7 +45,7 @@ export default function Team() {
                 className="flex items-center justify-between p-4 hover:bg-muted/20 transition-colors"
               >
                 <div className="flex items-center gap-3">
-                  <Avatar className="h-10 w-10 border border-border/50">
+                  <Avatar className="h-10 w-10 border border-border/30">
                     <AvatarFallback className="text-sm font-medium bg-primary/10 text-primary">
                       {member.name.charAt(0)}
                     </AvatarFallback>
@@ -70,7 +70,7 @@ export default function Team() {
                   <span className="text-xs text-muted-foreground hidden sm:block">
                     最近登录: {member.lastSignedIn}
                   </span>
-                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={() => toast.info("功能即将上线")}>
+                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0 rounded-lg btn-press" onClick={() => toast.info("功能即将上线")}>
                     <MoreHorizontal className="h-4 w-4" />
                   </Button>
                 </div>

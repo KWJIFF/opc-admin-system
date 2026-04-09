@@ -27,7 +27,7 @@ const modules = [
 export default function Permissions() {
   return (
     <PageShell title="权限管理" description="基于角色的访问控制配置" icon={<Shield className="h-5 w-5" />}>
-      <Card className="border-border/50 shadow-sm">
+      <Card className="card-elevated border-border/30">
         <CardHeader className="pb-3">
           <CardTitle className="text-base font-semibold">模块访问权限</CardTitle>
         </CardHeader>
@@ -35,7 +35,7 @@ export default function Permissions() {
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-border/50">
+                <tr className="border-b border-border/30">
                   <th className="text-left text-xs font-medium text-muted-foreground px-4 py-3">模块</th>
                   <th className="text-center text-xs font-medium text-muted-foreground px-4 py-3">
                     <Badge variant="secondary" className="bg-primary/10 text-primary border-0">管理员</Badge>

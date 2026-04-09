@@ -12,6 +12,7 @@ import {
   AlertCircle,
   ArrowUpRight,
   ArrowDownRight,
+  Zap,
 } from "lucide-react";
 import {
   AreaChart,
@@ -26,10 +27,10 @@ import {
 } from "recharts";
 
 const stats = [
-  { label: "信号总数", value: "1,284", change: "+12%", up: true, icon: Radar, color: "text-orange-500", bg: "bg-orange-50" },
-  { label: "选题数", value: "326", change: "+8%", up: true, icon: Lightbulb, color: "text-amber-500", bg: "bg-amber-50" },
-  { label: "已发布", value: "189", change: "+23%", up: true, icon: Send, color: "text-emerald-500", bg: "bg-emerald-50" },
-  { label: "报告数", value: "47", change: "-3%", up: false, icon: BarChart3, color: "text-blue-500", bg: "bg-blue-50" },
+  { label: "信号总数", value: "1,284", change: "+12%", up: true, icon: Radar, color: "text-orange-500", bg: "from-orange-50 to-orange-100/50", iconBg: "bg-orange-100" },
+  { label: "选题数", value: "326", change: "+8%", up: true, icon: Lightbulb, color: "text-amber-500", bg: "from-amber-50 to-amber-100/50", iconBg: "bg-amber-100" },
+  { label: "已发布", value: "189", change: "+23%", up: true, icon: Send, color: "text-emerald-500", bg: "from-emerald-50 to-emerald-100/50", iconBg: "bg-emerald-100" },
+  { label: "报告数", value: "47", change: "-3%", up: false, icon: BarChart3, color: "text-blue-500", bg: "from-blue-50 to-blue-100/50", iconBg: "bg-blue-100" },
 ];
 
 const trendData = [
@@ -68,9 +69,9 @@ const recentActivities = [
 ];
 
 const statusColors = {
-  warning: "bg-amber-100 text-amber-700",
-  info: "bg-blue-100 text-blue-700",
-  success: "bg-emerald-100 text-emerald-700",
+  warning: "bg-amber-100/80 text-amber-700 ring-1 ring-amber-200/50",
+  info: "bg-blue-100/80 text-blue-700 ring-1 ring-blue-200/50",
+  success: "bg-emerald-100/80 text-emerald-700 ring-1 ring-emerald-200/50",
 };
 
 const activityIcons = {
@@ -88,41 +89,55 @@ const containerVariants = {
 
 const itemVariants = {
   hidden: { opacity: 0, y: 12 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.3 } },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { type: "spring" as const, stiffness: 400, damping: 30 },
+  },
+};
+
+const tooltipStyle = {
+  borderRadius: "12px",
+  border: "none",
+  boxShadow: "0 4px 20px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.04)",
+  fontSize: "12px",
+  padding: "8px 12px",
 };
 
 export default function Home() {
   return (
     <motion.div variants={containerVariants} initial="hidden" animate="show" className="space-y-6">
       {/* Page Header */}
-      <div>
+      <motion.div variants={itemVariants}>
         <h1 className="text-2xl font-bold text-foreground tracking-tight">仪表盘</h1>
-        <p className="text-sm text-muted-foreground mt-1">内容运营全链路数据总览</p>
-      </div>
+        <p className="text-[13px] text-muted-foreground mt-1">内容运营全链路数据总览</p>
+      </motion.div>
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map((stat) => (
           <motion.div key={stat.label} variants={itemVariants}>
-            <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow">
-              <CardContent className="p-5">
-                <div className="flex items-start justify-between">
+            <Card className="card-elevated border-border/30 overflow-hidden group">
+              <CardContent className="p-5 relative">
+                {/* Subtle gradient background */}
+                <div className={`absolute inset-0 bg-gradient-to-br ${stat.bg} opacity-30 group-hover:opacity-50 transition-opacity duration-300`} />
+                <div className="relative flex items-start justify-between">
                   <div>
-                    <p className="text-sm text-muted-foreground">{stat.label}</p>
-                    <p className="text-2xl font-bold text-foreground mt-1">{stat.value}</p>
-                    <div className="flex items-center gap-1 mt-2">
+                    <p className="text-[13px] text-muted-foreground font-medium">{stat.label}</p>
+                    <p className="text-[28px] font-bold text-foreground mt-1 tracking-tight">{stat.value}</p>
+                    <div className="flex items-center gap-1.5 mt-2">
                       {stat.up ? (
                         <ArrowUpRight className="h-3.5 w-3.5 text-emerald-500" />
                       ) : (
                         <ArrowDownRight className="h-3.5 w-3.5 text-red-500" />
                       )}
-                      <span className={`text-xs font-medium ${stat.up ? "text-emerald-600" : "text-red-600"}`}>
+                      <span className={`text-xs font-semibold ${stat.up ? "text-emerald-600" : "text-red-600"}`}>
                         {stat.change}
                       </span>
-                      <span className="text-xs text-muted-foreground">vs 上月</span>
+                      <span className="text-[11px] text-muted-foreground/70">vs 上月</span>
                     </div>
                   </div>
-                  <div className={`p-2.5 rounded-xl ${stat.bg}`}>
+                  <div className={`p-2.5 rounded-2xl ${stat.iconBg} shadow-sm`}>
                     <stat.icon className={`h-5 w-5 ${stat.color}`} />
                   </div>
                 </div>
@@ -134,10 +149,12 @@ export default function Home() {
 
       {/* Pipeline Health */}
       <motion.div variants={itemVariants}>
-        <Card className="border-border/50 shadow-sm">
+        <Card className="card-elevated border-border/30">
           <CardHeader className="pb-3">
-            <CardTitle className="text-base font-semibold flex items-center gap-2">
-              <TrendingUp className="h-4 w-4 text-primary" />
+            <CardTitle className="text-[15px] font-semibold flex items-center gap-2">
+              <div className="p-1.5 rounded-lg bg-primary/10">
+                <Zap className="h-4 w-4 text-primary" />
+              </div>
               内容链路健康状态
             </CardTitle>
           </CardHeader>
@@ -145,14 +162,17 @@ export default function Home() {
             <div className="flex items-center gap-2 overflow-x-auto pb-2">
               {pipelineStages.map((stage, i) => (
                 <div key={stage.label} className="flex items-center gap-2 shrink-0">
-                  <div className="flex flex-col items-center gap-1.5 px-4 py-3 rounded-xl bg-muted/40 min-w-[120px]">
-                    <span className="text-xs text-muted-foreground">{stage.label}</span>
-                    <Badge variant="secondary" className={`${statusColors[stage.status]} border-0 font-semibold`}>
+                  <motion.div
+                    whileHover={{ scale: 1.02 }}
+                    className="flex flex-col items-center gap-2 px-5 py-3.5 rounded-2xl bg-muted/30 min-w-[130px] border border-border/30 hover:border-border/50 transition-all duration-200"
+                  >
+                    <span className="text-[11px] text-muted-foreground font-medium">{stage.label}</span>
+                    <Badge variant="secondary" className={`${statusColors[stage.status]} border-0 font-bold text-sm px-3 py-0.5 rounded-lg`}>
                       {stage.count}
                     </Badge>
-                  </div>
+                  </motion.div>
                   {i < pipelineStages.length - 1 && (
-                    <div className="text-muted-foreground/30 text-lg shrink-0">→</div>
+                    <div className="text-muted-foreground/20 text-lg shrink-0">→</div>
                   )}
                 </div>
               ))}
@@ -164,36 +184,29 @@ export default function Home() {
       {/* Charts Row */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <motion.div variants={itemVariants} className="lg:col-span-2">
-          <Card className="border-border/50 shadow-sm">
+          <Card className="card-elevated border-border/30">
             <CardHeader className="pb-2">
-              <CardTitle className="text-base font-semibold">内容产出趋势</CardTitle>
+              <CardTitle className="text-[15px] font-semibold">内容产出趋势</CardTitle>
             </CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={280}>
                 <AreaChart data={trendData}>
                   <defs>
                     <linearGradient id="colorSignals" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#f97316" stopOpacity={0.15} />
+                      <stop offset="5%" stopColor="#f97316" stopOpacity={0.2} />
                       <stop offset="95%" stopColor="#f97316" stopOpacity={0} />
                     </linearGradient>
                     <linearGradient id="colorPublished" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#10b981" stopOpacity={0.15} />
+                      <stop offset="5%" stopColor="#10b981" stopOpacity={0.2} />
                       <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                  <XAxis dataKey="name" tick={{ fontSize: 12 }} stroke="#a3a3a3" />
-                  <YAxis tick={{ fontSize: 12 }} stroke="#a3a3a3" />
-                  <Tooltip
-                    contentStyle={{
-                      borderRadius: "10px",
-                      border: "1px solid #e5e5e5",
-                      boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
-                      fontSize: "12px",
-                    }}
-                  />
-                  <Area type="monotone" dataKey="signals" stroke="#f97316" strokeWidth={2} fill="url(#colorSignals)" name="信号" />
-                  <Area type="monotone" dataKey="published" stroke="#10b981" strokeWidth={2} fill="url(#colorPublished)" name="发布" />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" vertical={false} />
+                  <XAxis dataKey="name" tick={{ fontSize: 12 }} stroke="#d4d4d4" axisLine={false} tickLine={false} />
+                  <YAxis tick={{ fontSize: 12 }} stroke="#d4d4d4" axisLine={false} tickLine={false} />
+                  <Tooltip contentStyle={tooltipStyle} />
+                  <Area type="monotone" dataKey="signals" stroke="#f97316" strokeWidth={2.5} fill="url(#colorSignals)" name="信号" dot={false} />
+                  <Area type="monotone" dataKey="published" stroke="#10b981" strokeWidth={2.5} fill="url(#colorPublished)" name="发布" dot={false} />
                 </AreaChart>
               </ResponsiveContainer>
             </CardContent>
@@ -201,25 +214,18 @@ export default function Home() {
         </motion.div>
 
         <motion.div variants={itemVariants}>
-          <Card className="border-border/50 shadow-sm">
+          <Card className="card-elevated border-border/30">
             <CardHeader className="pb-2">
-              <CardTitle className="text-base font-semibold">本周发布量</CardTitle>
+              <CardTitle className="text-[15px] font-semibold">本周发布量</CardTitle>
             </CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={280}>
                 <BarChart data={weeklyData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                  <XAxis dataKey="name" tick={{ fontSize: 12 }} stroke="#a3a3a3" />
-                  <YAxis tick={{ fontSize: 12 }} stroke="#a3a3a3" />
-                  <Tooltip
-                    contentStyle={{
-                      borderRadius: "10px",
-                      border: "1px solid #e5e5e5",
-                      boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
-                      fontSize: "12px",
-                    }}
-                  />
-                  <Bar dataKey="count" fill="#f97316" radius={[6, 6, 0, 0]} name="发布数" />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" vertical={false} />
+                  <XAxis dataKey="name" tick={{ fontSize: 12 }} stroke="#d4d4d4" axisLine={false} tickLine={false} />
+                  <YAxis tick={{ fontSize: 12 }} stroke="#d4d4d4" axisLine={false} tickLine={false} />
+                  <Tooltip contentStyle={tooltipStyle} />
+                  <Bar dataKey="count" fill="#f97316" radius={[8, 8, 0, 0]} name="发布数" />
                 </BarChart>
               </ResponsiveContainer>
             </CardContent>
@@ -229,28 +235,36 @@ export default function Home() {
 
       {/* Recent Activity */}
       <motion.div variants={itemVariants}>
-        <Card className="border-border/50 shadow-sm">
+        <Card className="card-elevated border-border/30">
           <CardHeader className="pb-3">
-            <CardTitle className="text-base font-semibold flex items-center gap-2">
-              <Clock className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-[15px] font-semibold flex items-center gap-2">
+              <div className="p-1.5 rounded-lg bg-muted/60">
+                <Clock className="h-4 w-4 text-muted-foreground" />
+              </div>
               最近活动
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-3">
+            <div className="space-y-1">
               {recentActivities.map((activity, i) => (
-                <div key={i} className="flex items-center gap-3 py-2 px-3 rounded-lg hover:bg-muted/40 transition-colors">
-                  <div className="p-1.5 rounded-lg bg-muted/60 shrink-0">
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, x: -8 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.3 + i * 0.05 }}
+                  className="flex items-center gap-3 py-2.5 px-3 rounded-xl hover:bg-muted/30 transition-all duration-200 group cursor-default"
+                >
+                  <div className="p-1.5 rounded-xl bg-muted/50 group-hover:bg-muted/70 transition-colors shrink-0">
                     {activityIcons[activity.type as keyof typeof activityIcons]}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm text-foreground">
+                    <p className="text-[13px] text-foreground">
                       <span className="text-muted-foreground">{activity.action}</span>{" "}
                       <span className="font-medium">{activity.target}</span>
                     </p>
                   </div>
-                  <span className="text-xs text-muted-foreground shrink-0">{activity.time}</span>
-                </div>
+                  <span className="text-[11px] text-muted-foreground/60 shrink-0 font-medium">{activity.time}</span>
+                </motion.div>
               ))}
             </div>
           </CardContent>

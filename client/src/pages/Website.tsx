@@ -193,7 +193,7 @@ function AIAutopilotPanel() {
                           step.status === "running" ? "bg-amber-100 text-amber-700 ring-1 ring-amber-300" :
                           step.status === "success" ? "bg-emerald-50 text-emerald-700" :
                           step.status === "error" ? "bg-red-50 text-red-700" :
-                          "bg-white text-foreground border border-border/60"
+                          "bg-white text-foreground border border-border/30"
                         }`}>
                           {step.icon}
                           {step.name}
@@ -213,7 +213,7 @@ function AIAutopilotPanel() {
                     {pipeline.map(step => (
                       <div
                         key={step.id}
-                        className={`flex items-start gap-3 p-3 rounded-lg border transition-all ${
+                        className={`flex items-start gap-3 p-3 rounded-xl border transition-all ${
                           step.enabled ? "border-violet-200/60 bg-white" : "border-border/30 bg-muted/20 opacity-60"
                         }`}
                       >
@@ -261,7 +261,7 @@ function AIAutopilotPanel() {
                           { label: "文章长度", value: "1500-3000 字" },
                           { label: "配图风格", value: "简约科技风、品牌橙色系" },
                         ].map(item => (
-                          <div key={item.label} className="flex items-center justify-between py-1.5 px-3 bg-white rounded-lg border border-border/40">
+                          <div key={item.label} className="flex items-center justify-between py-1.5 px-3 bg-white rounded-xl border border-border/40">
                             <span className="text-xs text-muted-foreground">{item.label}</span>
                             <span className="text-xs font-medium">{item.value}</span>
                           </div>
@@ -277,7 +277,7 @@ function AIAutopilotPanel() {
                           { label: "自动发布", value: "需人工审核后发布" },
                           { label: "AI 模型", value: "通义千问 Max" },
                         ].map(item => (
-                          <div key={item.label} className="flex items-center justify-between py-1.5 px-3 bg-white rounded-lg border border-border/40">
+                          <div key={item.label} className="flex items-center justify-between py-1.5 px-3 bg-white rounded-xl border border-border/40">
                             <span className="text-xs text-muted-foreground">{item.label}</span>
                             <span className="text-xs font-medium">{item.value}</span>
                           </div>
@@ -314,7 +314,7 @@ function AIAutopilotPanel() {
                     </Button>
                   </div>
                   {mockLogs.map((log, i) => (
-                    <div key={i} className="flex items-start gap-2.5 py-1.5 px-3 rounded-lg bg-white/80 border border-border/30">
+                    <div key={i} className="flex items-start gap-2.5 py-1.5 px-3 rounded-xl bg-white/80 border border-border/30">
                       <span className="text-xs text-muted-foreground font-mono whitespace-nowrap mt-0.5">{log.time}</span>
                       {log.type === "success" ? (
                         <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 mt-0.5 shrink-0" />

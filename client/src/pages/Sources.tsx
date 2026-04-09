@@ -41,11 +41,11 @@ export default function Sources() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.05, duration: 0.3 }}
             >
-              <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow">
+              <Card className="card-elevated border-border/30 hover:shadow-md transition-shadow">
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between gap-4">
                     <div className="flex items-center gap-3 min-w-0 flex-1">
-                      <div className="w-9 h-9 rounded-lg bg-muted/50 flex items-center justify-center shrink-0">
+                      <div className="w-9 h-9 rounded-xl bg-muted/30 flex items-center justify-center shrink-0">
                         <Globe className="h-4 w-4 text-muted-foreground" />
                       </div>
                       <div className="min-w-0 flex-1">
@@ -65,10 +65,10 @@ export default function Sources() {
                     </div>
                     <div className="flex items-center gap-2 shrink-0">
                       <Switch checked={source.status === "active"} onCheckedChange={() => toast.info("状态切换功能即将上线")} />
-                      <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={() => toast.info("功能即将上线")}>
+                      <Button variant="ghost" size="sm" className="h-8 w-8 p-0 rounded-lg btn-press" onClick={() => toast.info("功能即将上线")}>
                         <ExternalLink className="h-3.5 w-3.5" />
                       </Button>
-                      <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={() => toast.info("功能即将上线")}>
+                      <Button variant="ghost" size="sm" className="h-8 w-8 p-0 rounded-lg btn-press" onClick={() => toast.info("功能即将上线")}>
                         <MoreHorizontal className="h-3.5 w-3.5" />
                       </Button>
                     </div>

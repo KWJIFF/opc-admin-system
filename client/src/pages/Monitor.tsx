@@ -53,7 +53,7 @@ export default function Monitor() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.05, duration: 0.3 }}
           >
-            <Card className="border-border/50 shadow-sm">
+            <Card className="card-elevated border-border/30">
               <CardContent className="p-4">
                 <div className="flex items-center justify-between mb-2">
                   <metric.icon className="h-4 w-4 text-muted-foreground" />
@@ -69,7 +69,7 @@ export default function Monitor() {
       </div>
 
       {/* Request Chart */}
-      <Card className="border-border/50 shadow-sm">
+      <Card className="card-elevated border-border/30">
         <CardHeader className="pb-2">
           <CardTitle className="text-base font-semibold">24 小时请求量</CardTitle>
         </CardHeader>
@@ -92,7 +92,7 @@ export default function Monitor() {
       </Card>
 
       {/* System Logs */}
-      <Card className="border-border/50 shadow-sm">
+      <Card className="card-elevated border-border/30">
         <CardHeader className="pb-3">
           <div className="flex items-center justify-between">
             <CardTitle className="text-base font-semibold flex items-center gap-2">

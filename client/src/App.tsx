@@ -5,8 +5,10 @@ import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import DashboardLayout from "./components/DashboardLayout";
+import SiteLayout from "./components/SiteLayout";
+import { getEnabledCategories } from "@shared/siteConfig";
 
-// Pages
+// Admin Pages
 import Home from "./pages/Home";
 import Signals from "./pages/Signals";
 import Topics from "./pages/Topics";
@@ -26,6 +28,13 @@ import Sources from "./pages/Sources";
 import SettingsPage from "./pages/Settings";
 import LoginPage from "./pages/Login";
 
+// Site (Public) Pages
+import SiteLanding from "./pages/SiteLanding";
+import SiteCategoryPage from "./pages/SiteCategoryPage";
+import SiteArticleDetail from "./pages/SiteArticleDetail";
+import SiteAbout from "./pages/SiteAbout";
+
+/* ── 后台管理路由 ── */
 function DashboardRouter() {
   return (
     <DashboardLayout>
@@ -53,10 +62,28 @@ function DashboardRouter() {
   );
 }
 
+/* ── 前台官网路由（配置驱动，新增板块自动注册） ── */
+const enabledCategories = getEnabledCategories();
+
+/* ── 顶层路由 ── */
 function Router() {
   return (
     <Switch>
       <Route path="/login" component={LoginPage} />
+      <Route path="/site/article/:id">
+        {() => <SiteLayout><SiteArticleDetail /></SiteLayout>}
+      </Route>
+      <Route path="/site/about">
+        {() => <SiteLayout><SiteAbout /></SiteLayout>}
+      </Route>
+      {enabledCategories.map((cat) => (
+        <Route key={cat.key} path={cat.path}>
+          {() => <SiteLayout><SiteCategoryPage categoryKey={cat.key} /></SiteLayout>}
+        </Route>
+      ))}
+      <Route path="/site">
+        {() => <SiteLayout><SiteLanding /></SiteLayout>}
+      </Route>
       <Route component={DashboardRouter} />
     </Switch>
   );

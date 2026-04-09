@@ -55,7 +55,7 @@ export default function Insights() {
       action={{ label: "新建任务", onClick: () => toast.info("新建洞察任务功能即将上线") }}
     >
       {/* Trend Chart */}
-      <Card className="border-border/50 shadow-sm">
+      <Card className="card-elevated border-border/30">
         <CardHeader className="pb-2">
           <CardTitle className="text-base font-semibold">关键词热度趋势</CardTitle>
         </CardHeader>
@@ -84,7 +84,7 @@ export default function Insights() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.05, duration: 0.3 }}
           >
-            <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow">
+            <Card className="card-elevated border-border/30 hover:shadow-md transition-shadow">
               <CardContent className="p-4">
                 <div className="flex items-center justify-between gap-4">
                   <div className="flex items-center gap-3 min-w-0">
@@ -102,7 +102,7 @@ export default function Insights() {
                     <Badge variant="secondary" className={`${statusLabels[task.status].variant} border-0 text-[11px]`}>
                       {statusLabels[task.status].label}
                     </Badge>
-                    <Button variant="outline" size="sm" className="h-7 text-xs border-border/60" onClick={() => toast.info("查看详情功能即将上线")}>
+                    <Button variant="outline" size="sm" className="h-7 text-xs border-border/30" onClick={() => toast.info("查看详情功能即将上线")}>
                       详情
                     </Button>
                   </div>

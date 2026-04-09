@@ -10,32 +10,72 @@ interface PageShellProps {
     label: string;
     onClick: () => void;
   };
+  actions?: React.ReactNode;
   children: React.ReactNode;
 }
 
-export default function PageShell({ title, description, icon, action, children }: PageShellProps) {
+const containerVariants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.05,
+      delayChildren: 0.02,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 10 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      type: "spring" as const,
+      stiffness: 400,
+      damping: 30,
+    },
+  },
+};
+
+export { containerVariants, itemVariants };
+
+export default function PageShell({ title, description, icon, action, actions, children }: PageShellProps) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
+      variants={containerVariants}
+      initial="hidden"
+      animate="show"
       className="space-y-6"
     >
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          {icon && <div className="p-2 rounded-xl bg-primary/10 text-primary">{icon}</div>}
+      {/* Page Header */}
+      <motion.div variants={itemVariants} className="flex items-center justify-between">
+        <div className="flex items-center gap-3.5">
+          {icon && (
+            <div className="p-2.5 rounded-2xl bg-gradient-to-br from-primary/10 to-primary/5 text-primary ring-1 ring-primary/10">
+              {icon}
+            </div>
+          )}
           <div>
             <h1 className="text-2xl font-bold text-foreground tracking-tight">{title}</h1>
-            {description && <p className="text-sm text-muted-foreground mt-0.5">{description}</p>}
+            {description && (
+              <p className="text-[13px] text-muted-foreground mt-0.5">{description}</p>
+            )}
           </div>
         </div>
-        {action && (
-          <Button onClick={action.onClick} className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm">
-            <Plus className="h-4 w-4 mr-1.5" />
-            {action.label}
-          </Button>
-        )}
-      </div>
+        <div className="flex items-center gap-2">
+          {actions}
+          {action && (
+            <Button
+              onClick={action.onClick}
+              className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-md shadow-primary/15 hover:shadow-lg hover:shadow-primary/20 btn-press rounded-xl h-9 px-4 text-[13px] font-medium"
+            >
+              <Plus className="h-4 w-4 mr-1" />
+              {action.label}
+            </Button>
+          )}
+        </div>
+      </motion.div>
       {children}
     </motion.div>
   );

@@ -169,10 +169,10 @@ function WorkflowStats() {
     <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
       {stats.map((s, i) => (
         <motion.div key={s.label} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
-          <Card className="border-border/50 shadow-sm">
+          <Card className="card-elevated border-border/30">
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-lg bg-muted/50 flex items-center justify-center shrink-0">
+                <div className="w-9 h-9 rounded-xl bg-muted/30 flex items-center justify-center shrink-0">
                   {s.icon}
                 </div>
                 <div>
@@ -198,7 +198,7 @@ function StepPipeline({ steps }: { steps: typeof mockWorkflows[0]["steps"] }) {
         return (
           <div key={si} className="flex items-center shrink-0">
             {/* Step Node */}
-            <div className={`flex items-center gap-2 px-3 py-2 rounded-lg border ${sc.bg} transition-all`}>
+            <div className={`flex items-center gap-2 px-3 py-2 rounded-xl border ${sc.bg} transition-all`}>
               <div className={`${sc.color} shrink-0`}>
                 {icon || sc.icon}
               </div>
@@ -235,14 +235,14 @@ function WorkflowCard({ workflow, index }: { workflow: typeof mockWorkflows[0]; 
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.05, duration: 0.3 }}
     >
-      <Card className="border-border/50 shadow-sm hover:shadow-md transition-all overflow-hidden">
+      <Card className="card-elevated border-border/30 hover:shadow-md transition-all overflow-hidden">
         <CardContent className="p-0">
           {/* Header */}
           <div className="p-5 pb-3">
             <div className="flex items-start justify-between gap-4">
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2.5 mb-1.5">
-                  <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                  <div className="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
                     <Bot className="h-4 w-4 text-primary" />
                   </div>
                   <div className="min-w-0">
@@ -263,7 +263,7 @@ function WorkflowCard({ workflow, index }: { workflow: typeof mockWorkflows[0]; 
                   onCheckedChange={() => toast.info("状态切换功能即将上线")}
                   className="scale-90"
                 />
-                <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => toast.info("功能即将上线")}>
+                <Button variant="ghost" size="sm" className="h-7 w-7 p-0 rounded-lg btn-press" onClick={() => toast.info("功能即将上线")}>
                   <MoreHorizontal className="h-4 w-4" />
                 </Button>
               </div>
@@ -353,7 +353,7 @@ export default function Workflows() {
       action={{ label: "新建工作流", onClick: () => toast.info("工作流编辑器即将上线") }}
     >
       <Tabs defaultValue="workflows" className="space-y-5">
-        <TabsList className="bg-muted/40 p-1 h-auto">
+        <TabsList className="bg-muted/25 p-1 h-auto">
           <TabsTrigger value="workflows" className="text-sm data-[state=active]:bg-background data-[state=active]:shadow-sm px-5 py-2">
             工作流列表
           </TabsTrigger>
@@ -374,12 +374,12 @@ export default function Workflows() {
 
         {/* ── History Tab ── */}
         <TabsContent value="history" className="space-y-4">
-          <Card className="border-border/50 shadow-sm">
+          <Card className="card-elevated border-border/30">
             <CardContent className="p-0">
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="border-b border-border/50 bg-muted/30">
+                    <tr className="border-b border-border/30 bg-muted/30">
                       <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground">工作流</th>
                       <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground">状态</th>
                       <th className="text-left px-5 py-3 text-xs font-medium text-muted-foreground">开始时间</th>

@@ -69,10 +69,10 @@ function OverviewStats() {
     <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
       {stats.map((s, i) => (
         <motion.div key={s.label} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
-          <Card className="border-border/50 shadow-sm">
+          <Card className="card-elevated border-border/30">
             <CardContent className="p-4 text-center">
-              <p className={`text-2xl font-bold ${s.color}`}>{s.value}</p>
-              <p className="text-xs text-muted-foreground mt-1">{s.label}</p>
+              <p className={`text-2xl font-bold tracking-tight ${s.color}`}>{s.value}</p>
+              <p className="text-[11px] text-muted-foreground mt-1 font-medium">{s.label}</p>
             </CardContent>
           </Card>
         </motion.div>
@@ -92,14 +92,14 @@ function AccountCard({ account, index }: { account: typeof mockAccounts[0]; inde
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.04, duration: 0.3 }}
     >
-      <Card className="border-border/50 shadow-sm hover:shadow-md transition-all group overflow-hidden">
+      <Card className="card-elevated border-border/30 group overflow-hidden">
         {/* Platform Color Bar */}
         <div className={`h-1 bg-gradient-to-r ${pc.gradient} ${!isActive ? "opacity-30" : ""}`} />
         <CardContent className="p-5">
           {/* Header */}
           <div className="flex items-start justify-between mb-4">
             <div className="flex items-center gap-3">
-              <Avatar className={`h-11 w-11 border-2 ${isActive ? "border-primary/20" : "border-gray-200"}`}>
+              <Avatar className={`h-11 w-11 ring-2 ${isActive ? "ring-primary/15" : "ring-gray-200/50"}`}>
                 <AvatarFallback className={`${pc.bg} ${pc.color} font-bold text-sm`}>
                   {pc.emoji}
                 </AvatarFallback>
@@ -122,17 +122,17 @@ function AccountCard({ account, index }: { account: typeof mockAccounts[0]; inde
 
           {/* Metrics Grid */}
           <div className="grid grid-cols-3 gap-2 mb-4">
-            <div className="bg-muted/30 rounded-lg px-3 py-2 text-center">
-              <p className="text-sm font-bold text-foreground">{account.followers.toLocaleString()}</p>
-              <p className="text-[10px] text-muted-foreground">粉丝</p>
+            <div className="bg-muted/20 rounded-xl px-3 py-2.5 text-center">
+              <p className="text-sm font-bold text-foreground tracking-tight">{account.followers.toLocaleString()}</p>
+              <p className="text-[10px] text-muted-foreground/70">粉丝</p>
             </div>
-            <div className="bg-muted/30 rounded-lg px-3 py-2 text-center">
-              <p className="text-sm font-bold text-foreground">{account.articles}</p>
-              <p className="text-[10px] text-muted-foreground">内容</p>
+            <div className="bg-muted/20 rounded-xl px-3 py-2.5 text-center">
+              <p className="text-sm font-bold text-foreground tracking-tight">{account.articles}</p>
+              <p className="text-[10px] text-muted-foreground/70">内容</p>
             </div>
-            <div className="bg-muted/30 rounded-lg px-3 py-2 text-center">
-              <p className="text-sm font-bold text-foreground">{account.todayViews.toLocaleString()}</p>
-              <p className="text-[10px] text-muted-foreground">今日浏览</p>
+            <div className="bg-muted/20 rounded-xl px-3 py-2.5 text-center">
+              <p className="text-sm font-bold text-foreground tracking-tight">{account.todayViews.toLocaleString()}</p>
+              <p className="text-[10px] text-muted-foreground/70">今日浏览</p>
             </div>
           </div>
 
@@ -151,7 +151,7 @@ function AccountCard({ account, index }: { account: typeof mockAccounts[0]; inde
           </div>
 
           {/* Templates & Actions */}
-          <div className="flex items-center justify-between pt-3 border-t border-border/40">
+          <div className="flex items-center justify-between pt-3 border-t border-border/30">
             <div className="flex items-center gap-1.5">
               <Layout className="h-3 w-3 text-muted-foreground" />
               <span className="text-[11px] text-muted-foreground">{account.templates} 个模板</span>
@@ -159,13 +159,13 @@ function AccountCard({ account, index }: { account: typeof mockAccounts[0]; inde
               <span className="text-[11px] text-muted-foreground">同步 {account.lastSyncAt.split(" ")[1]}</span>
             </div>
             <div className="flex gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
-              <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => toast.info("同步功能即将上线")}>
+              <Button variant="ghost" size="sm" className="h-7 w-7 p-0 rounded-lg btn-press" onClick={() => toast.info("同步功能即将上线")}>
                 <RefreshCw className="h-3.5 w-3.5" />
               </Button>
-              <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => toast.info("功能即将上线")}>
+              <Button variant="ghost" size="sm" className="h-7 w-7 p-0 rounded-lg btn-press" onClick={() => toast.info("功能即将上线")}>
                 <ExternalLink className="h-3.5 w-3.5" />
               </Button>
-              <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => toast.info("功能即将上线")}>
+              <Button variant="ghost" size="sm" className="h-7 w-7 p-0 rounded-lg btn-press" onClick={() => toast.info("功能即将上线")}>
                 <Settings className="h-3.5 w-3.5" />
               </Button>
             </div>
@@ -186,11 +186,11 @@ function TemplateCard({ template, index }: { template: typeof mockTemplates[0]; 
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.03, duration: 0.25 }}
     >
-      <Card className="border-border/50 shadow-sm hover:shadow-md transition-all group">
+      <Card className="card-elevated border-border/30 group">
         <CardContent className="p-4">
           <div className="flex items-start justify-between mb-3">
             <div className="flex items-center gap-2.5">
-              <div className={`w-8 h-8 rounded-lg ${pc.bg} flex items-center justify-center`}>
+              <div className={`w-8 h-8 rounded-xl ${pc.bg} flex items-center justify-center`}>
                 <FileText className={`h-4 w-4 ${pc.color}`} />
               </div>
               <div>
@@ -203,19 +203,19 @@ function TemplateCard({ template, index }: { template: typeof mockTemplates[0]; 
             </div>
           </div>
 
-          <div className="flex items-center justify-between pt-2 border-t border-border/30">
+          <div className="flex items-center justify-between pt-2.5 border-t border-border/20">
             <div className="flex items-center gap-3">
               <span className="text-[11px] text-muted-foreground">使用 {template.usageCount} 次</span>
               <span className="text-[11px] text-muted-foreground">创建于 {template.createdAt}</span>
             </div>
             <div className="flex gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
-              <Button variant="ghost" size="sm" className="h-6 w-6 p-0" onClick={() => toast.info("预览功能即将上线")}>
+              <Button variant="ghost" size="sm" className="h-6 w-6 p-0 rounded-lg btn-press" onClick={() => toast.info("预览功能即将上线")}>
                 <Eye className="h-3 w-3" />
               </Button>
-              <Button variant="ghost" size="sm" className="h-6 w-6 p-0" onClick={() => toast.info("复制功能即将上线")}>
+              <Button variant="ghost" size="sm" className="h-6 w-6 p-0 rounded-lg btn-press" onClick={() => toast.info("复制功能即将上线")}>
                 <Copy className="h-3 w-3" />
               </Button>
-              <Button variant="ghost" size="sm" className="h-6 w-6 p-0 text-red-500 hover:text-red-600" onClick={() => toast.info("删除功能即将上线")}>
+              <Button variant="ghost" size="sm" className="h-6 w-6 p-0 rounded-lg btn-press text-red-500 hover:text-red-600" onClick={() => toast.info("删除功能即将上线")}>
                 <Trash2 className="h-3 w-3" />
               </Button>
             </div>
@@ -244,11 +244,11 @@ export default function Accounts() {
       action={{ label: "添加账号", onClick: () => toast.info("添加账号功能即将上线") }}
     >
       <Tabs defaultValue="accounts" className="space-y-5">
-        <TabsList className="bg-muted/40 p-1 h-auto">
-          <TabsTrigger value="accounts" className="text-sm data-[state=active]:bg-background data-[state=active]:shadow-sm px-5 py-2">
+        <TabsList className="bg-muted/30 p-1 h-auto rounded-xl">
+          <TabsTrigger value="accounts" className="text-[13px] data-[state=active]:bg-background data-[state=active]:shadow-sm data-[state=active]:shadow-black/[0.04] px-5 py-2 rounded-lg font-medium">
             账号管理
           </TabsTrigger>
-          <TabsTrigger value="templates" className="text-sm data-[state=active]:bg-background data-[state=active]:shadow-sm px-5 py-2">
+          <TabsTrigger value="templates" className="text-[13px] data-[state=active]:bg-background data-[state=active]:shadow-sm data-[state=active]:shadow-black/[0.04] px-5 py-2 rounded-lg font-medium">
             内容模板
           </TabsTrigger>
         </TabsList>
@@ -267,11 +267,11 @@ export default function Accounts() {
               transition={{ delay: mockAccounts.length * 0.04, duration: 0.3 }}
             >
               <Card
-                className="border-dashed border-2 border-border/50 shadow-none hover:border-primary/40 hover:bg-primary/5 transition-all cursor-pointer h-full min-h-[280px] flex items-center justify-center"
+                className="border-dashed border-2 border-border/40 shadow-none hover:border-primary/30 hover:bg-primary/[0.03] transition-all duration-300 cursor-pointer h-full min-h-[280px] flex items-center justify-center rounded-2xl"
                 onClick={() => toast.info("添加账号功能即将上线")}
               >
                 <CardContent className="p-5 text-center">
-                  <div className="w-12 h-12 rounded-xl bg-muted/50 flex items-center justify-center mx-auto mb-3">
+                  <div className="w-12 h-12 rounded-2xl bg-muted/40 flex items-center justify-center mx-auto mb-3">
                     <Plus className="h-6 w-6 text-muted-foreground" />
                   </div>
                   <p className="text-sm font-medium text-muted-foreground">添加新账号</p>
@@ -290,7 +290,7 @@ export default function Accounts() {
               <Button
                 variant={selectedPlatform === "all" ? "default" : "outline"}
                 size="sm"
-                className={`h-8 text-xs ${selectedPlatform === "all" ? "bg-primary text-primary-foreground" : "border-border/60"}`}
+                className={`h-8 text-xs rounded-lg btn-press ${selectedPlatform === "all" ? "bg-primary text-primary-foreground shadow-sm shadow-primary/20" : "border-border/50"}`}
                 onClick={() => setSelectedPlatform("all")}
               >
                 全部平台
@@ -302,7 +302,7 @@ export default function Accounts() {
                     key={p}
                     variant={selectedPlatform === p ? "default" : "outline"}
                     size="sm"
-                    className={`h-8 text-xs ${selectedPlatform === p ? "bg-primary text-primary-foreground" : "border-border/60"}`}
+                    className={`h-8 text-xs rounded-lg btn-press ${selectedPlatform === p ? "bg-primary text-primary-foreground shadow-sm shadow-primary/20" : "border-border/50"}`}
                     onClick={() => setSelectedPlatform(p)}
                   >
                     {pc?.name || p}
@@ -312,7 +312,7 @@ export default function Accounts() {
             </div>
             <Button
               size="sm"
-              className="h-8 bg-primary hover:bg-primary/90 text-primary-foreground"
+              className="h-8 bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg btn-press shadow-sm shadow-primary/20"
               onClick={() => toast.info("上传模板功能即将上线")}
             >
               <Upload className="h-3.5 w-3.5 mr-1.5" />
@@ -340,7 +340,7 @@ export default function Accounts() {
                 transition={{ delay: filteredTemplates.length * 0.03 }}
               >
                 <Card
-                  className="border-dashed border-2 border-border/50 shadow-none hover:border-primary/40 hover:bg-primary/5 transition-all cursor-pointer min-h-[120px] flex items-center justify-center"
+                  className="border-dashed border-2 border-border/40 shadow-none hover:border-primary/30 hover:bg-primary/[0.03] transition-all duration-300 cursor-pointer min-h-[120px] flex items-center justify-center rounded-2xl"
                   onClick={() => toast.info("上传模板功能即将上线")}
                 >
                   <CardContent className="p-4 text-center">

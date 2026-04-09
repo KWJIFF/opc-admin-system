@@ -158,7 +158,7 @@ function ModuleCard({ mod, index }: { mod: typeof moduleRegistry[0]; index: numb
   const sc = statusColors[mod.status];
   return (
     <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.04 }}>
-      <Card className="border-border/50 shadow-sm hover:shadow-md transition-all">
+      <Card className="card-elevated border-border/30 hover:shadow-md transition-all">
         <CardContent className="p-4">
           <div className="flex items-start justify-between gap-3">
             <div className="flex-1 min-w-0">
@@ -176,21 +176,21 @@ function ModuleCard({ mod, index }: { mod: typeof moduleRegistry[0]; index: numb
                 <span>·</span>
                 <span>{mod.provider}</span>
                 <span>·</span>
-                <Badge variant="outline" className="text-[10px] px-1.5 py-0 border-border/60">{mod.category}</Badge>
+                <Badge variant="outline" className="text-[10px] px-1.5 py-0 border-border/30">{mod.category}</Badge>
               </div>
               {mod.replaceable && mod.alternatives.length > 0 && (
                 <div className="flex items-center gap-1.5 pl-6 mt-2 flex-wrap">
                   <ArrowRightLeft className="h-3 w-3 text-muted-foreground shrink-0" />
                   <span className="text-[10px] text-muted-foreground">可替换为：</span>
                   {mod.alternatives.map(alt => (
-                    <Badge key={alt} variant="outline" className="text-[10px] px-1.5 py-0 border-dashed border-border/60 text-muted-foreground">{alt}</Badge>
+                    <Badge key={alt} variant="outline" className="text-[10px] px-1.5 py-0 border-dashed border-border/30 text-muted-foreground">{alt}</Badge>
                   ))}
                 </div>
               )}
             </div>
             <div className="flex items-center gap-1.5 shrink-0">
               <Switch checked={mod.status === "active"} onCheckedChange={() => toast.info("模块状态切换功能即将上线")} className="scale-90" />
-              <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => toast.info("模块配置功能即将上线")}>
+              <Button variant="ghost" size="sm" className="h-7 w-7 p-0 rounded-lg btn-press" onClick={() => toast.info("模块配置功能即将上线")}>
                 <Settings2 className="h-3.5 w-3.5" />
               </Button>
             </div>
@@ -208,11 +208,11 @@ function ToolAdapterCard({ tool, index }: { tool: typeof toolAdapters[0]; index:
 
   return (
     <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.04 }}>
-      <Card className="border-border/50 shadow-sm hover:shadow-md transition-all">
+      <Card className="card-elevated border-border/30 hover:shadow-md transition-all">
         <CardContent className="p-4">
           <div className="flex items-start justify-between gap-3">
             <div className="flex items-center gap-3 flex-1 min-w-0">
-              <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 text-primary">
+              <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center shrink-0 text-primary">
                 {tool.icon}
               </div>
               <div className="min-w-0">
@@ -231,13 +231,13 @@ function ToolAdapterCard({ tool, index }: { tool: typeof toolAdapters[0]; index:
               <Button
                 variant="outline"
                 size="sm"
-                className="h-7 text-xs border-border/60"
+                className="h-7 text-xs border-border/30"
                 onClick={() => setShowConfig(!showConfig)}
               >
                 <Wrench className="h-3 w-3 mr-1" />
                 配置
               </Button>
-              <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => toast.info("连接测试功能即将上线")}>
+              <Button variant="ghost" size="sm" className="h-7 w-7 p-0 rounded-lg btn-press" onClick={() => toast.info("连接测试功能即将上线")}>
                 <RefreshCw className="h-3.5 w-3.5" />
               </Button>
             </div>
@@ -257,13 +257,13 @@ function ToolAdapterCard({ tool, index }: { tool: typeof toolAdapters[0]; index:
                     <Input
                       type={field.type === "password" ? "password" : "text"}
                       defaultValue={field.value}
-                      className="h-8 text-xs bg-muted/30 border-border/60 font-mono"
+                      className="h-8 text-xs bg-muted/30 border-border/30 font-mono"
                     />
                   </div>
                 ))}
               </div>
               <div className="flex justify-end mt-3 gap-2">
-                <Button variant="outline" size="sm" className="h-7 text-xs border-border/60" onClick={() => toast.info("连接测试中...")}>
+                <Button variant="outline" size="sm" className="h-7 text-xs border-border/30" onClick={() => toast.info("连接测试中...")}>
                   测试连接
                 </Button>
                 <Button size="sm" className="h-7 text-xs bg-primary hover:bg-primary/90 text-primary-foreground" onClick={() => toast.success("配置已保存")}>
@@ -283,7 +283,7 @@ export default function SettingsPage() {
   return (
     <PageShell title="系统设置" description="平台配置、模块管理与工具适配" icon={<Settings2 className="h-5 w-5" />}>
       <Tabs defaultValue="general" className="space-y-5">
-        <TabsList className="bg-muted/40 p-1 h-auto flex-wrap">
+        <TabsList className="bg-muted/25 p-1 h-auto flex-wrap">
           <TabsTrigger value="general" className="text-sm data-[state=active]:bg-background data-[state=active]:shadow-sm px-4 py-2">
             基本设置
           </TabsTrigger>
@@ -307,7 +307,7 @@ export default function SettingsPage() {
         {/* ── General Tab ── */}
         <TabsContent value="general" className="space-y-5">
           <div className="max-w-3xl space-y-5">
-            <Card className="border-border/50 shadow-sm">
+            <Card className="card-elevated border-border/30">
               <CardHeader className="pb-3">
                 <CardTitle className="text-base font-semibold">平台信息</CardTitle>
                 <CardDescription className="text-xs">基本的平台配置信息</CardDescription>
@@ -316,44 +316,44 @@ export default function SettingsPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-1.5">
                     <Label className="text-xs">平台名称</Label>
-                    <Input defaultValue="深象 OPCS" className="h-9 bg-muted/30 border-border/60" />
+                    <Input defaultValue="深象 OPCS" className="h-9 bg-muted/30 border-border/30" />
                   </div>
                   <div className="space-y-1.5">
                     <Label className="text-xs">管理员邮箱</Label>
-                    <Input defaultValue="admin@shenxiang.tech" className="h-9 bg-muted/30 border-border/60" />
+                    <Input defaultValue="admin@shenxiang.tech" className="h-9 bg-muted/30 border-border/30" />
                   </div>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-1.5">
                     <Label className="text-xs">网站域名</Label>
-                    <Input defaultValue="admin.shenxiang.tech" className="h-9 bg-muted/30 border-border/60" />
+                    <Input defaultValue="admin.shenxiang.tech" className="h-9 bg-muted/30 border-border/30" />
                   </div>
                   <div className="space-y-1.5">
                     <Label className="text-xs">备案号</Label>
-                    <Input defaultValue="" placeholder="ICP 备案号" className="h-9 bg-muted/30 border-border/60" />
+                    <Input defaultValue="" placeholder="ICP 备案号" className="h-9 bg-muted/30 border-border/30" />
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="border-border/50 shadow-sm">
+            <Card className="card-elevated border-border/30">
               <CardHeader className="pb-3">
                 <CardTitle className="text-base font-semibold">AI 模型配置</CardTitle>
                 <CardDescription className="text-xs">所有 AI 能力统一使用阿里系大模型</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="p-3 rounded-lg bg-primary/5 border border-primary/20 flex items-start gap-2">
+                <div className="p-3 rounded-xl bg-primary/5 border border-primary/20 flex items-start gap-2">
                   <Info className="h-4 w-4 text-primary shrink-0 mt-0.5" />
                   <p className="text-xs text-foreground/80">本平台所有大模型能力均使用阿里系产品（通义千问系列），不引入其他厂商模型。如需更换模型版本，请在下方配置。</p>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-1.5">
                     <Label className="text-xs">通义千问 API Key</Label>
-                    <Input type="password" defaultValue="sk-****" className="h-9 bg-muted/30 border-border/60 font-mono" />
+                    <Input type="password" defaultValue="sk-****" className="h-9 bg-muted/30 border-border/30 font-mono" />
                   </div>
                   <div className="space-y-1.5">
                     <Label className="text-xs">默认模型</Label>
-                    <Input defaultValue="qwen-max" className="h-9 bg-muted/30 border-border/60 font-mono" />
+                    <Input defaultValue="qwen-max" className="h-9 bg-muted/30 border-border/30 font-mono" />
                   </div>
                 </div>
                 <Separator className="my-1" />
@@ -386,7 +386,7 @@ export default function SettingsPage() {
 
         {/* ── Modules Tab ── */}
         <TabsContent value="modules" className="space-y-5">
-          <div className="p-3 rounded-lg bg-blue-50 border border-blue-200 flex items-start gap-2">
+          <div className="p-3 rounded-xl bg-blue-50 border border-blue-200 flex items-start gap-2">
             <Blocks className="h-4 w-4 text-blue-600 shrink-0 mt-0.5" />
             <div>
               <p className="text-xs font-medium text-blue-800">模块化架构</p>
@@ -402,7 +402,7 @@ export default function SettingsPage() {
 
         {/* ── Tools Tab ── */}
         <TabsContent value="tools" className="space-y-5">
-          <div className="p-3 rounded-lg bg-amber-50 border border-amber-200 flex items-start gap-2">
+          <div className="p-3 rounded-xl bg-amber-50 border border-amber-200 flex items-start gap-2">
             <Wrench className="h-4 w-4 text-amber-600 shrink-0 mt-0.5" />
             <div>
               <p className="text-xs font-medium text-amber-800">工具适配层</p>
@@ -418,7 +418,7 @@ export default function SettingsPage() {
 
         {/* ── Extensions Tab ── */}
         <TabsContent value="extensions" className="space-y-5">
-          <div className="p-3 rounded-lg bg-purple-50 border border-purple-200 flex items-start gap-2">
+          <div className="p-3 rounded-xl bg-purple-50 border border-purple-200 flex items-start gap-2">
             <Package className="h-4 w-4 text-purple-600 shrink-0 mt-0.5" />
             <div>
               <p className="text-xs font-medium text-purple-800">扩展中心</p>
@@ -430,7 +430,7 @@ export default function SettingsPage() {
               const sc = statusColors[ext.status];
               return (
                 <motion.div key={ext.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }}>
-                  <Card className="border-border/50 shadow-sm hover:shadow-md transition-all h-full">
+                  <Card className="card-elevated border-border/30 hover:shadow-md transition-all h-full">
                     <CardContent className="p-4">
                       <div className="flex items-start justify-between gap-2 mb-2">
                         <div className="flex items-center gap-2">
@@ -444,11 +444,11 @@ export default function SettingsPage() {
                       <p className="text-xs text-muted-foreground mb-3 pl-6">{ext.description}</p>
                       <div className="pl-6">
                         {ext.status === "available" ? (
-                          <Button variant="outline" size="sm" className="h-7 text-xs border-border/60" onClick={() => toast.info("扩展配置功能即将上线")}>
+                          <Button variant="outline" size="sm" className="h-7 text-xs border-border/30" onClick={() => toast.info("扩展配置功能即将上线")}>
                             配置启用 <ChevronRight className="h-3 w-3 ml-1" />
                           </Button>
                         ) : (
-                          <Button variant="outline" size="sm" className="h-7 text-xs border-border/60 opacity-50" disabled>
+                          <Button variant="outline" size="sm" className="h-7 text-xs border-border/30 opacity-50" disabled>
                             开发中
                           </Button>
                         )}
@@ -464,7 +464,7 @@ export default function SettingsPage() {
         {/* ── Notifications Tab ── */}
         <TabsContent value="notifications" className="space-y-5">
           <div className="max-w-3xl">
-            <Card className="border-border/50 shadow-sm">
+            <Card className="card-elevated border-border/30">
               <CardHeader className="pb-3">
                 <CardTitle className="text-base font-semibold">通知设置</CardTitle>
                 <CardDescription className="text-xs">配置各类通知的触发条件和推送方式</CardDescription>
@@ -494,7 +494,7 @@ export default function SettingsPage() {
         {/* ── Backup Tab ── */}
         <TabsContent value="backup" className="space-y-5">
           <div className="max-w-3xl">
-            <Card className="border-border/50 shadow-sm">
+            <Card className="card-elevated border-border/30">
               <CardHeader className="pb-3">
                 <CardTitle className="text-base font-semibold">数据与备份</CardTitle>
                 <CardDescription className="text-xs">数据库备份策略和日志保留配置</CardDescription>
@@ -512,15 +512,15 @@ export default function SettingsPage() {
                     <p className="text-sm font-medium text-foreground">操作日志保留天数</p>
                     <p className="text-[11px] text-muted-foreground">超过保留期的日志将自动清理</p>
                   </div>
-                  <Input defaultValue="90" className="h-8 w-20 bg-muted/30 border-border/60 text-center text-sm" />
+                  <Input defaultValue="90" className="h-8 w-20 bg-muted/30 border-border/30 text-center text-sm" />
                 </div>
                 <Separator className="my-1" />
                 <div className="flex items-center gap-3">
-                  <Button variant="outline" size="sm" className="h-8 text-xs border-border/60" onClick={() => toast.info("手动备份功能即将上线")}>
+                  <Button variant="outline" size="sm" className="h-8 text-xs border-border/30" onClick={() => toast.info("手动备份功能即将上线")}>
                     <Database className="h-3.5 w-3.5 mr-1.5" />
                     立即备份
                   </Button>
-                  <Button variant="outline" size="sm" className="h-8 text-xs border-border/60" onClick={() => toast.info("数据导出功能即将上线")}>
+                  <Button variant="outline" size="sm" className="h-8 text-xs border-border/30" onClick={() => toast.info("数据导出功能即将上线")}>
                     <ExternalLink className="h-3.5 w-3.5 mr-1.5" />
                     导出数据
                   </Button>

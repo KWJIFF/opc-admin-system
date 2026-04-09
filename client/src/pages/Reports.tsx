@@ -39,7 +39,7 @@ export default function Reports() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.05, duration: 0.3 }}
             >
-              <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow">
+              <Card className="card-elevated border-border/30 hover:shadow-md transition-shadow">
                 <CardContent className="p-5">
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1 min-w-0">
@@ -56,11 +56,11 @@ export default function Reports() {
                       <p className="text-sm text-muted-foreground line-clamp-1">{report.summary}</p>
                     </div>
                     <div className="flex gap-1.5 shrink-0">
-                      <Button variant="outline" size="sm" className="h-8 border-border/60" onClick={() => toast.info("查看报告功能即将上线")}>
+                      <Button variant="outline" size="sm" className="h-8 border-border/30" onClick={() => toast.info("查看报告功能即将上线")}>
                         <Eye className="h-3.5 w-3.5 mr-1" />
                         查看
                       </Button>
-                      <Button variant="outline" size="sm" className="h-8 w-8 p-0 border-border/60" onClick={() => toast.info("下载功能即将上线")}>
+                      <Button variant="outline" size="sm" className="h-8 w-8 p-0 border-border/30" onClick={() => toast.info("下载功能即将上线")}>
                         <Download className="h-3.5 w-3.5" />
                       </Button>
                     </div>

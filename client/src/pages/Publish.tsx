@@ -122,15 +122,15 @@ function PublishCard({ item }: { item: PublishItem }) {
   };
 
   return (
-    <div className="border border-border/60 rounded-xl bg-white hover:shadow-sm transition-shadow">
+    <div className="card-elevated border-border/30 rounded-2xl bg-card">
       {/* Main row */}
       <div
-        className="flex items-center gap-4 px-5 py-4 cursor-pointer"
+        className="flex items-center gap-4 px-5 py-4 cursor-pointer hover:bg-muted/10 transition-colors duration-200 rounded-t-2xl"
         onClick={() => setExpanded(!expanded)}
       >
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-3 mb-1.5">
-            <h3 className="font-medium text-foreground truncate">{item.title}</h3>
+            <h3 className="font-semibold text-[14px] text-foreground truncate">{item.title}</h3>
             <StatusBadge status={item.status} map={statusMap} />
             <StatusBadge status={item.publishMode} map={modeMap} />
           </div>
@@ -166,7 +166,7 @@ function PublishCard({ item }: { item: PublishItem }) {
         <Button
           variant="ghost"
           size="sm"
-          className="text-muted-foreground"
+          className="text-muted-foreground rounded-xl btn-press"
           onClick={(e) => { e.stopPropagation(); setExpanded(!expanded); }}
         >
           {expanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
@@ -183,12 +183,12 @@ function PublishCard({ item }: { item: PublishItem }) {
             transition={{ duration: 0.2 }}
             className="overflow-hidden"
           >
-            <div className="px-5 pb-4 border-t border-border/40 pt-4">
+            <div className="px-5 pb-5 border-t border-border/30 pt-4">
               <div className="flex items-center justify-between mb-3">
                 <h4 className="text-sm font-medium text-foreground">分发目标平台</h4>
                 <Button
                   size="sm"
-                  className="bg-primary hover:bg-primary/90 text-white gap-1.5"
+                  className="bg-primary hover:bg-primary/90 text-white gap-1.5 rounded-xl btn-press shadow-sm shadow-primary/20"
                   onClick={handleDistribute}
                 >
                   <Zap className="h-3.5 w-3.5" />
@@ -199,8 +199,8 @@ function PublishCard({ item }: { item: PublishItem }) {
                 {platforms.map(p => (
                   <div
                     key={p.id}
-                    className={`flex items-center justify-between px-3.5 py-2.5 rounded-lg border transition-colors ${
-                      p.enabled ? "border-primary/20 bg-primary/5" : "border-border/40 bg-muted/30"
+                    className={`flex items-center justify-between px-3.5 py-3 rounded-xl border transition-all duration-200 ${
+                      p.enabled ? "border-primary/20 bg-primary/[0.04]" : "border-border/30 bg-muted/20"
                     }`}
                   >
                     <div className="flex items-center gap-2.5">
