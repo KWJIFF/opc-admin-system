@@ -310,3 +310,12 @@
 - [x] 保存 checkpoint
 - [x] 推送到 GitHub KWJIFF/opc-admin-system
 - [x] 确保 GitHub 仓库为最新代码，无残余旧内容
+
+## 小白级阿里云部署配置手册
+- [x] 编写完整的阿里云部署配置手册（面向零基础，每步可直接复制粘贴）
+- [x] 涵盖：ECS购买与初始化、Docker环境搭建、MySQL数据库配置
+- [x] 涵盖：域名购买与ICP备案、SSL证书配置、Nginx反向代理
+- [x] 涵盖：通义千问API接入、OSS对象存储、CDN加速
+- [x] 涵盖：短信服务、邮件推送、日志监控
+- [x] 涵盖：GitHub Webhook自动部署、CI/CD配置
+- [x] 涵盖：日常运维与故障排查速查表
