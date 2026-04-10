@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import PlatformPreviewPanel from "@/components/PlatformPreview";
 import {
   CheckCircle, Eye, ArrowLeft, ThumbsUp, ThumbsDown, MessageSquare,
-  Clock, AlertTriangle, Send
+  Clock, AlertTriangle
 } from "lucide-react";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";

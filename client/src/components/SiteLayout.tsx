@@ -3,15 +3,15 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 import {
   Menu, X, Info, LayoutDashboard,
-  Newspaper, Brain, BookOpen, Scale, Target, FileBarChart, Wrench,
+  Newspaper, Brain, BookOpen, Scale, Target, FileBarChart, Wrench, Play, Headphones,
 } from "lucide-react";
-import { getEnabledCategories, type SiteCategory } from "@shared/siteConfig";
+import { getEnabledCategories } from "@shared/siteConfig";
 
 const LOGO_URL = "https://d2xsxph8kpxj0f.cloudfront.net/310419663029695431/Fb26PagKyopspprUoxxADo/logo-icon_48921fa8.webp";
 
 /* ── 图标映射：iconName → 组件 ── */
 const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
-  Newspaper, Brain, BookOpen, Scale, Target, FileBarChart, Wrench,
+  Newspaper, Brain, BookOpen, Scale, Target, FileBarChart, Wrench, Play, Headphones,
 };
 
 export function getCategoryIcon(iconName: string) {

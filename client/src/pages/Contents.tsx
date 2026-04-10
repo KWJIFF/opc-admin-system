@@ -3,12 +3,10 @@ import PageShell from "@/components/PageShell";
 import DataTable, { StatusBadge } from "@/components/DataTable";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import ContentEditor, { type EditorContent } from "@/components/ContentEditor";
 import PlatformPreviewPanel from "@/components/PlatformPreview";
 import {
-  FileText, Plus, Eye, Pencil, Copy, Trash2, X, ArrowLeft,
-  Bot, Upload, Send, BarChart3
+  FileText, Eye, Pencil, Copy, ArrowLeft, Send
 } from "lucide-react";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";

@@ -209,6 +209,135 @@ export const appRouter = router({
     }),
   }),
 
+  // ==================== Comments ====================
+  comments: router({
+    list: publicProcedure
+      .input(z.object({ articleId: z.number(), status: z.string().optional() }))
+      .query(async ({ input }) => {
+        return db.listComments(input.articleId, input.status);
+      }),
+    create: publicProcedure
+      .input(z.object({
+        articleId: z.number(),
+        authorName: z.string().min(1),
+        authorEmail: z.string().optional(),
+        content: z.string().min(1),
+        parentId: z.number().optional(),
+      }))
+      .mutation(async ({ input }) => {
+        return db.createComment(input);
+      }),
+    updateStatus: adminProcedure
+      .input(z.object({ id: z.number(), status: z.string() }))
+      .mutation(async ({ input }) => {
+        await db.updateCommentStatus(input.id, input.status);
+        return { success: true };
+      }),
+    delete: adminProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(async ({ input }) => {
+        await db.deleteComment(input.id);
+        return { success: true };
+      }),
+    listAll: adminProcedure
+      .input(z.object({ limit: z.number().optional(), offset: z.number().optional() }).optional())
+      .query(async ({ input }) => {
+        return db.listAllComments(input?.limit, input?.offset);
+      }),
+  }),
+
+  // ==================== Subscribers ====================
+  subscribers: router({
+    subscribe: publicProcedure
+      .input(z.object({ email: z.string().email(), name: z.string().optional(), source: z.string().optional() }))
+      .mutation(async ({ input }) => {
+        return db.createSubscriber(input.email, input.name, input.source);
+      }),
+    list: adminProcedure
+      .input(z.object({ limit: z.number().optional(), offset: z.number().optional() }).optional())
+      .query(async ({ input }) => {
+        return db.listSubscribers(input?.limit, input?.offset);
+      }),
+    unsubscribe: publicProcedure
+      .input(z.object({ email: z.string().email() }))
+      .mutation(async ({ input }) => {
+        await db.unsubscribe(input.email);
+        return { success: true };
+      }),
+  }),
+
+  // ==================== Interactions ====================
+  interactions: router({
+    bookmark: publicProcedure
+      .input(z.object({ articleId: z.number(), sessionId: z.string() }))
+      .mutation(async ({ input }) => {
+        return db.toggleBookmark(input.articleId, input.sessionId);
+      }),
+    like: publicProcedure
+      .input(z.object({ articleId: z.number(), sessionId: z.string() }))
+      .mutation(async ({ input }) => {
+        return db.toggleLike(input.articleId, input.sessionId);
+      }),
+    recordView: publicProcedure
+      .input(z.object({ articleId: z.number(), sessionId: z.string().optional() }))
+      .mutation(async ({ input }) => {
+        await db.recordView(input.articleId, input.sessionId);
+        return { success: true };
+      }),
+  }),
+
+  // ==================== AI Interactions ====================
+  aiInteractions: router({
+    list: protectedProcedure
+      .input(z.object({ accountId: z.number().optional(), limit: z.number().optional() }).optional())
+      .query(async ({ input }) => {
+        return db.listAiInteractions(input?.accountId, input?.limit);
+      }),
+    create: protectedProcedure
+      .input(z.object({
+        accountId: z.number(),
+        platform: z.string(),
+        interactionType: z.string(),
+        triggerContent: z.string().optional(),
+        aiResponse: z.string().optional(),
+      }))
+      .mutation(async ({ input }) => {
+        return db.createAiInteraction(input);
+      }),
+    updateStatus: protectedProcedure
+      .input(z.object({ id: z.number(), status: z.string() }))
+      .mutation(async ({ input }) => {
+        await db.updateAiInteractionStatus(input.id, input.status);
+        return { success: true };
+      }),
+  }),
+
+  // ==================== Data Loop Suggestions ====================
+  dataLoop: router({
+    list: protectedProcedure
+      .input(z.object({ status: z.string().optional(), limit: z.number().optional() }).optional())
+      .query(async ({ input }) => {
+        return db.listDataLoopSuggestions(input?.status, input?.limit);
+      }),
+    create: protectedProcedure
+      .input(z.object({
+        suggestionType: z.string(),
+        title: z.string().min(1),
+        description: z.string().optional(),
+        dataSource: z.record(z.string(), z.unknown()).optional(),
+        confidence: z.number().optional(),
+      }))
+      .mutation(async ({ input }) => {
+        return db.createDataLoopSuggestion(input);
+      }),
+    updateStatus: protectedProcedure
+      .input(z.object({ id: z.number(), status: z.string(), convertedToTopicId: z.number().optional() }))
+      .mutation(async ({ input }) => {
+        await db.updateSuggestionStatus(input.id, input.status, input.convertedToTopicId);
+        return { success: true };
+      }),
+  }),
+
   // ==================== Team ====================
   team: router({
     members: protectedProcedure.query(async () => {

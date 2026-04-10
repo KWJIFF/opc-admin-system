@@ -10,7 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Settings2, Save, Puzzle, Wrench, Blocks, RefreshCw, ExternalLink,
   Brain, Database, Cloud, Bell, Shield, Globe, Zap, ArrowRightLeft,
-  Package, ChevronRight, CheckCircle2, AlertCircle, Info
+  Package, ChevronRight, Info
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";

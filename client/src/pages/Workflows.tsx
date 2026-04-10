@@ -5,14 +5,13 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
-  Workflow, Play, Zap, Clock, MoreHorizontal, ArrowRight,
-  CheckCircle2, Circle, AlertCircle, Pause, ChevronRight,
+  Workflow, Play, Zap, Clock, MoreHorizontal,
+  CheckCircle2, Circle, AlertCircle, ChevronRight,
   Timer, BarChart3, Settings2, History, Rss, Brain, FileCheck,
   Send, Search, FileText, Globe, Bot, Database, Bell, Filter
 } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { toast } from "sonner";
-import { useState } from "react";
 
 /* ── Step Icon Map ── */
 const stepIconMap: Record<string, React.ReactNode> = {
@@ -227,7 +226,6 @@ function StepPipeline({ steps }: { steps: typeof mockWorkflows[0]["steps"] }) {
 function WorkflowCard({ workflow, index }: { workflow: typeof mockWorkflows[0]; index: number }) {
   const sc = statusConfig[workflow.status];
   const tc = triggerConfig[workflow.trigger];
-  const [expanded, setExpanded] = useState(false);
 
   return (
     <motion.div

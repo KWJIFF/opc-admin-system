@@ -3,10 +3,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Bot, Pencil, Upload, Image, Music, Video, FileText, Sparkles,
-  Send, RotateCcw, Copy, Check, Loader2, Bold, Italic, List,
+  Loader2, Bold, Italic, List,
   Link2, Quote, Heading2, Heading3, Minus
 } from "lucide-react";
 import { toast } from "sonner";

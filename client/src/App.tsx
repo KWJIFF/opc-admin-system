@@ -27,6 +27,10 @@ import Monitor from "./pages/Monitor";
 import Sources from "./pages/Sources";
 import SettingsPage from "./pages/Settings";
 import LoginPage from "./pages/Login";
+import AiInteractions from "./pages/AiInteractions";
+import DataLoop from "./pages/DataLoop";
+import Comments from "./pages/Comments";
+import Subscribers from "./pages/Subscribers";
 
 // Site (Public) Pages
 import SiteLanding from "./pages/SiteLanding";
@@ -56,6 +60,10 @@ function DashboardRouter() {
         <Route path="/monitor" component={Monitor} />
         <Route path="/sources" component={Sources} />
         <Route path="/settings" component={SettingsPage} />
+        <Route path="/ai-interactions" component={AiInteractions} />
+        <Route path="/data-loop" component={DataLoop} />
+        <Route path="/comments" component={Comments} />
+        <Route path="/subscribers" component={Subscribers} />
         <Route component={NotFound} />
       </Switch>
     </DashboardLayout>

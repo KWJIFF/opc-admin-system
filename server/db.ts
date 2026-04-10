@@ -1,9 +1,10 @@
-import { eq, desc, sql, and, like, count } from "drizzle-orm";
+import { eq, desc, sql, and, count } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
 import {
   InsertUser, users, signals, topics, contents, reviewTasks, publishTasks,
   mediaAccounts, calendarEvents, websitePosts, reports, insightTasks,
-  workflows, auditLogs, sources, teamInvites, contentTemplates
+  workflows, auditLogs, sources, teamInvites, contentTemplates,
+  comments, bookmarks, likes, subscribers, articleViews, aiInteractions, dataLoopSuggestions
 } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
@@ -218,9 +219,157 @@ export async function getSystemHealth() {
   const db = await getDb();
   if (!db) return { database: "disconnected", tables: 0 };
   try {
-    const result = await db.execute(sql`SELECT 1`);
+    await db.execute(sql`SELECT 1`);
     return { database: "healthy", tables: 16 };
   } catch {
     return { database: "error", tables: 0 };
   }
+}
+
+
+// ==================== Comments ====================
+export async function listComments(articleId: number, status?: string) {
+  const db = await getDb();
+  if (!db) return [];
+  if (status) {
+    return db.select().from(comments).where(and(eq(comments.articleId, articleId), eq(comments.status, status as any))).orderBy(desc(comments.createdAt));
+  }
+  return db.select().from(comments).where(eq(comments.articleId, articleId)).orderBy(desc(comments.createdAt));
+}
+
+export async function createComment(data: { articleId: number; authorName: string; authorEmail?: string; content: string; parentId?: number; userId?: number; ipAddress?: string }) {
+  const db = await getDb();
+  if (!db) return { id: 0 };
+  const result = await db.insert(comments).values(data);
+  return { id: result[0].insertId };
+}
+
+export async function updateCommentStatus(id: number, status: string) {
+  const db = await getDb();
+  if (!db) return;
+  await db.update(comments).set({ status: status as any }).where(eq(comments.id, id));
+}
+
+export async function deleteComment(id: number) {
+  const db = await getDb();
+  if (!db) return;
+  await db.delete(comments).where(eq(comments.id, id));
+}
+
+export async function listAllComments(limit = 50, offset = 0) {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(comments).orderBy(desc(comments.createdAt)).limit(limit).offset(offset);
+}
+
+// ==================== Bookmarks & Likes ====================
+export async function toggleBookmark(articleId: number, sessionId: string) {
+  const db = await getDb();
+  if (!db) return { bookmarked: false };
+  const existing = await db.select().from(bookmarks).where(and(eq(bookmarks.articleId, articleId), eq(bookmarks.sessionId, sessionId)));
+  if (existing.length > 0) {
+    await db.delete(bookmarks).where(eq(bookmarks.id, existing[0].id));
+    return { bookmarked: false };
+  }
+  await db.insert(bookmarks).values({ articleId, sessionId });
+  return { bookmarked: true };
+}
+
+export async function toggleLike(articleId: number, sessionId: string) {
+  const db = await getDb();
+  if (!db) return { liked: false };
+  const existing = await db.select().from(likes).where(and(eq(likes.articleId, articleId), eq(likes.sessionId, sessionId)));
+  if (existing.length > 0) {
+    await db.delete(likes).where(eq(likes.id, existing[0].id));
+    return { liked: false };
+  }
+  await db.insert(likes).values({ articleId, sessionId });
+  return { liked: true };
+}
+
+// ==================== Subscribers ====================
+export async function createSubscriber(email: string, name?: string, source?: string) {
+  const db = await getDb();
+  if (!db) return { id: 0 };
+  const existing = await db.select().from(subscribers).where(eq(subscribers.email, email));
+  if (existing.length > 0) {
+    if (existing[0].status === "unsubscribed") {
+      await db.update(subscribers).set({ status: "active" as any }).where(eq(subscribers.id, existing[0].id));
+    }
+    return { id: existing[0].id };
+  }
+  const result = await db.insert(subscribers).values({ email, name, source });
+  return { id: result[0].insertId };
+}
+
+export async function listSubscribers(limit = 50, offset = 0) {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(subscribers).orderBy(desc(subscribers.subscribedAt)).limit(limit).offset(offset);
+}
+
+export async function unsubscribe(email: string) {
+  const db = await getDb();
+  if (!db) return;
+  await db.update(subscribers).set({ status: "unsubscribed" as any, unsubscribedAt: new Date() }).where(eq(subscribers.email, email));
+}
+
+// ==================== Article Views ====================
+export async function recordView(articleId: number, sessionId?: string, ipAddress?: string) {
+  const db = await getDb();
+  if (!db) return;
+  await db.insert(articleViews).values({ articleId, sessionId, ipAddress });
+}
+
+export async function getViewCount(articleId: number) {
+  const db = await getDb();
+  if (!db) return 0;
+  const result = await db.select({ cnt: count() }).from(articleViews).where(eq(articleViews.articleId, articleId));
+  return result[0]?.cnt ?? 0;
+}
+
+// ==================== AI Interactions ====================
+export async function listAiInteractions(accountId?: number, limit = 50) {
+  const db = await getDb();
+  if (!db) return [];
+  if (accountId) {
+    return db.select().from(aiInteractions).where(eq(aiInteractions.accountId, accountId)).orderBy(desc(aiInteractions.createdAt)).limit(limit);
+  }
+  return db.select().from(aiInteractions).orderBy(desc(aiInteractions.createdAt)).limit(limit);
+}
+
+export async function createAiInteraction(data: { accountId: number; platform: string; interactionType: string; triggerContent?: string; aiResponse?: string }) {
+  const db = await getDb();
+  if (!db) return { id: 0 };
+  const result = await db.insert(aiInteractions).values(data as any);
+  return { id: result[0].insertId };
+}
+
+export async function updateAiInteractionStatus(id: number, status: string) {
+  const db = await getDb();
+  if (!db) return;
+  await db.update(aiInteractions).set({ status: status as any, sentAt: status === "sent" ? new Date() : undefined }).where(eq(aiInteractions.id, id));
+}
+
+// ==================== Data Loop Suggestions ====================
+export async function listDataLoopSuggestions(status?: string, limit = 20) {
+  const db = await getDb();
+  if (!db) return [];
+  if (status) {
+    return db.select().from(dataLoopSuggestions).where(eq(dataLoopSuggestions.status, status as any)).orderBy(desc(dataLoopSuggestions.createdAt)).limit(limit);
+  }
+  return db.select().from(dataLoopSuggestions).orderBy(desc(dataLoopSuggestions.createdAt)).limit(limit);
+}
+
+export async function createDataLoopSuggestion(data: { suggestionType: string; title: string; description?: string; dataSource?: Record<string, unknown>; confidence?: number }) {
+  const db = await getDb();
+  if (!db) return { id: 0 };
+  const result = await db.insert(dataLoopSuggestions).values(data as any);
+  return { id: result[0].insertId };
+}
+
+export async function updateSuggestionStatus(id: number, status: string, convertedToTopicId?: number) {
+  const db = await getDb();
+  if (!db) return;
+  await db.update(dataLoopSuggestions).set({ status: status as any, convertedToTopicId }).where(eq(dataLoopSuggestions.id, id));
 }

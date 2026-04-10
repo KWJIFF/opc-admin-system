@@ -15,12 +15,6 @@ export interface PreviewContent {
   platform?: string;
 }
 
-interface PlatformPreviewProps {
-  content: PreviewContent;
-  platform: string;
-  onClose?: () => void;
-}
-
 /* ── WeChat MP Preview ── */
 function WechatPreview({ content }: { content: PreviewContent }) {
   return (

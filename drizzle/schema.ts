@@ -1,4 +1,4 @@
-import { int, mysqlEnum, mysqlTable, text, timestamp, varchar, json, bigint, boolean } from "drizzle-orm/mysql-core";
+import { int, mysqlEnum, mysqlTable, text, timestamp, varchar, json, boolean } from "drizzle-orm/mysql-core";
 
 // ==================== 用户与团队 ====================
 
@@ -271,4 +271,94 @@ export const contentTemplates = mysqlTable("content_templates", {
   createdBy: int("createdBy"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+// ==================== 评论系统 ====================
+
+export const comments = mysqlTable("comments", {
+  id: int("id").autoincrement().primaryKey(),
+  articleId: int("articleId").notNull(),
+  parentId: int("parentId"),
+  authorName: varchar("authorName", { length: 200 }).notNull(),
+  authorEmail: varchar("authorEmail", { length: 320 }),
+  authorAvatar: text("authorAvatar"),
+  userId: int("userId"),
+  content: text("content").notNull(),
+  status: mysqlEnum("status", ["pending", "approved", "rejected", "spam"]).default("pending").notNull(),
+  likeCount: int("likeCount").default(0),
+  aiGenerated: boolean("aiGenerated").default(false),
+  ipAddress: varchar("ipAddress", { length: 50 }),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+// ==================== 收藏与点赞 ====================
+
+export const bookmarks = mysqlTable("bookmarks", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId"),
+  articleId: int("articleId").notNull(),
+  sessionId: varchar("sessionId", { length: 128 }),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export const likes = mysqlTable("likes", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId"),
+  articleId: int("articleId").notNull(),
+  sessionId: varchar("sessionId", { length: 128 }),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+// ==================== 邮件订阅 ====================
+
+export const subscribers = mysqlTable("subscribers", {
+  id: int("id").autoincrement().primaryKey(),
+  email: varchar("email", { length: 320 }).notNull().unique(),
+  name: varchar("name", { length: 200 }),
+  status: mysqlEnum("status", ["active", "unsubscribed", "bounced"]).default("active").notNull(),
+  source: varchar("source", { length: 100 }),
+  subscribedAt: timestamp("subscribedAt").defaultNow().notNull(),
+  unsubscribedAt: timestamp("unsubscribedAt"),
+});
+
+// ==================== 阅读量统计 ====================
+
+export const articleViews = mysqlTable("article_views", {
+  id: int("id").autoincrement().primaryKey(),
+  articleId: int("articleId").notNull(),
+  sessionId: varchar("sessionId", { length: 128 }),
+  userId: int("userId"),
+  ipAddress: varchar("ipAddress", { length: 50 }),
+  userAgent: text("userAgent"),
+  referrer: text("referrer"),
+  viewedAt: timestamp("viewedAt").defaultNow().notNull(),
+});
+
+// ==================== AI 互动管理 ====================
+
+export const aiInteractions = mysqlTable("ai_interactions", {
+  id: int("id").autoincrement().primaryKey(),
+  accountId: int("accountId").notNull(),
+  platform: varchar("platform", { length: 100 }).notNull(),
+  interactionType: mysqlEnum("interactionType", ["reply_comment", "reply_dm", "auto_like", "auto_follow", "content_suggest"]).default("reply_comment").notNull(),
+  triggerContent: text("triggerContent"),
+  aiResponse: text("aiResponse"),
+  status: mysqlEnum("status", ["pending", "approved", "sent", "failed", "rejected"]).default("pending").notNull(),
+  sentAt: timestamp("sentAt"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+// ==================== 数据循环建议 ====================
+
+export const dataLoopSuggestions = mysqlTable("data_loop_suggestions", {
+  id: int("id").autoincrement().primaryKey(),
+  suggestionType: mysqlEnum("suggestionType", ["content_topic", "publish_time", "platform_strategy", "audience_insight", "trend_alert"]).default("content_topic").notNull(),
+  title: varchar("title", { length: 500 }).notNull(),
+  description: text("description"),
+  dataSource: json("dataSource").$type<Record<string, unknown>>(),
+  confidence: int("confidence").default(50),
+  status: mysqlEnum("status", ["new", "accepted", "dismissed", "converted"]).default("new").notNull(),
+  convertedToTopicId: int("convertedToTopicId"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
 });

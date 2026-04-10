@@ -48,6 +48,10 @@ import {
   Database,
   ChevronRight,
   User,
+  Bot,
+  RefreshCw,
+  MessageSquare,
+  Mail,
 } from "lucide-react";
 import { CSSProperties, useEffect, useRef, useState } from "react";
 import { useLocation } from "wouter";
@@ -98,7 +102,16 @@ const menuGroups: MenuGroup[] = [
     label: "智能工具",
     items: [
       { icon: TrendingUp, label: "数据洞察", path: "/insights" },
+      { icon: Bot, label: "AI 互动管理", path: "/ai-interactions" },
+      { icon: RefreshCw, label: "数据循环建议", path: "/data-loop" },
       { icon: Workflow, label: "工作流", path: "/workflows" },
+    ],
+  },
+  {
+    label: "用户运营",
+    items: [
+      { icon: MessageSquare, label: "评论管理", path: "/comments" },
+      { icon: Mail, label: "订阅管理", path: "/subscribers" },
     ],
   },
   {

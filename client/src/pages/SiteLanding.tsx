@@ -1,189 +1,322 @@
 import { Link } from "wouter";
 import { motion } from "framer-motion";
+import { useState } from "react";
+import {
+  ArrowRight, Clock, User, TrendingUp, Eye, ThumbsUp,
+  Play, Headphones, Download, Sparkles, BarChart3, Flame, Zap,
+  ChevronRight,
+} from "lucide-react";
 import { getCategoryIcon } from "@/components/SiteLayout";
-import { getEnabledCategories, getLatestArticles, getCategoryByKey } from "@shared/siteConfig";
-import { ArrowRight, Sparkles } from "lucide-react";
-
-const LOGO_URL = "https://d2xsxph8kpxj0f.cloudfront.net/310419663029695431/Fb26PagKyopspprUoxxADo/logo-icon_48921fa8.webp";
+import {
+  getEnabledCategories, getLatestArticles, getTrendingArticles,
+  getFeaturedArticles, getArticlesByMediaType,
+  getCategoryByKey, formatDuration, formatCount,
+  TREND_DATA, type SiteArticle,
+} from "@shared/siteConfig";
+import { toast } from "sonner";
 
 const categories = getEnabledCategories();
-const latestArticles = getLatestArticles(6);
 
-const stagger = {
-  hidden: {},
-  show: { transition: { staggerChildren: 0.06 } },
-};
 const fadeUp = {
-  hidden: { opacity: 0, y: 20 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.4, 0, 0.2, 1] as const } },
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0 },
+  transition: { duration: 0.5 },
 };
+const stagger = { animate: { transition: { staggerChildren: 0.06 } } };
 
-export default function SiteLanding() {
+function HeroSection() {
+  const featured = getFeaturedArticles(3);
+  const [activeIdx, setActiveIdx] = useState(0);
+  const active = featured[activeIdx];
+  const cat = active ? getCategoryByKey(active.categoryKey) : null;
+  const Icon = cat ? getCategoryIcon(cat.iconName) : null;
+
   return (
-    <div className="mx-auto max-w-6xl px-4 sm:px-6">
-      {/* ── Hero ── */}
-      <section className="pt-6 sm:pt-12 lg:pt-20 pb-10 sm:pb-16 lg:pb-24 text-center">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="max-w-3xl mx-auto"
-        >
-          <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 rounded-full bg-primary/6 border border-primary/10 mb-6 sm:mb-8">
-            <Sparkles className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-primary" />
-            <span className="text-[11px] sm:text-xs font-medium text-primary">一人公司创业者的内容运营服务平台</span>
+    <section className="relative overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/4 via-transparent to-primary/2 pointer-events-none" />
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 pt-4 sm:pt-8 pb-10 sm:pb-14">
+        <div className="grid lg:grid-cols-5 gap-6 lg:gap-8">
+          <motion.div {...fadeUp} className="lg:col-span-3">
+            <div className="flex items-center gap-2 mb-4 sm:mb-5">
+              <Sparkles className="h-4 w-4 text-primary" />
+              <span className="text-xs font-semibold uppercase tracking-widest text-primary/70">AI 精选推荐</span>
+            </div>
+            {active && (
+              <Link href={`/site/article/${active.id}`}>
+                <div className="group relative p-5 sm:p-7 rounded-2xl bg-card border border-border/50 card-elevated cursor-pointer active:scale-[0.99] transition-transform">
+                  <div className="flex items-center gap-2 mb-3">
+                    {cat && Icon && <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-primary/6 text-primary text-xs font-medium"><Icon className="h-3 w-3" />{cat.label}</span>}
+                    {active.mediaType === "video" && <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-red-50 text-red-600 text-[10px] font-medium"><Play className="h-2.5 w-2.5" />视频</span>}
+                    {active.mediaType === "podcast" && <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-purple-50 text-purple-600 text-[10px] font-medium"><Headphones className="h-2.5 w-2.5" />播客</span>}
+                  </div>
+                  <h2 className="text-xl sm:text-2xl lg:text-[28px] font-bold text-foreground group-hover:text-primary transition-colors leading-snug mb-3 max-w-2xl">{active.title}</h2>
+                  <p className="text-muted-foreground text-sm sm:text-base leading-relaxed max-w-2xl mb-5 line-clamp-3">{active.summary}</p>
+                  <div className="flex items-center flex-wrap gap-3 text-xs text-muted-foreground/60">
+                    <span className="flex items-center gap-1"><User className="h-3 w-3" />{active.author}</span>
+                    <span className="flex items-center gap-1"><Clock className="h-3 w-3" />{active.readTime}</span>
+                    <span>{active.date}</span>
+                    {active.viewCount && <span className="flex items-center gap-1"><Eye className="h-3 w-3" />{formatCount(active.viewCount)}</span>}
+                  </div>
+                  <ArrowRight className="absolute top-5 right-5 sm:top-7 sm:right-7 h-5 w-5 text-muted-foreground/20 group-hover:text-primary/50 transition-all group-hover:translate-x-0.5" />
+                </div>
+              </Link>
+            )}
+            <div className="flex items-center gap-2 mt-4">
+              {featured.map((_, i) => (
+                <button key={i} onClick={() => setActiveIdx(i)} className={`h-1.5 rounded-full transition-all duration-300 ${i === activeIdx ? "w-8 bg-primary" : "w-3 bg-border hover:bg-muted-foreground/30"}`} />
+              ))}
+            </div>
+          </motion.div>
+
+          <motion.div {...fadeUp} transition={{ delay: 0.15, duration: 0.5 }} className="lg:col-span-2">
+            <div className="flex items-center gap-2 mb-4 sm:mb-5">
+              <BarChart3 className="h-4 w-4 text-primary" />
+              <span className="text-xs font-semibold uppercase tracking-widest text-primary/70">行业脉搏</span>
+            </div>
+            <div className="p-4 sm:p-5 rounded-2xl bg-card border border-border/50 card-elevated">
+              <div className="grid grid-cols-2 gap-3 mb-4">
+                {TREND_DATA.industryMetrics.map((m) => (
+                  <div key={m.label} className="p-3 rounded-xl bg-secondary/50">
+                    <p className="text-[10px] text-muted-foreground/60 mb-1 truncate">{m.label}</p>
+                    <div className="flex items-baseline gap-1.5">
+                      <span className="text-lg font-bold text-foreground">{m.value >= 100 ? formatCount(m.value * 10000) : m.value}{m.label.includes("率") ? "%" : ""}</span>
+                      <span className="text-[10px] font-medium text-green-600 flex items-center gap-0.5"><TrendingUp className="h-2.5 w-2.5" />+{m.change}%</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="flex items-center gap-1.5 mb-3">
+                <Flame className="h-3.5 w-3.5 text-orange-500" />
+                <span className="text-xs font-semibold text-foreground">热门关键词</span>
+              </div>
+              <div className="flex flex-wrap gap-1.5">
+                {TREND_DATA.hotKeywords.slice(0, 12).map((kw, i) => (
+                  <span key={kw.text} className="px-2 py-0.5 rounded-md font-medium cursor-default" style={{ background: i < 3 ? `oklch(0.95 0.04 ${47 + i * 20})` : "var(--secondary)", color: i < 3 ? `oklch(0.5 0.15 ${47 + i * 20})` : "var(--muted-foreground)", fontSize: `${Math.max(10, 13 - i * 0.3)}px` }}>{kw.text}</span>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ArticleRow({ article }: { article: SiteArticle }) {
+  const cat = getCategoryByKey(article.categoryKey);
+  const Icon = cat ? getCategoryIcon(cat.iconName) : null;
+  return (
+    <motion.div variants={fadeUp}>
+      <Link href={`/site/article/${article.id}`}>
+        <div className="group flex items-start gap-3 sm:gap-4 p-3.5 sm:p-4 rounded-xl bg-card border border-border/40 hover:border-primary/20 hover:shadow-md transition-all duration-300 cursor-pointer active:scale-[0.99]">
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 mb-1.5">
+              {cat && Icon && <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-primary/6 text-primary text-[10px] font-medium"><Icon className="h-2.5 w-2.5" />{cat.label}</span>}
+              {article.mediaType === "video" && <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-md bg-red-50 text-red-600 text-[10px] font-medium"><Play className="h-2.5 w-2.5" />视频</span>}
+              {article.mediaType === "podcast" && <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-md bg-purple-50 text-purple-600 text-[10px] font-medium"><Headphones className="h-2.5 w-2.5" />播客</span>}
+              {article.mediaType === "report" && <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-md bg-blue-50 text-blue-600 text-[10px] font-medium"><Download className="h-2.5 w-2.5" />报告</span>}
+            </div>
+            <h3 className="text-[15px] sm:text-base font-medium text-foreground group-hover:text-primary transition-colors leading-snug mb-1.5 line-clamp-2">{article.title}</h3>
+            <p className="text-[13px] text-muted-foreground leading-relaxed line-clamp-2 mb-2.5 hidden sm:block">{article.summary}</p>
+            <div className="flex items-center flex-wrap gap-2 sm:gap-3 text-[11px] text-muted-foreground/50">
+              <span className="flex items-center gap-1"><User className="h-3 w-3" />{article.author}</span>
+              <span className="flex items-center gap-1"><Clock className="h-3 w-3" />{article.readTime}</span>
+              <span>{article.date}</span>
+              {article.viewCount && <span className="flex items-center gap-0.5"><Eye className="h-3 w-3" />{formatCount(article.viewCount)}</span>}
+              {article.duration && <span className="flex items-center gap-0.5"><Play className="h-3 w-3" />{formatDuration(article.duration)}</span>}
+            </div>
           </div>
+          <ArrowRight className="h-4 w-4 text-muted-foreground/20 group-hover:text-primary/50 transition-all shrink-0 mt-1 group-hover:translate-x-0.5 hidden sm:block" />
+        </div>
+      </Link>
+    </motion.div>
+  );
+}
 
-          <h1 className="text-[28px] sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-foreground leading-[1.15] sm:leading-[1.1] mb-4 sm:mb-6">
-            用结构化方法论
-            <br />
-            <span className="text-primary">驱动内容增长</span>
-          </h1>
-
-          <p className="text-base sm:text-lg lg:text-xl text-muted-foreground leading-relaxed max-w-2xl mx-auto mb-7 sm:mb-10 px-2 sm:px-0">
-            深象科技专注于一人公司领域的深度研究与内容服务。我们追踪全球创业先行者的思想脉络，拆解可复制的增长策略，为独立创业者提供系统化的认知升级路径。
-          </p>
-
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-2.5 sm:gap-3">
-            <Link href="/site/news">
-              <span className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-primary text-white font-medium text-sm btn-press hover:bg-primary/90 transition-colors shadow-sm">
-                开始阅读
-                <ArrowRight className="h-4 w-4" />
-              </span>
-            </Link>
-            <Link href="/site/about">
-              <span className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-secondary text-foreground font-medium text-sm btn-press hover:bg-secondary/80 transition-colors">
-                了解深象科技
-              </span>
-            </Link>
+function LatestStream() {
+  const latest = getLatestArticles(8);
+  const trending = getTrendingArticles(5);
+  return (
+    <section className="mx-auto max-w-6xl px-4 sm:px-6 pb-12 sm:pb-16">
+      <div className="grid lg:grid-cols-3 gap-6 lg:gap-8">
+        <motion.div variants={stagger} initial="initial" whileInView="animate" viewport={{ once: true }} className="lg:col-span-2">
+          <div className="flex items-center gap-2 mb-5"><Zap className="h-4 w-4 text-primary" /><h2 className="text-lg font-bold text-foreground">最新发布</h2></div>
+          <div className="space-y-2.5">{latest.map((a) => <ArticleRow key={a.id} article={a} />)}</div>
+        </motion.div>
+        <motion.div {...fadeUp} transition={{ delay: 0.2 }} className="lg:col-span-1">
+          <div className="flex items-center gap-2 mb-5"><Flame className="h-4 w-4 text-orange-500" /><h2 className="text-lg font-bold text-foreground">热门排行</h2></div>
+          <div className="p-4 rounded-2xl bg-card border border-border/50 card-elevated space-y-1">
+            {trending.map((a, i) => (
+              <Link key={a.id} href={`/site/article/${a.id}`}>
+                <div className="group flex items-start gap-3 p-2.5 rounded-xl hover:bg-secondary/50 transition-colors cursor-pointer">
+                  <span className={`shrink-0 w-6 h-6 rounded-lg flex items-center justify-center text-xs font-bold ${i === 0 ? "bg-primary/10 text-primary" : i === 1 ? "bg-orange-50 text-orange-500" : i === 2 ? "bg-amber-50 text-amber-600" : "bg-secondary text-muted-foreground"}`}>{i + 1}</span>
+                  <div className="flex-1 min-w-0">
+                    <h4 className="text-[13px] font-medium text-foreground group-hover:text-primary transition-colors line-clamp-2 leading-snug mb-1">{a.title}</h4>
+                    <div className="flex items-center gap-2 text-[10px] text-muted-foreground/50">
+                      <span className="flex items-center gap-0.5"><Eye className="h-2.5 w-2.5" />{formatCount(a.viewCount || 0)}</span>
+                      <span className="flex items-center gap-0.5"><ThumbsUp className="h-2.5 w-2.5" />{formatCount(a.likeCount || 0)}</span>
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            ))}
           </div>
         </motion.div>
-      </section>
+      </div>
+    </section>
+  );
+}
 
-      {/* ── 内容板块导航 ── */}
-      <section className="pb-14 sm:pb-20">
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.15 }}
-          className="text-center mb-8 sm:mb-12"
-        >
-          <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground mb-2 sm:mb-3">内容矩阵</h2>
-          <p className="text-muted-foreground text-sm sm:text-base max-w-lg mx-auto px-2 sm:px-0">
-            从快讯到深度研究，从思想启发到实战落地，构建完整的认知与行动闭环。
-          </p>
-        </motion.div>
+function VideoSection() {
+  const videos = getArticlesByMediaType("video", 4);
+  if (!videos.length) return null;
+  return (
+    <section className="mx-auto max-w-6xl px-4 sm:px-6 pb-12 sm:pb-16">
+      <motion.div {...fadeUp}>
+        <div className="flex items-center justify-between mb-5">
+          <div className="flex items-center gap-2"><Play className="h-4 w-4 text-red-500" /><h2 className="text-lg font-bold text-foreground">视频精选</h2></div>
+          <Link href="/site/videos"><span className="text-xs text-primary hover:text-primary/80 flex items-center gap-1 transition-colors">查看全部<ChevronRight className="h-3 w-3" /></span></Link>
+        </div>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+          {videos.map((v) => (
+            <Link key={v.id} href={`/site/article/${v.id}`}>
+              <div className="group rounded-xl bg-card border border-border/40 overflow-hidden hover:border-primary/20 hover:shadow-md transition-all duration-300 cursor-pointer active:scale-[0.99]">
+                <div className="relative aspect-video bg-gradient-to-br from-slate-100 to-slate-50 flex items-center justify-center">
+                  <div className="w-12 h-12 rounded-full bg-white/90 shadow-lg flex items-center justify-center group-hover:scale-110 transition-transform"><Play className="h-5 w-5 text-red-500 ml-0.5" /></div>
+                  {v.duration && <span className="absolute bottom-2 right-2 px-1.5 py-0.5 rounded bg-black/70 text-white text-[10px] font-medium">{formatDuration(v.duration)}</span>}
+                </div>
+                <div className="p-3">
+                  <h4 className="text-[13px] font-medium text-foreground group-hover:text-primary transition-colors line-clamp-2 leading-snug mb-2">{v.title}</h4>
+                  <div className="flex items-center gap-2 text-[10px] text-muted-foreground/50"><span className="flex items-center gap-0.5"><Eye className="h-2.5 w-2.5" />{formatCount(v.viewCount || 0)}</span><span>{v.date}</span></div>
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </motion.div>
+    </section>
+  );
+}
 
-        <motion.div variants={stagger} initial="hidden" animate="show" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+function PodcastSection() {
+  const pods = getArticlesByMediaType("podcast", 3);
+  if (!pods.length) return null;
+  return (
+    <section className="mx-auto max-w-6xl px-4 sm:px-6 pb-12 sm:pb-16">
+      <motion.div {...fadeUp}>
+        <div className="flex items-center justify-between mb-5">
+          <div className="flex items-center gap-2"><Headphones className="h-4 w-4 text-purple-500" /><h2 className="text-lg font-bold text-foreground">播客频道</h2></div>
+          <Link href="/site/podcasts"><span className="text-xs text-primary hover:text-primary/80 flex items-center gap-1 transition-colors">查看全部<ChevronRight className="h-3 w-3" /></span></Link>
+        </div>
+        <div className="space-y-3">
+          {pods.map((ep) => (
+            <Link key={ep.id} href={`/site/article/${ep.id}`}>
+              <div className="group flex items-center gap-4 p-4 rounded-xl bg-card border border-border/40 hover:border-purple-200 hover:shadow-md transition-all duration-300 cursor-pointer active:scale-[0.99]">
+                <div className="shrink-0 w-16 h-16 rounded-xl bg-gradient-to-br from-purple-100 to-purple-50 flex items-center justify-center"><Headphones className="h-7 w-7 text-purple-400" /></div>
+                <div className="flex-1 min-w-0">
+                  <h4 className="text-[14px] font-medium text-foreground group-hover:text-purple-600 transition-colors line-clamp-1 leading-snug mb-1">{ep.title}</h4>
+                  <p className="text-[12px] text-muted-foreground line-clamp-1 mb-1.5">{ep.summary}</p>
+                  <div className="flex items-center gap-3 text-[10px] text-muted-foreground/50">
+                    {ep.duration && <span className="flex items-center gap-0.5"><Clock className="h-2.5 w-2.5" />{formatDuration(ep.duration)}</span>}
+                    <span>{ep.date}</span>
+                    <span className="flex items-center gap-0.5"><Eye className="h-2.5 w-2.5" />{formatCount(ep.viewCount || 0)}</span>
+                  </div>
+                </div>
+                <Play className="h-8 w-8 p-1.5 rounded-full bg-purple-50 text-purple-500 shrink-0 group-hover:bg-purple-100 transition-colors" />
+              </div>
+            </Link>
+          ))}
+        </div>
+      </motion.div>
+    </section>
+  );
+}
+
+function CategoryGrid() {
+  return (
+    <section className="mx-auto max-w-6xl px-4 sm:px-6 pb-12 sm:pb-16">
+      <motion.div {...fadeUp}>
+        <div className="flex items-center gap-2 mb-5"><BarChart3 className="h-4 w-4 text-primary" /><h2 className="text-lg font-bold text-foreground">内容板块</h2></div>
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
           {categories.map((cat) => {
             const Icon = getCategoryIcon(cat.iconName);
             return (
-              <motion.div key={cat.key} variants={fadeUp}>
-                <Link href={cat.path}>
-                  <div className="group relative p-5 sm:p-6 rounded-2xl bg-card border border-border/50 card-elevated cursor-pointer h-full active:scale-[0.98] transition-transform">
-                    <span className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-widest text-primary/70 mb-2 sm:mb-3 block">{cat.tag}</span>
-                    <div className="flex items-center gap-2.5 sm:gap-3 mb-2 sm:mb-3">
-                      <div className="p-2 rounded-xl bg-primary/6 text-primary">
-                        <Icon className="h-4 w-4 sm:h-5 sm:w-5" />
-                      </div>
-                      <h3 className="text-base sm:text-lg font-semibold text-foreground group-hover:text-primary transition-colors">{cat.label}</h3>
-                    </div>
-                    <p className="text-[13px] sm:text-sm text-muted-foreground leading-relaxed">{cat.desc}</p>
-                    <ArrowRight className="absolute top-5 right-5 sm:top-6 sm:right-6 h-4 w-4 text-muted-foreground/30 group-hover:text-primary/50 transition-all group-hover:translate-x-0.5" />
-                  </div>
-                </Link>
-              </motion.div>
+              <Link key={cat.key} href={cat.path}>
+                <div className="group p-4 rounded-xl bg-card border border-border/40 hover:border-primary/20 hover:shadow-md transition-all duration-300 cursor-pointer active:scale-[0.98] text-center">
+                  <div className="w-10 h-10 mx-auto mb-2.5 rounded-xl bg-primary/6 flex items-center justify-center text-primary group-hover:bg-primary/10 transition-colors"><Icon className="h-5 w-5" /></div>
+                  <h3 className="text-sm font-medium text-foreground mb-1">{cat.label}</h3>
+                  <p className="text-[11px] text-muted-foreground/60 line-clamp-2 leading-relaxed">{cat.desc}</p>
+                </div>
+              </Link>
             );
           })}
-        </motion.div>
-      </section>
+        </div>
+      </motion.div>
+    </section>
+  );
+}
 
-      {/* ── 最新内容 ── */}
-      <section className="pb-14 sm:pb-20">
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: 0.5 }}
-        >
-          <div className="flex items-center justify-between mb-6 sm:mb-8">
-            <div>
-              <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground mb-1 sm:mb-2">最新内容</h2>
-              <p className="text-muted-foreground text-xs sm:text-sm">来自各板块的最新发布</p>
-            </div>
+function SubscribeCTA() {
+  const [email, setEmail] = useState("");
+  const handleSubscribe = () => {
+    if (!email.trim()) { toast.error("请输入邮箱地址"); return; }
+    toast.success("订阅成功！我们会定期发送精选内容到您的邮箱。");
+    setEmail("");
+  };
+  return (
+    <section className="mx-auto max-w-6xl px-4 sm:px-6 pb-12 sm:pb-16">
+      <motion.div {...fadeUp}>
+        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary/8 via-primary/4 to-transparent border border-primary/10 p-6 sm:p-10 text-center">
+          <Sparkles className="h-8 w-8 text-primary/40 mx-auto mb-4" />
+          <h2 className="text-xl sm:text-2xl font-bold text-foreground mb-2">订阅深象精选</h2>
+          <p className="text-muted-foreground text-sm sm:text-base mb-6 max-w-lg mx-auto">每周精选一人公司创业洞察、AI 工具推荐和实战案例，直达你的邮箱。</p>
+          <div className="flex items-center gap-2 max-w-md mx-auto">
+            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="your@email.com" className="flex-1 h-10 px-4 rounded-xl bg-background border border-border/60 text-sm text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/30 transition-all" onKeyDown={(e) => e.key === "Enter" && handleSubscribe()} />
+            <button onClick={handleSubscribe} className="h-10 px-5 rounded-xl bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 active:scale-95 transition-all shrink-0">订阅</button>
           </div>
+          <p className="text-[11px] text-muted-foreground/40 mt-3">无垃圾邮件，随时退订</p>
+        </div>
+      </motion.div>
+    </section>
+  );
+}
 
-          <div className="space-y-2.5 sm:space-y-3">
-            {latestArticles.map((article, i) => {
-              const cat = getCategoryByKey(article.categoryKey);
-              return (
-                <motion.div
-                  key={article.id}
-                  initial={{ opacity: 0, y: 12 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.4, delay: i * 0.05 }}
-                >
-                  <Link href={`/site/article/${article.id}`}>
-                    <div className="group flex items-start gap-3 sm:gap-4 p-3.5 sm:p-5 rounded-xl bg-card border border-border/40 hover:border-primary/20 hover:shadow-md transition-all duration-300 cursor-pointer active:scale-[0.99]">
-                      <span className="text-2xl sm:text-3xl font-bold text-muted-foreground/15 leading-none shrink-0 w-6 sm:w-8 text-right tabular-nums">
-                        {String(i + 1).padStart(2, "0")}
-                      </span>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-1 sm:mb-1.5">
-                          <span className="text-[10px] font-semibold uppercase tracking-widest text-primary/60">{cat?.tag}</span>
-                          <span className="text-[10px] text-muted-foreground/40">·</span>
-                          <span className="text-[10px] text-muted-foreground/50">{article.date}</span>
-                        </div>
-                        <h3 className="text-[15px] sm:text-base font-medium text-foreground group-hover:text-primary transition-colors leading-snug line-clamp-2">
-                          {article.title}
-                        </h3>
-                      </div>
-                      <ArrowRight className="h-4 w-4 text-muted-foreground/20 group-hover:text-primary/50 transition-all shrink-0 mt-0.5 sm:mt-1 group-hover:translate-x-0.5 hidden sm:block" />
-                    </div>
-                  </Link>
-                </motion.div>
-              );
-            })}
-          </div>
-        </motion.div>
-      </section>
+function SocialFollow() {
+  return (
+    <section className="mx-auto max-w-6xl px-4 sm:px-6 pb-12 sm:pb-16">
+      <motion.div {...fadeUp}>
+        <div className="text-center mb-6">
+          <h2 className="text-lg font-bold text-foreground mb-2">关注我们的全媒体矩阵</h2>
+          <p className="text-sm text-muted-foreground">在你常用的平台上获取最新内容</p>
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-2xl mx-auto">
+          {[
+            { name: "微信公众号", desc: "深度长文 · 周报", cls: "bg-green-50 text-green-600 hover:bg-green-100 border-green-100" },
+            { name: "小红书", desc: "干货笔记 · 工具种草", cls: "bg-red-50 text-red-500 hover:bg-red-100 border-red-100" },
+            { name: "知乎", desc: "专业回答 · 深度分析", cls: "bg-blue-50 text-blue-600 hover:bg-blue-100 border-blue-100" },
+            { name: "B站", desc: "视频教程 · 工具演示", cls: "bg-pink-50 text-pink-500 hover:bg-pink-100 border-pink-100" },
+          ].map((p) => (
+            <button key={p.name} onClick={() => toast.info(`${p.name}账号即将上线，敬请期待！`)} className={`p-4 rounded-xl border ${p.cls} transition-all duration-300 cursor-pointer active:scale-[0.97]`}>
+              <div className="text-sm font-medium mb-1">{p.name}</div>
+              <div className="text-[11px] opacity-60">{p.desc}</div>
+            </button>
+          ))}
+        </div>
+      </motion.div>
+    </section>
+  );
+}
 
-      {/* ── CTA ── */}
-      <section className="pb-8 sm:pb-12">
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: 0.5 }}
-          className="relative overflow-hidden rounded-2xl sm:rounded-3xl p-6 sm:p-8 lg:p-12 text-center"
-          style={{
-            background: "linear-gradient(135deg, oklch(0.705 0.191 47.604 / 0.06) 0%, oklch(0.705 0.191 47.604 / 0.02) 100%)",
-            border: "1px solid oklch(0.705 0.191 47.604 / 0.1)",
-          }}
-        >
-          <img src={LOGO_URL} alt="" className="h-8 w-8 sm:h-10 sm:w-10 rounded-xl mx-auto mb-4 sm:mb-5 opacity-80" />
-          <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground mb-2 sm:mb-3">
-            加入深象，一起探索一人公司的无限可能
-          </h2>
-          <p className="text-muted-foreground text-sm sm:text-base max-w-lg mx-auto mb-6 sm:mb-8 px-2 sm:px-0">
-            无论你是正在探索独立创业的新手，还是已经在路上的 Solopreneur，这里都有适合你的内容和工具。
-          </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-2.5 sm:gap-3">
-            <Link href="/site/news">
-              <span className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-primary text-white font-medium text-sm btn-press hover:bg-primary/90 transition-colors shadow-sm">
-                浏览最新内容
-                <ArrowRight className="h-4 w-4" />
-              </span>
-            </Link>
-            <Link href="/site/toolkit">
-              <span className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-card border border-border text-foreground font-medium text-sm btn-press hover:bg-accent transition-colors">
-                探索工具图谱
-              </span>
-            </Link>
-          </div>
-        </motion.div>
-      </section>
+export default function SiteLanding() {
+  return (
+    <div>
+      <HeroSection />
+      <LatestStream />
+      <VideoSection />
+      <PodcastSection />
+      <CategoryGrid />
+      <SubscribeCTA />
+      <SocialFollow />
     </div>
   );
 }

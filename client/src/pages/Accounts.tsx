@@ -10,21 +10,25 @@ import PlatformPreviewPanel, { type PreviewContent } from "@/components/Platform
 import {
   Share2, Plus, Eye, Copy, Trash2, Upload, Settings, ArrowLeft,
   FileText, Image, Music, Video, BarChart3, Users, TrendingUp,
-  CheckCircle2, Clock, AlertCircle, Pencil, ExternalLink
+  CheckCircle2, Clock, Pencil
 } from "lucide-react";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
 
 /* ── Platform Config ── */
-const platformConfig: Record<string, { name: string; color: string; bg: string; icon: string }> = {
-  wechat_mp: { name: "微信公众号", color: "text-green-700", bg: "bg-green-50", icon: "💬" },
-  xiaohongshu: { name: "小红书", color: "text-red-600", bg: "bg-red-50", icon: "📕" },
-  douyin: { name: "抖音", color: "text-gray-800", bg: "bg-gray-100", icon: "🎵" },
-  bilibili: { name: "B站", color: "text-blue-600", bg: "bg-blue-50", icon: "📺" },
-  zhihu: { name: "知乎", color: "text-blue-700", bg: "bg-blue-50", icon: "📘" },
-  weibo: { name: "微博", color: "text-orange-600", bg: "bg-orange-50", icon: "📢" },
-  toutiao: { name: "今日头条", color: "text-red-700", bg: "bg-red-50", icon: "📰" },
-  website: { name: "官方网站", color: "text-orange-600", bg: "bg-orange-50", icon: "🌐" },
+const platformConfig: Record<string, { name: string; color: string; bg: string; icon: string; type: string }> = {
+  wechat_mp: { name: "微信公众号", color: "text-green-700", bg: "bg-green-50", icon: "💬", type: "图文" },
+  xiaohongshu: { name: "小红书", color: "text-red-600", bg: "bg-red-50", icon: "📕", type: "图文" },
+  douyin: { name: "抖音", color: "text-gray-800", bg: "bg-gray-100", icon: "🎵", type: "视频" },
+  bilibili: { name: "B站", color: "text-blue-600", bg: "bg-blue-50", icon: "📺", type: "视频" },
+  zhihu: { name: "知乎", color: "text-blue-700", bg: "bg-blue-50", icon: "📘", type: "图文" },
+  weibo: { name: "微博", color: "text-orange-600", bg: "bg-orange-50", icon: "📢", type: "图文" },
+  toutiao: { name: "今日头条", color: "text-red-700", bg: "bg-red-50", icon: "📰", type: "图文" },
+  website: { name: "官方网站", color: "text-orange-600", bg: "bg-orange-50", icon: "🌐", type: "图文" },
+  ximalaya: { name: "喜马拉雅", color: "text-orange-700", bg: "bg-orange-50", icon: "🎧", type: "音频" },
+  podcast: { name: "播客", color: "text-purple-700", bg: "bg-purple-50", icon: "🎙️", type: "音频" },
+  youtube: { name: "YouTube", color: "text-red-600", bg: "bg-red-50", icon: "▶️", type: "视频" },
+  twitter: { name: "X/Twitter", color: "text-gray-800", bg: "bg-gray-100", icon: "🐦", type: "图文" },
 };
 
 /* ── Mock Data ── */
@@ -63,6 +67,10 @@ const mockAccounts: Account[] = [
   { id: "acc4", name: "深象科技", platform: "bilibili", followers: 6200, status: "inactive", lastPublished: "2026-03-20" },
   { id: "acc5", name: "深象科技", platform: "zhihu", followers: 4300, status: "active", lastPublished: "2026-04-06" },
   { id: "acc6", name: "opcs.vip", platform: "website", followers: 0, status: "active", lastPublished: "2026-04-09" },
+  { id: "acc7", name: "深象播客", platform: "ximalaya", followers: 3200, status: "active", lastPublished: "2026-04-05" },
+  { id: "acc8", name: "OPC创业话", platform: "podcast", followers: 1800, status: "pending", lastPublished: "" },
+  { id: "acc9", name: "ShenXiang Tech", platform: "youtube", followers: 950, status: "pending", lastPublished: "" },
+  { id: "acc10", name: "ShenXiang_OPC", platform: "twitter", followers: 620, status: "active", lastPublished: "2026-04-08" },
 ];
 
 const mockAccountContents: AccountContent[] = [
