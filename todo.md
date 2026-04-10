@@ -82,7 +82,7 @@
 - [x] 模板管理功能：上传模板、模板预览、模板分类、模板应用到内容
 
 ## GitHub 推送
-- [ ] 完成后将所有代码推送到 KWJIFF/opc-admin-system 仓库，完全替换原有内容
+- [x] 完成后将所有代码推送到 KWJIFF/opc-admin-system 仓库，完全替换原有内容
 
 ## UI 风格调整
 - [x] 账号托管页面 UI 使用深象科技自有品牌风格，仅参照有一云的功能结构，不照搬其 UI
@@ -219,7 +219,7 @@
 - [x] 确保所有动画和过渡效果流畅
 - [x] 确保移动端和桌面端一致性
 - [x] 全站回归测试通过
-- [ ] 推送到 GitHub
+- [x] 推送到 GitHub
 
 ## 预览功能与细节优化
 - [x] 后台侧边栏增加"返回官网"入口
@@ -232,7 +232,7 @@
 - [x] 发布台页面集成预览功能
 - [x] 网站文章管理增加前台预览功能
 - [x] 全站细节优化确保丝滑运转
-- [ ] 推送到 GitHub
+- [x] 推送到 GitHub
 
 ## 内容管理系统升级（AI+手动双模式）
 - [x] 多平台预览组件：微信公众号排版预览
@@ -307,6 +307,6 @@
 - [x] 清理所有未使用的 import（ContentEditor/PlatformPreview/SiteLayout/Accounts/AiInteractions/ContentCalendar/Contents/Home/Reviews/Settings/SiteArticleDetail/Subscribers/Workflows/schema/db）
 - [x] TypeScript 编译 0 错误（含 noUnusedLocals 检查，排除 _core 框架文件）
 - [x] vitest 测试全部通过
-- [ ] 保存 checkpoint
-- [ ] 推送到 GitHub KWJIFF/opc-admin-system
-- [ ] 确保 GitHub 仓库为最新代码，无残余旧内容
+- [x] 保存 checkpoint
+- [x] 推送到 GitHub KWJIFF/opc-admin-system
+- [x] 确保 GitHub 仓库为最新代码，无残余旧内容
