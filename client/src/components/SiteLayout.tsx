@@ -7,7 +7,7 @@ import {
 } from "lucide-react";
 import { getEnabledCategories } from "@shared/siteConfig";
 
-const LOGO_URL = "https://d2xsxph8kpxj0f.cloudfront.net/310419663029695431/Fb26PagKyopspprUoxxADo/logo-icon_48921fa8.webp";
+const LOGO_ICON_URL = "https://d2xsxph8kpxj0f.cloudfront.net/310419663029695431/Fb26PagKyopspprUoxxADo/logo-master_f43d4fa5.png";
 
 /* ── 图标映射：iconName → 组件 ── */
 const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
@@ -55,9 +55,9 @@ function SiteNav() {
           }}
         >
           <Link href="/site" className="flex items-center gap-2 shrink-0">
-            <img src={LOGO_URL} alt="深象科技" className="h-7 w-7 rounded-lg" />
+            <img src={LOGO_ICON_URL} alt="深象科技" className="h-7 w-7 rounded-lg" />
             <span className="font-semibold text-[15px] tracking-tight text-foreground">
-              深象 OPCS
+              深象 × OPCS
             </span>
           </Link>
 
@@ -178,8 +178,8 @@ function SiteFooter() {
           {/* 品牌区 - 移动端占满两列 */}
           <div className="col-span-2 lg:col-span-1">
             <div className="flex items-center gap-2.5 mb-3">
-              <img src={LOGO_URL} alt="深象科技" className="h-7 w-7 rounded-lg" />
-              <span className="font-semibold text-base text-foreground">深象 OPCS</span>
+              <img src={LOGO_ICON_URL} alt="深象科技" className="h-7 w-7 rounded-lg" />
+              <span className="font-semibold text-base text-foreground">深象 × OPCS</span>
             </div>
             <p className="text-muted-foreground text-sm leading-relaxed max-w-xs">
               一人公司创业者的内容运营服务平台。用结构化方法论和 AI 工具链，帮助独立创业者高效运营。

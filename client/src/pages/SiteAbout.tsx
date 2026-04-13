@@ -2,7 +2,7 @@ import { Link } from "wouter";
 import { motion } from "framer-motion";
 import { ArrowRight, Target, Lightbulb, Zap, Users, Globe, Mail } from "lucide-react";
 
-const LOGO_URL = "https://d2xsxph8kpxj0f.cloudfront.net/310419663029695431/Fb26PagKyopspprUoxxADo/logo-icon_48921fa8.webp";
+const LOGO_URL = "https://d2xsxph8kpxj0f.cloudfront.net/310419663029695431/Fb26PagKyopspprUoxxADo/logo-master_f43d4fa5.png";
 
 const values = [
   { icon: Target, title: "专注深耕", desc: "深耕一人公司领域，不做大而全，只做深而精。每一篇内容都经过严格的研究和验证。" },

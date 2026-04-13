@@ -319,3 +319,13 @@
 - [x] 涵盖：短信服务、邮件推送、日志监控
 - [x] 涵盖：GitHub Webhook自动部署、CI/CD配置
 - [x] 涵盖：日常运维与故障排查速查表
+
+## VI终稿Logo替换与域名优化
+- [x] 上传Logo素材（透明底PNG、favicon用）到CDN
+- [x] 替换网站favicon为新Logo
+- [x] 替换后台侧边栏Logo
+- [x] 替换前台SiteLayout中的Logo
+- [x] 在代码中统一替换为新Logo CDN地址（VITE_APP_LOGO为内置变量不可修改，已在代码中直接引用CDN URL）
+- [x] 检索opcs.vip域名DNS现状
+- [x] 根据域名现状（已有Vercel CNAME）优化部署手册中域名相关章节
+- [ ] 推送更新到GitHub（VI+域名优化）

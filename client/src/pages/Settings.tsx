@@ -316,7 +316,7 @@ export default function SettingsPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-1.5">
                     <Label className="text-xs">平台名称</Label>
-                    <Input defaultValue="深象 OPCS" className="h-9 bg-muted/30 border-border/30" />
+                    <Input defaultValue="深象 × OPCS" className="h-9 bg-muted/30 border-border/30" />
                   </div>
                   <div className="space-y-1.5">
                     <Label className="text-xs">管理员邮箱</Label>

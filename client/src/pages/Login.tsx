@@ -9,7 +9,7 @@ import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
 import { Loader2, Smartphone, Mail, KeyRound } from "lucide-react";
 
-const LOGO_URL = "https://d2xsxph8kpxj0f.cloudfront.net/310419663029695431/Fb26PagKyopspprUoxxADo/logo-icon_48921fa8.webp";
+const LOGO_URL = "https://d2xsxph8kpxj0f.cloudfront.net/310419663029695431/Fb26PagKyopspprUoxxADo/logo-master_f43d4fa5.png";
 
 type LoginMethod = "account" | "phone" | "email";
 
@@ -137,7 +137,7 @@ export default function LoginPage() {
               transition={{ duration: 0.2 }}
             />
             <h1 className="text-[22px] font-bold text-foreground tracking-tight">
-              深象 OPCS
+              深象 × OPCS
             </h1>
             <p className="text-[13px] text-muted-foreground mt-1.5">
               内容运营管理平台

@@ -264,7 +264,7 @@ function WebsitePreview({ content }: { content: PreviewContent }) {
           <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center">
             <span className="text-white text-xs font-bold">深</span>
           </div>
-          <span className="font-semibold text-sm text-gray-800">深象 OPCS</span>
+          <span className="font-semibold text-sm text-gray-800">深象 × OPCS</span>
         </div>
         <div className="flex gap-4 text-[12px] text-gray-500">
           <span>首页</span>

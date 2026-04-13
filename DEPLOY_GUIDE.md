@@ -1,7 +1,7 @@
 # 深象 OPCS — 阿里云完整部署配置手册
 
 > **适用对象**：零基础小白，所有命令均可直接复制粘贴执行。
-> **文档版本**：v3.0 | **更新日期**：2026-04-10
+> **文档版本**：v3.1 | **更新日期**：2026-04-13
 > **项目仓库**：`https://github.com/KWJIFF/opc-admin-system`
 
 ---
@@ -14,7 +14,7 @@
 | 第二章 | 首次登录服务器并安装 Docker 环境 | 20 分钟 |
 | 第三章 | 购买并配置阿里云 RDS MySQL 数据库 | 20 分钟 |
 | 第四章 | 拉取代码并部署应用 | 15 分钟 |
-| 第五章 | 购买域名并完成 ICP 备案 | 7-20 天（等待审核） |
+| 第五章 | 域名迁移与 ICP 备案（已有 opcs.vip） | 7-20 天（等待审核） |
 | 第六章 | 配置域名解析与 SSL 证书 | 15 分钟 |
 | 第七章 | 接入通义千问大模型 | 10 分钟 |
 | 第八章 | 配置 OSS 对象存储 | 15 分钟 |
@@ -327,7 +327,7 @@ nano .env.production
 
 ```ini
 # 改为您的实际域名（如果还没有域名，先填 ECS 公网 IP）
-APP_URL=https://你的域名或IP
+APP_URL=https://opcs.vip
 
 # 改为第三章拼接的数据库连接字符串
 DATABASE_URL=mysql://opcs_admin:你的密码@rm-xxxxx.mysql.rds.aliyuncs.com:3306/opcs_production
@@ -396,23 +396,32 @@ docker compose exec app npx drizzle-kit migrate
 
 ---
 
-## 第五章 购买域名并完成 ICP 备案
+## 第五章 域名迁移与 ICP 备案
 
-在中国大陆运营网站，域名必须完成 ICP 备案后才能正常使用。备案本身不收费，但需要等待管局审核，通常 7-20 个工作日。
+您已经拥有域名 **opcs.vip**，目前该域名指向 Vercel 服务器（IP: 216.198.79.1），上面运行着旧版 Next.js 网站。本章将指导您将域名从 Vercel 迁移到阿里云 ECS，并完成 ICP 备案。
 
-### 5.1 购买域名
+> **重要提示**：在中国大陆运营网站，域名必须完成 ICP 备案后才能通过域名正常访问。备案本身不收费，但需要等待管局审核，通常 7-20 个工作日。
 
-**第 1 步**：打开 [阿里云域名注册页](https://wanwang.aliyun.com/)。
+### 5.1 当前域名状态确认
 
-**第 2 步**：在搜索框中输入您想要的域名（例如 `opcs.vip` 或 `shenxiang.com`），点击查询。
+您的域名 `opcs.vip` 当前的 DNS 解析状态如下：
 
-**第 3 步**：选择一个可注册的域名，加入清单，完成购买。
+| 记录类型 | 主机记录 | 当前记录值 | 说明 |
+|----------|----------|-------------|------|
+| A | `@` | `216.198.79.1` | 指向 Vercel，需要修改 |
+| CNAME/A | `www` | `64.29.17.1` / `216.198.79.1` | 指向 Vercel，需要修改 |
 
-**第 4 步**：购买后需要进行域名实名认证。在 [域名控制台](https://dc.console.aliyun.com/) 中找到您的域名，按提示上传身份证或营业执照完成认证。
+迁移时需要将这些记录改为指向您的阿里云 ECS 公网 IP。
 
-> 域名实名认证通常 1-3 个工作日完成。实名认证通过后才能进行 ICP 备案。
+### 5.2 备案前的准备工作
 
-### 5.2 ICP 备案
+在修改 DNS 之前，先完成 ICP 备案。备案期间可以通过 ECS 公网 IP 直接访问网站进行调试，旧的 Vercel 网站仍然可以通过 opcs.vip 正常访问，不会中断服务。
+
+**第 1 步**：确认域名已完成实名认证。打开 [域名控制台](https://dc.console.aliyun.com/)，找到 `opcs.vip`，查看状态是否显示「已实名认证」。如果未认证，按提示上传身份证或营业执照完成认证（通常 1-3 个工作日）。
+
+**第 2 步**：确认域名的 DNS 服务器是阿里云的。如果之前将 DNS 服务器改为了其他服务商（如 Vercel DNS），需要在域名控制台中将 DNS 服务器改回阿里云默认的：`dns1.hichina.com` 和 `dns2.hichina.com`。
+
+### 5.3 ICP 备案
 
 **第 1 步**：打开 [阿里云备案系统](https://beian.aliyun.com/)，点击「开始备案」。
 
@@ -441,15 +450,25 @@ docker compose exec app npx drizzle-kit migrate
 
 ## 第六章 配置域名解析与 SSL 证书
 
-备案通过后，您需要将域名指向 ECS 服务器的 IP 地址，并配置 SSL 证书实现 HTTPS 加密访问。
+备案通过后，您需要将域名从 Vercel 迁移到阿里云 ECS。这一步的核心是修改 DNS 解析记录，并配置 SSL 证书实现 HTTPS 加密访问。
 
-### 6.1 配置域名解析
+### 6.1 删除旧的 Vercel DNS 记录
 
 **第 1 步**：打开 [云解析 DNS 控制台](https://dns.console.aliyun.com/)。
 
-**第 2 步**：找到您的域名，点击「解析设置」→「添加记录」。
+**第 2 步**：找到 `opcs.vip`，点击「解析设置」。您会看到当前指向 Vercel 的解析记录：
 
-**第 3 步**：添加以下两条记录：
+| 当前记录 | 操作 |
+|----------|------|
+| `@` → A记录 `216.198.79.1`（Vercel） | 点击「删除」 |
+| `www` → CNAME `16b9f912a34e6cb1.vercel-dns-017.com`（Vercel） | 点击「删除」 |
+| 其他 Vercel 相关记录（如果有） | 全部删除 |
+
+> **注意**：删除旧记录后，opcs.vip 上的旧版 Vercel 网站将无法访问。请确保阿里云 ECS 上的新网站已经部署完成并可通过 IP 访问后，再执行此步。
+
+### 6.2 添加新的 DNS 解析记录
+
+**第 3 步**：点击「添加记录」，添加以下两条记录：
 
 | 记录类型 | 主机记录 | 记录值 | TTL |
 |----------|----------|--------|-----|
@@ -461,24 +480,26 @@ docker compose exec app npx drizzle-kit migrate
 **第 4 步**：等待 5-10 分钟让 DNS 生效。可以在终端中用以下命令验证：
 
 ```bash
-ping 你的域名
+ping opcs.vip
 ```
 
 如果返回的 IP 地址是您的 ECS 公网 IP，说明解析已生效。
 
-### 6.2 修改 Nginx 配置中的域名
+### 6.3 修改 Nginx 配置中的域名
 
-回到 ECS 服务器终端，将 Nginx 配置中的示例域名替换为您的实际域名：
+回到 ECS 服务器终端。由于您的域名就是 `opcs.vip`，Nginx 配置文件中已经预设了此域名，**无需修改**。您可以用以下命令确认：
 
 ```bash
 cd /opt/opcs
 
-# 将配置文件中的 opcs.vip 替换为您的实际域名
-# 请将下面命令中的 你的域名 替换为实际值，例如 shenxiang.tech
-sed -i 's/opcs.vip/你的域名/g' deploy/nginx/conf.d/opcs.conf
+# 确认 Nginx 配置中的域名是否正确
+grep 'server_name' deploy/nginx/conf.d/opcs.conf
+# 应该看到: server_name opcs.vip www.opcs.vip;
 ```
 
-### 6.3 获取 SSL 证书（Let's Encrypt 免费证书）
+> 如果您将来更换域名，可以用以下命令替换：`sed -i 's/opcs.vip/新域名/g' deploy/nginx/conf.d/opcs.conf`
+
+### 6.4 获取 SSL 证书（Let's Encrypt 免费证书）
 
 项目已经内置了 Certbot 自动证书工具。执行以下命令即可自动获取免费 SSL 证书：
 
@@ -493,15 +514,15 @@ mkdir -p deploy/certbot/conf deploy/certbot/www
 docker compose up -d nginx
 sleep 5
 
-# 第 3 步：申请证书（将下面两处 你的域名 和 你的邮箱 替换为实际值）
+# 第 3 步：申请证书（将下面的邮箱替换为您的实际邮箱）
 docker compose run --rm certbot certonly \
     --webroot \
     --webroot-path=/var/www/certbot \
     --email 你的邮箱@example.com \
     --agree-tos \
     --no-eff-email \
-    -d 你的域名 \
-    -d www.你的域名
+    -d opcs.vip \
+    -d www.opcs.vip
 
 # 第 4 步：重启所有服务（启用 HTTPS）
 docker compose down
@@ -512,18 +533,18 @@ docker compose up -d --build
 
 > **证书会自动续期吗？** 会的。docker-compose.yml 中已经配置了 certbot 容器，每 12 小时自动检查并续期证书。Let's Encrypt 证书有效期 90 天，自动续期会在到期前 30 天执行。
 
-### 6.4 更新环境变量中的域名
+### 6.5 更新环境变量中的域名
 
 ```bash
 cd /opt/opcs
 nano .env.production
 ```
 
-将 `APP_URL` 改为您的实际域名：
+将 `APP_URL` 改为 `opcs.vip`：
 
 ```ini
-APP_URL=https://你的域名
-CORS_ORIGIN=https://你的域名
+APP_URL=https://opcs.vip
+CORS_ORIGIN=https://opcs.vip
 ```
 
 保存后重启应用：
@@ -532,7 +553,7 @@ CORS_ORIGIN=https://你的域名
 docker compose restart app
 ```
 
-现在打开浏览器访问 `https://你的域名`，应该能看到带绿色锁标志的安全连接了。
+现在打开浏览器访问 `https://opcs.vip`，应该能看到带绿色锁标志的安全连接了。
 
 ---
 
@@ -682,7 +703,7 @@ CDN 可以让全国用户更快地加载图片和文件。
 
 | 配置项 | 填写内容 |
 |--------|----------|
-| 加速域名 | `cdn.你的域名`（例如 `cdn.opcs.vip`） |
+| 加速域名 | `cdn.opcs.vip` |
 | 业务类型 | **图片小文件** |
 | 源站信息 | 源站类型选「OSS 域名」→ 选择 `opcs-assets.oss-cn-shanghai.aliyuncs.com` |
 
@@ -699,8 +720,8 @@ nano /opt/opcs/.env.production
 ```
 
 ```ini
-ALIYUN_OSS_CDN_DOMAIN=https://cdn.你的域名
-ALIYUN_CDN_DOMAIN=cdn.你的域名
+ALIYUN_OSS_CDN_DOMAIN=https://cdn.opcs.vip
+ALIYUN_CDN_DOMAIN=cdn.opcs.vip
 ```
 
 保存并重启：`docker compose restart app`
@@ -752,13 +773,13 @@ ALIYUN_SMS_TEMPLATE_CODE=SMS_xxxxxxxx
 
 **第 1 步**：打开 [邮件推送控制台](https://dm.console.aliyun.com/)。
 
-**第 2 步**：点击「发信域名」→「新建域名」→ 输入 `mail.你的域名`。
+**第 2 步**：点击「发信域名」→「新建域名」→ 输入 `mail.opcs.vip`。
 
 **第 3 步**：系统会给出几条 DNS 记录，需要在 [DNS 控制台](https://dns.console.aliyun.com/) 中添加。按照页面提示逐条添加即可（通常是 TXT 和 MX 记录）。
 
 **第 4 步**：DNS 记录添加完成后，回到邮件推送控制台点击「验证」。
 
-**第 5 步**：创建发信地址。点击「发信地址」→「新建发信地址」→ 输入 `noreply`（完整地址为 `noreply@mail.你的域名`）。
+**第 5 步**：创建发信地址。点击「发信地址」→「新建发信地址」→ 输入 `noreply`（完整地址为 `noreply@mail.opcs.vip`）。
 
 **第 6 步**：配置环境变量：
 
@@ -769,7 +790,7 @@ nano /opt/opcs/.env.production
 ```ini
 ALIYUN_EMAIL_ACCESS_KEY_ID=邮件子用户的AccessKey ID
 ALIYUN_EMAIL_ACCESS_KEY_SECRET=邮件子用户的AccessKey Secret
-ALIYUN_EMAIL_ACCOUNT=noreply@mail.你的域名
+ALIYUN_EMAIL_ACCOUNT=noreply@mail.opcs.vip
 ALIYUN_EMAIL_FROM_ALIAS=深象科技
 ```
 
@@ -1117,8 +1138,8 @@ docker compose restart nginx
 |--------|------|----------|----------|
 | 第 1 天 | 购买 ECS + 安装 Docker + 购买 RDS | 第一至三章 | 1 小时 |
 | 第 1 天 | 拉取代码 + 部署应用 + 验证能通过 IP 访问 | 第四章 | 30 分钟 |
-| 第 1 天 | 购买域名 + 提交 ICP 备案 | 第五章 | 30 分钟 |
-| 等备案通过 | 配置域名解析 + SSL 证书 | 第六章 | 15 分钟 |
+| 第 1 天 | 提交 ICP 备案（域名 opcs.vip 已有） | 第五章 | 30 分钟 |
+| 等备案通过 | 删除 Vercel DNS + 配置新解析 + SSL 证书 | 第六章 | 15 分钟 |
 | 随时 | 接入通义千问 | 第七章 | 10 分钟 |
 | 随时 | 配置 OSS 存储 | 第八章 | 15 分钟 |
 | 随时 | 配置短信和邮件 | 第九章 | 20 分钟 |
@@ -1126,4 +1147,4 @@ docker compose restart nginx
 
 ---
 
-> **文档版本**：v3.0 | **最后更新**：2026-04-10 | **作者**：深象 OPCS 技术团队
+> **文档版本**：v3.1 | **最后更新**：2026-04-13 | **作者**：深象 × OPCS 技术团队

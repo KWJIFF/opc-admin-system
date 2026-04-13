@@ -59,7 +59,7 @@ import { DashboardLayoutSkeleton } from "./DashboardLayoutSkeleton";
 import { Button } from "./ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 
-const LOGO_URL = "https://d2xsxph8kpxj0f.cloudfront.net/310419663029695431/Fb26PagKyopspprUoxxADo/logo-icon_48921fa8.webp";
+const LOGO_URL = "https://d2xsxph8kpxj0f.cloudfront.net/310419663029695431/Fb26PagKyopspprUoxxADo/logo-master_f43d4fa5.png";
 
 interface MenuItem {
   icon: React.ComponentType<{ className?: string }>;
@@ -174,7 +174,7 @@ export default function DashboardLayout({
               transition={{ duration: 0.2 }}
             />
             <h1 className="text-2xl font-bold tracking-tight text-center text-foreground">
-              深象 OPCS
+              深象 × OPCS
             </h1>
             <p className="text-sm text-muted-foreground text-center max-w-sm leading-relaxed">
               内容运营管理平台，请登录后继续使用
@@ -281,7 +281,7 @@ function DashboardLayoutContent({
                   <img src={LOGO_URL} alt="深象科技" className="h-7 w-7 rounded-lg shrink-0 shadow-sm" />
                   <div className="flex flex-col min-w-0">
                     <span className="font-semibold text-sm text-sidebar-foreground tracking-tight truncate">
-                      深象 OPCS
+                      深象 × OPCS
                     </span>
                     <span className="text-[10px] text-sidebar-foreground/40 truncate">
                       内容运营管理平台
@@ -391,7 +391,7 @@ function DashboardLayoutContent({
               <SidebarTrigger className="h-9 w-9 rounded-xl" />
               <div className="flex items-center gap-2">
                 <span className="text-sm font-semibold text-foreground">
-                  {activeMenuItem?.label ?? "深象 OPCS"}
+                  {activeMenuItem?.label ?? "深象 × OPCS"}
                 </span>
               </div>
             </div>
