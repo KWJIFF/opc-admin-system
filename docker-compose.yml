@@ -1,10 +1,44 @@
 # ============================================
 # 深象 OPCS - Docker Compose 生产部署
-# 适用于阿里云 ECS
+# 适用于阿里云 ECS（含本地 MySQL）
 # ============================================
 version: "3.9"
 
 services:
+  # --- MySQL 数据库 ---
+  mysql:
+    image: mysql:8.0
+    container_name: opcs-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-OpcsMySQL2026!}
+      MYSQL_DATABASE: opcs_production
+      MYSQL_USER: opcs_admin
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-OpcsDB2026vip!}
+    command: >
+      --default-authentication-plugin=mysql_native_password
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+      --max-connections=200
+      --innodb-buffer-pool-size=512M
+    volumes:
+      - mysql-data:/var/lib/mysql
+    ports:
+      - "127.0.0.1:3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD:-OpcsMySQL2026!}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    networks:
+      - opcs-network
+    logging:
+      driver: json-file
+      options:
+        max-size: "20m"
+        max-file: "3"
+
   # --- 应用服务 ---
   app:
     build:
@@ -18,9 +52,12 @@ services:
       - NODE_ENV=production
       - PORT=3000
       - REDIS_URL=redis://redis:6379
+      - DATABASE_URL=mysql://opcs_admin:${MYSQL_PASSWORD:-OpcsDB2026vip!}@mysql:3306/opcs_production
     ports:
-      - "3000:3000"
+      - "127.0.0.1:3000:3000"
     depends_on:
+      mysql:
+        condition: service_healthy
       redis:
         condition: service_healthy
     networks:
@@ -65,8 +102,6 @@ services:
     volumes:
       - ./deploy/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./deploy/nginx/conf.d:/etc/nginx/conf.d:ro
-      - ./deploy/certbot/conf:/etc/letsencrypt:ro
-      - ./deploy/certbot/www:/var/www/certbot:ro
       - nginx-logs:/var/log/nginx
     depends_on:
       - app
@@ -78,18 +113,9 @@ services:
         max-size: "20m"
         max-file: "5"
 
-  # --- Let's Encrypt 证书自动续期 ---
-  certbot:
-    image: certbot/certbot
-    container_name: opcs-certbot
-    volumes:
-      - ./deploy/certbot/conf:/etc/letsencrypt
-      - ./deploy/certbot/www:/var/www/certbot
-    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
-    networks:
-      - opcs-network
-
 volumes:
+  mysql-data:
+    driver: local
   redis-data:
     driver: local
   nginx-logs:

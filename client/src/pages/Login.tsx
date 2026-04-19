@@ -74,8 +74,6 @@ export default function LoginPage() {
   const handleLogin = async () => {
     setLoading(true);
     try {
-      // For now, redirect to OAuth login
-      // In production, each method would have its own API endpoint
       if (method === "account") {
         if (!username.trim() || !password.trim()) {
           toast.error("请输入账号和密码");
@@ -95,7 +93,7 @@ export default function LoginPage() {
           return;
         }
       }
-      // Redirect to Manus OAuth for actual authentication
+      // Redirect to OAuth for actual authentication
       window.location.href = getLoginUrl();
     } catch {
       toast.error("登录失败，请稍后重试");
@@ -297,22 +295,6 @@ export default function LoginPage() {
               <Loader2 className="h-4 w-4 animate-spin mr-2" />
             ) : null}
             {loading ? "登录中..." : "登录"}
-          </Button>
-
-          {/* Divider */}
-          <div className="flex items-center gap-3 my-6">
-            <div className="flex-1 h-px bg-border/50" />
-            <span className="text-[11px] text-muted-foreground/50 font-medium">或</span>
-            <div className="flex-1 h-px bg-border/50" />
-          </div>
-
-          {/* OAuth Login */}
-          <Button
-            variant="outline"
-            onClick={() => { window.location.href = getLoginUrl(); }}
-            className="w-full h-11 border-border/50 text-foreground/60 hover:text-foreground hover:bg-muted/30 rounded-xl btn-press text-[13px]"
-          >
-            使用 Manus 账号登录
           </Button>
 
           {/* Footer */}

@@ -7,6 +7,8 @@
 FROM node:22-alpine AS deps
 WORKDIR /app
 COPY package.json pnpm-lock.yaml ./
+# Copy patches directory if it exists
+COPY patches/ ./patches/
 RUN corepack enable && corepack prepare pnpm@10.4.1 --activate
 RUN pnpm install --frozen-lockfile --prod=false
 
@@ -24,6 +26,7 @@ WORKDIR /app
 
 # 安装生产依赖
 COPY package.json pnpm-lock.yaml ./
+COPY patches/ ./patches/
 RUN corepack enable && corepack prepare pnpm@10.4.1 --activate
 RUN pnpm install --frozen-lockfile --prod
 
@@ -38,7 +41,7 @@ ENV NODE_ENV=production
 ENV PORT=3000
 
 # 健康检查
-HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
   CMD wget --no-verbose --tries=1 --spider http://localhost:3000/ || exit 1
 
 EXPOSE 3000

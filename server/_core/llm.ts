@@ -66,6 +66,7 @@ export type InvokeParams = {
   output_schema?: OutputSchema;
   responseFormat?: ResponseFormat;
   response_format?: ResponseFormat;
+  model?: string;
 };
 
 export type ToolCall = {
@@ -209,15 +210,44 @@ const normalizeToolChoice = (
   return toolChoice;
 };
 
-const resolveApiUrl = () =>
-  ENV.forgeApiUrl && ENV.forgeApiUrl.trim().length > 0
-    ? `${ENV.forgeApiUrl.replace(/\/$/, "")}/v1/chat/completions`
-    : "https://forge.manus.im/v1/chat/completions";
-
-const assertApiKey = () => {
-  if (!ENV.forgeApiKey) {
-    throw new Error("OPENAI_API_KEY is not configured");
+/**
+ * Resolve the LLM API URL.
+ * Priority: DashScope (通义千问) > Forge API (Manus) > fallback
+ */
+const resolveApiUrl = () => {
+  // 优先使用通义千问 DashScope API
+  if (ENV.dashscopeApiKey && ENV.dashscopeBaseUrl) {
+    return `${ENV.dashscopeBaseUrl.replace(/\/$/, "")}/chat/completions`;
   }
+  // 兼容 Manus Forge API
+  if (ENV.forgeApiUrl && ENV.forgeApiUrl.trim().length > 0) {
+    return `${ENV.forgeApiUrl.replace(/\/$/, "")}/v1/chat/completions`;
+  }
+  throw new Error("No LLM API configured. Set ALIYUN_DASHSCOPE_API_KEY or BUILT_IN_FORGE_API_KEY.");
+};
+
+/**
+ * Resolve the API key for LLM calls.
+ */
+const resolveApiKey = () => {
+  if (ENV.dashscopeApiKey) {
+    return ENV.dashscopeApiKey;
+  }
+  if (ENV.forgeApiKey) {
+    return ENV.forgeApiKey;
+  }
+  throw new Error("No LLM API key configured. Set ALIYUN_DASHSCOPE_API_KEY or BUILT_IN_FORGE_API_KEY.");
+};
+
+/**
+ * Resolve the default model name.
+ */
+const resolveModel = (requestedModel?: string) => {
+  if (requestedModel) return requestedModel;
+  if (ENV.dashscopeApiKey) {
+    return ENV.dashscopeModel || "qwen-max";
+  }
+  return "gemini-2.5-flash";
 };
 
 const normalizeResponseFormat = ({
@@ -266,7 +296,9 @@ const normalizeResponseFormat = ({
 };
 
 export async function invokeLLM(params: InvokeParams): Promise<InvokeResult> {
-  assertApiKey();
+  const apiKey = resolveApiKey();
+  const apiUrl = resolveApiUrl();
+  const model = resolveModel(params.model);
 
   const {
     messages,
@@ -280,7 +312,7 @@ export async function invokeLLM(params: InvokeParams): Promise<InvokeResult> {
   } = params;
 
   const payload: Record<string, unknown> = {
-    model: "gemini-2.5-flash",
+    model,
     messages: messages.map(normalizeMessage),
   };
 
@@ -296,10 +328,7 @@ export async function invokeLLM(params: InvokeParams): Promise<InvokeResult> {
     payload.tool_choice = normalizedToolChoice;
   }
 
-  payload.max_tokens = 32768
-  payload.thinking = {
-    "budget_tokens": 128
-  }
+  payload.max_tokens = params.maxTokens || params.max_tokens || 8192;
 
   const normalizedResponseFormat = normalizeResponseFormat({
     responseFormat,
@@ -312,11 +341,11 @@ export async function invokeLLM(params: InvokeParams): Promise<InvokeResult> {
     payload.response_format = normalizedResponseFormat;
   }
 
-  const response = await fetch(resolveApiUrl(), {
+  const response = await fetch(apiUrl, {
     method: "POST",
     headers: {
       "content-type": "application/json",
-      authorization: `Bearer ${ENV.forgeApiKey}`,
+      authorization: `Bearer ${apiKey}`,
     },
     body: JSON.stringify(payload),
   });
