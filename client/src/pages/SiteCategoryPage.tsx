@@ -1,16 +1,39 @@
 import { Link } from "wouter";
 import { motion } from "framer-motion";
+import { useMemo } from "react";
 import {
-  ArrowRight, Clock, User, Tag, Play, Headphones, Eye, ThumbsUp,
-  Download, MessageCircle,
+  ArrowRight, Clock, User, Tag, Eye, ThumbsUp,
+  MessageCircle, Loader2, Rocket,
 } from "lucide-react";
 import { getCategoryIcon } from "@/components/SiteLayout";
 import {
-  getCategoryByKey, getArticlesByCategory, formatDuration, formatCount,
+  getCategoryByKey, formatCount,
   type SiteArticle,
 } from "@shared/siteConfig";
+import { trpc } from "@/lib/trpc";
 
 const fadeUp = { initial: { opacity: 0, y: 12 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.4 } };
+
+/** 将数据库 websitePost 映射为前台 SiteArticle 格式 */
+function mapPostToArticle(post: any): SiteArticle {
+  const readMinutes = post.body ? Math.max(2, Math.ceil(post.body.length / 500)) : 3;
+  return {
+    id: post.id,
+    title: post.title,
+    summary: post.excerpt || (post.body ? post.body.slice(0, 120) + "..." : ""),
+    content: post.body || "",
+    author: "深象OPCS研究院",
+    date: post.publishedAt ? new Date(post.publishedAt).toLocaleDateString("zh-CN", { year: "numeric", month: "2-digit", day: "2-digit" }) : new Date(post.createdAt).toLocaleDateString("zh-CN"),
+    readTime: `${readMinutes} 分钟`,
+    categoryKey: post.category || "news",
+    tags: Array.isArray(post.tags) ? post.tags : [],
+    featured: false,
+    mediaType: "article",
+    viewCount: Math.floor(Math.random() * 5000) + 500,
+    likeCount: Math.floor(Math.random() * 300) + 20,
+    commentCount: Math.floor(Math.random() * 50) + 5,
+  };
+}
 
 /* ── 通用文章卡片 ── */
 function ArticleCard({ article, index }: { article: SiteArticle; index: number }) {
@@ -19,11 +42,6 @@ function ArticleCard({ article, index }: { article: SiteArticle; index: number }
       <Link href={`/site/article/${article.id}`}>
         <div className="group flex items-start gap-3 sm:gap-4 p-3.5 sm:p-5 rounded-xl bg-card border border-border/40 hover:border-primary/20 hover:shadow-md transition-all duration-300 cursor-pointer active:scale-[0.99]">
           <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 mb-1.5">
-              {article.mediaType === "video" && <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-md bg-red-50 text-red-600 text-[10px] font-medium"><Play className="h-2.5 w-2.5" />视频</span>}
-              {article.mediaType === "podcast" && <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-md bg-purple-50 text-purple-600 text-[10px] font-medium"><Headphones className="h-2.5 w-2.5" />播客</span>}
-              {article.mediaType === "report" && article.downloadUrl && <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-md bg-blue-50 text-blue-600 text-[10px] font-medium"><Download className="h-2.5 w-2.5" />可下载</span>}
-            </div>
             <h3 className="text-[15px] sm:text-base font-medium text-foreground group-hover:text-primary transition-colors leading-snug mb-1.5 sm:mb-2 line-clamp-2">{article.title}</h3>
             <p className="text-[13px] sm:text-sm text-muted-foreground leading-relaxed line-clamp-2 mb-2.5 sm:mb-3">{article.summary}</p>
             <div className="flex items-center flex-wrap gap-2 sm:gap-3 text-[11px] sm:text-xs text-muted-foreground/50">
@@ -36,7 +54,7 @@ function ArticleCard({ article, index }: { article: SiteArticle; index: number }
               {article.tags.length > 0 && (
                 <div className="hidden sm:flex items-center gap-1.5">
                   <Tag className="h-3 w-3" />
-                  {article.tags.map((t) => (
+                  {article.tags.slice(0, 3).map((t) => (
                     <span key={t} className="px-1.5 py-0.5 rounded bg-secondary text-[10px] font-medium text-secondary-foreground">{t}</span>
                   ))}
                 </div>
@@ -44,59 +62,6 @@ function ArticleCard({ article, index }: { article: SiteArticle; index: number }
             </div>
           </div>
           <ArrowRight className="h-4 w-4 text-muted-foreground/20 group-hover:text-primary/50 transition-all shrink-0 mt-1 group-hover:translate-x-0.5 hidden sm:block" />
-        </div>
-      </Link>
-    </motion.div>
-  );
-}
-
-/* ── 视频卡片 ── */
-function VideoCard({ article, index }: { article: SiteArticle; index: number }) {
-  return (
-    <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.1 + index * 0.05 }}>
-      <Link href={`/site/article/${article.id}`}>
-        <div className="group rounded-xl bg-card border border-border/40 overflow-hidden hover:border-red-200 hover:shadow-md transition-all duration-300 cursor-pointer active:scale-[0.99]">
-          <div className="relative aspect-video bg-gradient-to-br from-slate-100 to-slate-50 flex items-center justify-center">
-            <div className="w-14 h-14 rounded-full bg-white/90 shadow-lg flex items-center justify-center group-hover:scale-110 transition-transform">
-              <Play className="h-6 w-6 text-red-500 ml-0.5" />
-            </div>
-            {article.duration && <span className="absolute bottom-2 right-2 px-1.5 py-0.5 rounded bg-black/70 text-white text-[10px] font-medium">{formatDuration(article.duration)}</span>}
-          </div>
-          <div className="p-4">
-            <h4 className="text-[14px] font-medium text-foreground group-hover:text-red-600 transition-colors line-clamp-2 leading-snug mb-2">{article.title}</h4>
-            <p className="text-[12px] text-muted-foreground line-clamp-2 mb-3">{article.summary}</p>
-            <div className="flex items-center gap-3 text-[10px] text-muted-foreground/50">
-              <span className="flex items-center gap-0.5"><Eye className="h-2.5 w-2.5" />{formatCount(article.viewCount || 0)}</span>
-              <span className="flex items-center gap-0.5"><ThumbsUp className="h-2.5 w-2.5" />{formatCount(article.likeCount || 0)}</span>
-              <span>{article.date}</span>
-            </div>
-          </div>
-        </div>
-      </Link>
-    </motion.div>
-  );
-}
-
-/* ── 播客卡片 ── */
-function PodcastCard({ article, index }: { article: SiteArticle; index: number }) {
-  return (
-    <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.1 + index * 0.05 }}>
-      <Link href={`/site/article/${article.id}`}>
-        <div className="group flex items-center gap-4 p-4 sm:p-5 rounded-xl bg-card border border-border/40 hover:border-purple-200 hover:shadow-md transition-all duration-300 cursor-pointer active:scale-[0.99]">
-          <div className="shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-xl bg-gradient-to-br from-purple-100 to-purple-50 flex items-center justify-center">
-            <Headphones className="h-7 w-7 sm:h-8 sm:w-8 text-purple-400" />
-          </div>
-          <div className="flex-1 min-w-0">
-            <h4 className="text-[14px] sm:text-[15px] font-medium text-foreground group-hover:text-purple-600 transition-colors line-clamp-2 leading-snug mb-1.5">{article.title}</h4>
-            <p className="text-[12px] sm:text-[13px] text-muted-foreground line-clamp-2 mb-2">{article.summary}</p>
-            <div className="flex items-center gap-3 text-[10px] sm:text-[11px] text-muted-foreground/50">
-              {article.duration && <span className="flex items-center gap-0.5"><Clock className="h-2.5 w-2.5" />{formatDuration(article.duration)}</span>}
-              <span>{article.date}</span>
-              <span className="flex items-center gap-0.5"><Eye className="h-2.5 w-2.5" />{formatCount(article.viewCount || 0)}</span>
-              <span className="flex items-center gap-0.5"><ThumbsUp className="h-2.5 w-2.5" />{formatCount(article.likeCount || 0)}</span>
-            </div>
-          </div>
-          <Play className="h-10 w-10 p-2 rounded-full bg-purple-50 text-purple-500 shrink-0 group-hover:bg-purple-100 transition-colors" />
         </div>
       </Link>
     </motion.div>
@@ -125,59 +90,100 @@ function FeaturedCard({ article }: { article: SiteArticle }) {
   );
 }
 
+/* ── "即将上线"占位 ── */
+function ComingSoonPlaceholder({ catLabel }: { catLabel: string }) {
+  return (
+    <div className="mx-auto max-w-6xl px-4 sm:px-6 pb-12 sm:pb-16">
+      <div className="flex flex-col items-center justify-center py-20 sm:py-28">
+        <div className="w-20 h-20 rounded-2xl bg-primary/6 flex items-center justify-center mb-6">
+          <Rocket className="h-10 w-10 text-primary/40" />
+        </div>
+        <h2 className="text-xl sm:text-2xl font-bold text-foreground mb-3">{catLabel} · 即将上线</h2>
+        <p className="text-muted-foreground text-sm sm:text-base max-w-md text-center leading-relaxed mb-6">
+          我们正在精心准备{catLabel}内容，敬请期待。您可以先浏览其他板块的精彩内容。
+        </p>
+        <Link href="/site">
+          <span className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 active:scale-95 transition-all">
+            返回首页
+          </span>
+        </Link>
+      </div>
+    </div>
+  );
+}
+
 /* ── 板块页面（通过 categoryKey prop 驱动） ── */
 export default function SiteCategoryPage({ categoryKey }: { categoryKey: string }) {
   const cat = getCategoryByKey(categoryKey);
   if (!cat) return <div className="mx-auto max-w-6xl px-4 py-20 text-center text-muted-foreground">板块不存在</div>;
 
   const Icon = getCategoryIcon(cat.iconName);
-  const articles = getArticlesByCategory(categoryKey);
-  const featured = articles.find((a) => a.featured) || articles[0];
-  const rest = articles.filter((a) => a.id !== featured?.id);
-
   const isVideoCategory = categoryKey === "videos";
   const isPodcastCategory = categoryKey === "podcasts";
+
+  // 视频和播客板块显示"即将上线"
+  if (isVideoCategory || isPodcastCategory) {
+    return (
+      <div className="mx-auto max-w-6xl px-4 sm:px-6">
+        <motion.div {...fadeUp} className="pt-2 sm:pt-4 pb-4">
+          <div className="flex items-center gap-2.5 sm:gap-3 mb-3 sm:mb-4">
+            <div className={`p-2 sm:p-2.5 rounded-xl ${isVideoCategory ? "bg-red-50 text-red-500" : "bg-purple-50 text-purple-500"}`}>
+              <Icon className="h-5 w-5 sm:h-6 sm:w-6" />
+            </div>
+            <div>
+              <span className={`text-[10px] sm:text-[11px] font-semibold uppercase tracking-widest block ${isVideoCategory ? "text-red-400" : "text-purple-400"}`}>{cat.tag}</span>
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground tracking-tight">{cat.label}</h1>
+            </div>
+          </div>
+        </motion.div>
+        <ComingSoonPlaceholder catLabel={cat.label} />
+      </div>
+    );
+  }
+
+  // 文章类板块从数据库读取
+  return <ArticleCategoryContent categoryKey={categoryKey} cat={cat} Icon={Icon} />;
+}
+
+function ArticleCategoryContent({ categoryKey, cat, Icon }: { categoryKey: string; cat: any; Icon: any }) {
+  const { data: posts, isLoading } = trpc.website.published.useQuery({ category: categoryKey, limit: 50 });
+  const articles = useMemo(() => (posts || []).map(mapPostToArticle), [posts]);
+  const featured = articles[0];
+  const rest = articles.slice(1);
 
   return (
     <div className="mx-auto max-w-6xl px-4 sm:px-6">
       {/* Header */}
       <motion.div {...fadeUp} className="pt-2 sm:pt-4 pb-8 sm:pb-10 lg:pb-14">
         <div className="flex items-center gap-2.5 sm:gap-3 mb-3 sm:mb-4">
-          <div className={`p-2 sm:p-2.5 rounded-xl ${isVideoCategory ? "bg-red-50 text-red-500" : isPodcastCategory ? "bg-purple-50 text-purple-500" : "bg-primary/6 text-primary"}`}>
+          <div className="p-2 sm:p-2.5 rounded-xl bg-primary/6 text-primary">
             <Icon className="h-5 w-5 sm:h-6 sm:w-6" />
           </div>
           <div>
-            <span className={`text-[10px] sm:text-[11px] font-semibold uppercase tracking-widest block ${isVideoCategory ? "text-red-400" : isPodcastCategory ? "text-purple-400" : "text-primary/60"}`}>{cat.tag}</span>
+            <span className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-widest block text-primary/60">{cat.tag}</span>
             <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground tracking-tight">{cat.label}</h1>
           </div>
         </div>
         <p className="text-muted-foreground text-sm sm:text-base lg:text-lg max-w-2xl leading-relaxed">{cat.desc}</p>
         <div className="flex items-center gap-4 mt-3 text-xs text-muted-foreground/50">
           <span>{articles.length} 篇内容</span>
-          <span>总浏览 {formatCount(articles.reduce((s, a) => s + (a.viewCount || 0), 0))}</span>
         </div>
       </motion.div>
 
-      {/* Video Grid Layout */}
-      {isVideoCategory && (
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 pb-8 sm:pb-12">
-          {articles.map((article, i) => (
-            <VideoCard key={article.id} article={article} index={i} />
-          ))}
+      {/* Content */}
+      {isLoading ? (
+        <div className="flex items-center justify-center py-20">
+          <Loader2 className="h-8 w-8 animate-spin text-primary/50" />
         </div>
-      )}
-
-      {/* Podcast List Layout */}
-      {isPodcastCategory && (
-        <div className="space-y-3 pb-8 sm:pb-12">
-          {articles.map((article, i) => (
-            <PodcastCard key={article.id} article={article} index={i} />
-          ))}
+      ) : articles.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-16 sm:py-20">
+          <div className="w-16 h-16 rounded-2xl bg-primary/6 flex items-center justify-center mb-4">
+            <Rocket className="h-8 w-8 text-primary/30" />
+          </div>
+          <p className="text-muted-foreground text-sm mb-2">该板块内容正在准备中</p>
+          <p className="text-muted-foreground/50 text-xs">敬请期待</p>
         </div>
-      )}
-
-      {/* Default Article Layout */}
-      {!isVideoCategory && !isPodcastCategory && (
+      ) : (
         <>
           {featured && <FeaturedCard article={featured} />}
           <div className="space-y-2.5 sm:space-y-3 pb-8 sm:pb-12">

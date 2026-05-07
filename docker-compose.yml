@@ -2,8 +2,6 @@
 # 深象 OPCS - Docker Compose 生产部署
 # 适用于阿里云 ECS（含本地 MySQL）
 # ============================================
-version: "3.9"
-
 services:
   # --- MySQL 数据库 ---
   mysql:
@@ -70,7 +68,7 @@ services:
 
   # --- Redis 缓存 ---
   redis:
-    image: redis:7-alpine
+    image: redis:alpine
     container_name: opcs-redis
     restart: always
     command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
@@ -93,7 +91,7 @@ services:
 
   # --- Nginx 反向代理 ---
   nginx:
-    image: nginx:1.25-alpine
+    image: nginx:alpine
     container_name: opcs-nginx
     restart: always
     ports:

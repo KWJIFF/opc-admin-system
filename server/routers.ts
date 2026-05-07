@@ -1,9 +1,13 @@
-import { COOKIE_NAME } from "@shared/const";
+import { COOKIE_NAME, ONE_YEAR_MS } from "@shared/const";
+import { TRPCError } from "@trpc/server";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, protectedProcedure, adminProcedure, router } from "./_core/trpc";
 import { z } from "zod";
 import * as db from "./db";
+import bcrypt from "bcryptjs";
+import { sdk } from "./_core/sdk";
+import { invokeLLM } from "./_core/llm";
 
 export const appRouter = router({
   system: systemRouter,
@@ -15,6 +19,35 @@ export const appRouter = router({
       ctx.res.clearCookie(COOKIE_NAME, { ...cookieOptions, maxAge: -1 });
       return { success: true } as const;
     }),
+    /** 本地登录（自托管模式） */
+    login: publicProcedure
+      .input(z.object({
+        username: z.string().min(1, "用户名不能为空"),
+        password: z.string().min(1, "密码不能为空"),
+      }))
+      .mutation(async ({ input, ctx }) => {
+        const user = await db.getUserByUsername(input.username);
+        if (!user || !user.passwordHash) {
+          throw new TRPCError({ code: "UNAUTHORIZED", message: "用户名或密码错误" });
+        }
+        const isValid = await bcrypt.compare(input.password, user.passwordHash);
+        if (!isValid) {
+          throw new TRPCError({ code: "UNAUTHORIZED", message: "用户名或密码错误" });
+        }
+        // 更新最后登录时间
+        await db.upsertUser({ openId: user.openId, lastSignedIn: new Date() });
+        // 签发 JWT session
+        const sessionToken = await sdk.createSessionToken(user.openId, {
+          name: user.name || input.username,
+          expiresInMs: ONE_YEAR_MS,
+        });
+        const cookieOptions = getSessionCookieOptions(ctx.req);
+        ctx.res.cookie(COOKIE_NAME, sessionToken, { ...cookieOptions, maxAge: ONE_YEAR_MS });
+        return {
+          success: true,
+          user: { id: user.id, username: user.username, name: user.name, email: user.email, role: user.role },
+        };
+      }),
   }),
 
   // ==================== Dashboard ====================
@@ -163,6 +196,225 @@ export const appRouter = router({
       .input(z.object({ limit: z.number().optional(), offset: z.number().optional() }).optional())
       .query(async ({ input }) => {
         return db.listWebsitePosts(input?.limit, input?.offset);
+      }),
+    create: protectedProcedure
+      .input(z.object({
+        title: z.string().min(1),
+        excerpt: z.string().optional(),
+        body: z.string().optional(),
+        coverImage: z.string().optional(),
+        category: z.string().optional(),
+        tags: z.array(z.string()).optional(),
+        status: z.enum(["draft", "published", "archived"]).optional(),
+      }))
+      .mutation(async ({ input, ctx }) => {
+        const publishedAt = input.status === "published" ? new Date() : undefined;
+        const result = await db.createWebsitePost({ ...input, publishedAt, createdBy: ctx.user.id });
+        await db.createAuditLog({ userId: ctx.user.id, userName: ctx.user.name ?? undefined, action: "create", resource: "website_post", resourceId: result.id });
+        return result;
+      }),
+    update: protectedProcedure
+      .input(z.object({
+        id: z.number(),
+        title: z.string().optional(),
+        excerpt: z.string().optional(),
+        body: z.string().optional(),
+        coverImage: z.string().optional(),
+        category: z.string().optional(),
+        tags: z.array(z.string()).optional(),
+        status: z.enum(["draft", "published", "archived"]).optional(),
+      }))
+      .mutation(async ({ input, ctx }) => {
+        const { id, ...data } = input;
+        if (data.status === "published") {
+          (data as any).publishedAt = new Date();
+        }
+        await db.updateWebsitePost(id, data);
+        await db.createAuditLog({ userId: ctx.user.id, userName: ctx.user.name ?? undefined, action: "update", resource: "website_post", resourceId: id });
+        return { success: true };
+      }),
+    delete: protectedProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(async ({ input, ctx }) => {
+        await db.deleteWebsitePost(input.id);
+        await db.createAuditLog({ userId: ctx.user.id, userName: ctx.user.name ?? undefined, action: "delete", resource: "website_post", resourceId: input.id });
+        return { success: true };
+      }),
+    getById: publicProcedure
+      .input(z.object({ id: z.number() }))
+      .query(async ({ input }) => {
+        return db.getWebsitePostById(input.id);
+      }),
+    // --- 前台公开接口 ---
+    published: publicProcedure
+      .input(z.object({ category: z.string().optional(), limit: z.number().optional(), offset: z.number().optional() }).optional())
+      .query(async ({ input }) => {
+        return db.listPublishedPosts(input?.category, input?.limit, input?.offset);
+      }),
+    featured: publicProcedure
+      .input(z.object({ limit: z.number().optional() }).optional())
+      .query(async ({ input }) => {
+        return db.getFeaturedPosts(input?.limit);
+      }),
+  }),
+
+  // ==================== AI Content Generation ====================
+  ai: router({
+    generateArticle: protectedProcedure
+      .input(z.object({
+        category: z.string(),
+        topic: z.string().optional(),
+        style: z.string().optional(),
+        length: z.enum(["short", "medium", "long"]).optional(),
+      }))
+      .mutation(async ({ input }) => {
+        const categoryLabels: Record<string, string> = {
+          news: "今日快讯", thoughts: "思想前沿", research: "深度研究",
+          policy: "政策风向", cases: "实战拆解", reports: "深度报告", toolkit: "工具图谱",
+        };
+        const catLabel = categoryLabels[input.category] || input.category;
+        const lengthGuide = input.length === "long" ? "3000-5000字" : input.length === "short" ? "800-1200字" : "1500-2500字";
+        const topicHint = input.topic ? `围绕主题：${input.topic}` : "选择当下最热门、最有价值的话题";
+        const styleHint = input.style || "专业、深入、有洞察力，适合一人公司创业者阅读";
+
+        const result = await invokeLLM({
+          messages: [
+            {
+              role: "system",
+              content: `你是深象OPCS研究院的资深内容编辑，专注于一人公司（One Person Company）创业领域。你的文章面向中国的独立创业者、内容创作者和数字游民。
+
+写作要求：
+1. 文章用 Markdown 格式，包含标题、小标题、正文段落
+2. 适当使用 Markdown 表格来对比数据或工具
+3. 使用粗体强调关键概念
+4. 文章要有深度和洞察力，不要泛泛而谈
+5. 引用真实的工具、平台、人物和案例
+6. 文末加上"深象OPCS研究院"的编辑点评
+7. 文章长度：${lengthGuide}
+8. 写作风格：${styleHint}
+9. 日期使用2026年4月的日期`,
+            },
+            {
+              role: "user",
+              content: `请为「${catLabel}」板块撰写一篇高质量文章。${topicHint}。
+
+请返回JSON格式：
+{
+  "title": "文章标题",
+  "excerpt": "100字以内的摘要",
+  "body": "完整的Markdown格式正文",
+  "tags": ["标签1", "标签2", "标签3"],
+  "readTime": "X 分钟"
+}`,
+            },
+          ],
+          response_format: {
+            type: "json_schema",
+            json_schema: {
+              name: "article",
+              strict: true,
+              schema: {
+                type: "object",
+                properties: {
+                  title: { type: "string" },
+                  excerpt: { type: "string" },
+                  body: { type: "string" },
+                  tags: { type: "array", items: { type: "string" } },
+                  readTime: { type: "string" },
+                },
+                required: ["title", "excerpt", "body", "tags", "readTime"],
+                additionalProperties: false,
+              },
+            },
+          },
+        });
+
+        const content = result.choices[0]?.message?.content;
+        if (!content || typeof content !== "string") {
+          throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "AI 生成失败" });
+        }
+        return JSON.parse(content) as { title: string; excerpt: string; body: string; tags: string[]; readTime: string };
+      }),
+
+    generateAndPublish: protectedProcedure
+      .input(z.object({
+        category: z.string(),
+        topic: z.string().optional(),
+        style: z.string().optional(),
+        length: z.enum(["short", "medium", "long"]).optional(),
+        autoPublish: z.boolean().optional(),
+      }))
+      .mutation(async ({ input, ctx }) => {
+        const categoryLabels: Record<string, string> = {
+          news: "今日快讯", thoughts: "思想前沿", research: "深度研究",
+          policy: "政策风向", cases: "实战拆解", reports: "深度报告", toolkit: "工具图谱",
+        };
+        const catLabel = categoryLabels[input.category] || input.category;
+        const lengthGuide = input.length === "long" ? "3000-5000字" : input.length === "short" ? "800-1200字" : "1500-2500字";
+        const topicHint = input.topic ? `围绕主题：${input.topic}` : "选择当下最热门、最有价值的话题";
+        const styleHint = input.style || "专业、深入、有洞察力";
+
+        const result = await invokeLLM({
+          messages: [
+            {
+              role: "system",
+              content: `你是深象OPCS研究院的资深内容编辑。为「${catLabel}」板块撰写一篇高质量文章。
+写作要求：Markdown格式，含表格和数据对比，${lengthGuide}，风格：${styleHint}，引用真实案例和工具。`,
+            },
+            {
+              role: "user",
+              content: `${topicHint}。返回JSON：{"title":"...","excerpt":"...","body":"...","tags":[...]}`,
+            },
+          ],
+          response_format: {
+            type: "json_schema",
+            json_schema: {
+              name: "article",
+              strict: true,
+              schema: {
+                type: "object",
+                properties: {
+                  title: { type: "string" },
+                  excerpt: { type: "string" },
+                  body: { type: "string" },
+                  tags: { type: "array", items: { type: "string" } },
+                },
+                required: ["title", "excerpt", "body", "tags"],
+                additionalProperties: false,
+              },
+            },
+          },
+        });
+
+        const content = result.choices[0]?.message?.content;
+        if (!content || typeof content !== "string") {
+          throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "AI 生成失败" });
+        }
+        const article = JSON.parse(content) as { title: string; excerpt: string; body: string; tags: string[] };
+
+        // 保存到数据库
+        const status = input.autoPublish ? "published" : "draft";
+        const post = await db.createWebsitePost({
+          title: article.title,
+          excerpt: article.excerpt,
+          body: article.body,
+          category: input.category,
+          tags: article.tags,
+          status,
+          publishedAt: input.autoPublish ? new Date() : undefined,
+          createdBy: ctx.user.id,
+        });
+
+        await db.createAuditLog({
+          userId: ctx.user.id,
+          userName: ctx.user.name ?? undefined,
+          action: "ai_generate",
+          resource: "website_post",
+          resourceId: post.id,
+          details: { category: input.category, topic: input.topic, autoPublish: input.autoPublish },
+        });
+
+        return { ...article, postId: post.id, status };
       }),
   }),
 

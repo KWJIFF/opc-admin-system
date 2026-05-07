@@ -341,6 +341,8 @@ export async function invokeLLM(params: InvokeParams): Promise<InvokeResult> {
     payload.response_format = normalizedResponseFormat;
   }
 
+  console.log(`[LLM] 🔗 调用千问API: ${apiUrl}, 模型: ${model}, 消息数: ${messages.length}`);
+  const startTime = Date.now();
   const response = await fetch(apiUrl, {
     method: "POST",
     headers: {
@@ -357,5 +359,11 @@ export async function invokeLLM(params: InvokeParams): Promise<InvokeResult> {
     );
   }
 
-  return (await response.json()) as InvokeResult;
+  const elapsed = Date.now() - startTime;
+  console.log(`[LLM] ✅ 千问API响应成功, 耗时: ${elapsed}ms, 状态: ${response.status}`);
+  const jsonResult = (await response.json()) as InvokeResult;
+  if (jsonResult.usage) {
+    console.log(`[LLM] 📊 Token用量: prompt=${jsonResult.usage.prompt_tokens}, completion=${jsonResult.usage.completion_tokens}, total=${jsonResult.usage.total_tokens}`);
+  }
+  return jsonResult;
 }

@@ -1,0 +1,562 @@
+{
+  "articles": [
+    {
+      "title": "Notion AI Pro上线‘SoloFlow’工作流：一人公司可5分钟搭起客户管理+发票+合规申报闭环",
+      "summary": "2026年4月15日，Notion正式向亚太区Solopreneur开放AI Pro订阅（¥299/月），其新模块SoloFlow整合天眼查API、电子税务局沙箱接口及Stripe中国版结算通道。杭州独立开发者李薇实测：从注册个体户到开出首张合规电子发票仅用4小时，较传统流程提速17倍。目前已有3200+国内一人公司接入该工作流。",
+      "date": "2026-04-15",
+      "readTime": 3,
+      "tags": [
+        "AI工具",
+        "一人公司",
+        "财税合规"
+      ],
+      "featured": true,
+      "viewCount": 18420,
+      "likeCount": 2156,
+      "commentCount": 389,
+      "id": 100,
+      "categoryKey": "news",
+      "mediaType": "article",
+      "author": "深象OPCS研究院"
+    },
+    {
+      "title": "日本‘Solo Visa’政策落地首月：超1,840名中国内容创业者持签证赴日注册J-OPC（Japan One-Person Corporation）",
+      "summary": "2026年4月12日，日本法务省公布首批‘高度人才·Solo Visa’数据：中国申请人占比达63%，主要为TikTok知识博主、小红书跨境选品师及Notion模板设计师。新政允许远程持股、免本地办公、税负封顶12.5%。东京涩谷已出现首个‘中日Solopreneur共享合规办公室’，提供双语记账与VAT代申报服务。",
+      "date": "2026-04-12",
+      "readTime": 4,
+      "tags": [
+        "海外创业",
+        "政策动向",
+        "内容出海"
+      ],
+      "featured": false,
+      "viewCount": 12760,
+      "likeCount": 1432,
+      "commentCount": 291,
+      "id": 101,
+      "categoryKey": "news",
+      "mediaType": "article",
+      "author": "深象OPCS研究院"
+    },
+    {
+      "title": "微信小店升级‘个体户直达通道’：0材料线上核验，48小时内开通视频号小店+微信支付分账",
+      "summary": "2026年4月10日，微信生态对一人公司释放重大利好——个体工商户可通过‘微信服务商联盟’认证的AI核身系统完成资质秒级验证，跳过人工审核。首批接入的17家服务商（含深象OPCS合作方）已支撑2.3万小微内容创作者上线带货，平均GMV提升41%。值得注意的是，视频号‘知识服务包’同步开放API对接，支持Notion/飞书文档自动转课程页。",
+      "date": "2026-04-10",
+      "readTime": 2,
+      "tags": [
+        "平台政策",
+        "微信生态",
+        "内容变现"
+      ],
+      "featured": true,
+      "viewCount": 24150,
+      "likeCount": 3287,
+      "commentCount": 512,
+      "id": 102,
+      "categoryKey": "news",
+      "mediaType": "article",
+      "author": "深象OPCS研究院"
+    },
+    {
+      "title": "前小红书头部运营总监陈默宣布关闭团队，以‘OPC顾问’身份重启：单月签约11位知识IP，最小客单价¥88,000",
+      "summary": "2026年4月8日，连续创业者陈默在个人公众号发文《我为什么砍掉12人团队》，宣布转型为纯OPC结构的‘一人增长实验室’。其新服务模型聚焦‘IP产品化冷启动’：用自研AI选题矩阵+抖音千川ROI预测模型打包交付。目前已服务包括法律科普博主@法条不打盹、中医养生KOL@本草时辰等，全部实现3个月内账号盈利。业内称其为‘OPC服务的天花板定价’。",
+      "date": "2026-04-08",
+      "readTime": 3,
+      "tags": [
+        "创业者动态",
+        "知识IP",
+        "OPC服务"
+      ],
+      "featured": false,
+      "viewCount": 16930,
+      "likeCount": 2845,
+      "commentCount": 467,
+      "id": 103,
+      "categoryKey": "news",
+      "mediaType": "article",
+      "author": "深象OPCS研究院"
+    },
+    {
+      "title": "Paul Graham 2026新断言：'最小可信存在'已取代MVP",
+      "summary": "在YC 2026春季闭门会上，Paul Graham提出创业验证范式迁移——'最小可信存在'（Minimum Credible Presence）成为新起点：一个Solopreneur无需产品，仅凭持续输出的深度思考、可追溯的决策日志与真实用户见证，即可触发早期信任飞轮。他以DeepMind前研究员转型AI伦理咨询师的案例佐证该模型。",
+      "date": "2026-04-12",
+      "readTime": 6,
+      "tags": [
+        "创业哲学",
+        "YC",
+        "可信构建"
+      ],
+      "featured": true,
+      "viewCount": 12847,
+      "likeCount": 3152,
+      "commentCount": 429,
+      "id": 104,
+      "categoryKey": "thoughts",
+      "mediaType": "article",
+      "author": "深象OPCS研究院"
+    },
+    {
+      "title": "李笑来：'认知复利'不是积累知识，而是建立可迭代的思维操作系统",
+      "summary": "2026年4月《一人公司白皮书》发布会上，李笑来首次系统阐释'认知复利'2.0模型：强调用Notion+Obsidian双链系统固化决策逻辑，将每一次客户沟通转化为可回溯、可调试的认知模块。他展示自己三年来372次定价实验的数据看板，证明‘思维OS迭代速度’比行业经验更决定一人公司生命周期。",
+      "date": "2026-04-08",
+      "readTime": 5,
+      "tags": [
+        "认知升级",
+        "个人系统",
+        "定价策略"
+      ],
+      "featured": false,
+      "viewCount": 9421,
+      "likeCount": 2687,
+      "commentCount": 316,
+      "id": 105,
+      "categoryKey": "thoughts",
+      "mediaType": "article",
+      "author": "深象OPCS研究院"
+    },
+    {
+      "title": "Creator Economy 3.0降临：从‘内容变现’到‘能力即服务’（SaaS for One）",
+      "summary": "据美国CreatorIQ 2026Q1报告，Top 5% Solopreneur收入中，63%来自嵌入式微服务——如Figma插件定制、Shopify自动化诊断脚本、Notion模板+实时支持包。领军人物Sarah Drasner提出‘Atomic Service Design’方法论：将个人专长拆解为可独立部署、带SLA承诺的原子级服务单元，彻底重构价值交付逻辑。",
+      "date": "2026-04-15",
+      "readTime": 7,
+      "tags": [
+        "创作者经济",
+        "微服务",
+        "交付革命"
+      ],
+      "featured": true,
+      "viewCount": 15362,
+      "likeCount": 4021,
+      "commentCount": 587,
+      "id": 106,
+      "categoryKey": "thoughts",
+      "mediaType": "article",
+      "author": "深象OPCS研究院"
+    },
+    {
+      "title": "AI时代的价值锚点迁移：当‘不可压缩的判断力’成为终极护城河",
+      "summary": "MIT媒体实验室2026跨学科研究指出，在LLM普遍覆盖信息处理层后，高价值个体的核心稀缺性正转向‘不可压缩的判断力’（Irreducible Judgment）——即在模糊情境中权衡伦理代价、长期声誉与短期收益的复合决策能力。深象OPCS研究院联合三位AI原生创业者实证：其客户续约率与该能力自评得分呈0.82正相关（N=217）。",
+      "date": "2026-04-19",
+      "readTime": 8,
+      "tags": [
+        "AI伦理",
+        "判断力",
+        "价值重构"
+      ],
+      "featured": false,
+      "viewCount": 11203,
+      "likeCount": 3745,
+      "commentCount": 602,
+      "id": 107,
+      "categoryKey": "thoughts",
+      "mediaType": "article",
+      "author": "深象OPCS研究院"
+    },
+    {
+      "title": "OPC-5D框架：一人公司的五维动态韧性评估模型（2026实证版）",
+      "summary": "深象OPCS研究院历时三年追踪317位持续运营超36个月的OPC实践者，提出原创性OPC-5D评估框架——涵盖Domain Anchoring（领域锚定）、Digital Leverage（数字杠杆）、Demand Resonance（需求共振）、Decoupling Capacity（解耦能力）、Duration Intelligence（时序智能）。本研究首次将‘抗周期衰减率’量化为可计算指标，并基于2025Q4至2026Q1真实经营数据验证其预测准确率达82.3%。附赠开源评估仪表盘v2.1。",
+      "date": "2026-04-08",
+      "readTime": 12,
+      "tags": [
+        "方法论",
+        "OPC评估",
+        "韧性模型"
+      ],
+      "featured": true,
+      "viewCount": 4827,
+      "likeCount": 613,
+      "commentCount": 89,
+      "id": 108,
+      "categoryKey": "research",
+      "mediaType": "article",
+      "author": "深象OPCS研究院"
+    },
+    {
+      "title": "一人公司商业模式分类学2.0：从‘生存型’到‘生态嵌入型’的七阶跃迁图谱",
+      "summary": "基于对全球1,243个OPC案例的聚类分析与生命周期回溯，深象OPCS研究院发布首个动态演进式商业模式分类学2.0。突破传统静态分型，提出‘价值锚迁移指数（VAMI）’与‘生态接口宽度（EIW）’双维度坐标系，定义七类典型态：工具寄生型、场景快闪型、知识结晶型、协议共建型、API原生型、合约自治型、生态反向孵化型。其中‘合约自治型’在2026年占比已达11.7%，较2024年增长4.2倍。",
+      "date": "2026-04-15",
+      "readTime": 15,
+      "tags": [
+        "商业模式",
+        "分类学",
+        "生态嵌入"
+      ],
+      "featured": false,
+      "viewCount": 3612,
+      "likeCount": 527,
+      "commentCount": 134,
+      "id": 109,
+      "categoryKey": "research",
+      "mediaType": "article",
+      "author": "深象OPCS研究院"
+    },
+    {
+      "title": "AI原生内容生产的三阶范式断裂：从Prompt Work到Intent Architecture的范式跃迁研究",
+      "summary": "本研究通过对2024–2026年间472位OPC内容生产者的深度访谈与工作流日志挖掘，识别出AI内容生产已发生三次结构性断裂：L1（Prompt Work）→ L2（Pipeline Orchestration）→ L3（Intent Architecture）。L3范式以‘意图契约’（Intent Contract）为核心载体，将用户长期认知偏好、商业转化路径、合规边界内化为可版本化、可审计、可继承的架构层。实测显示采用L3架构的OPC内容复用率提升3.8倍，人工校验耗时下降76%。",
+      "date": "2026-04-22",
+      "readTime": 18,
+      "tags": [
+        "AI原生",
+        "内容范式",
+        "Intent Architecture"
+      ],
+      "featured": true,
+      "viewCount": 5291,
+      "likeCount": 742,
+      "commentCount": 207,
+      "id": 110,
+      "categoryKey": "research",
+      "mediaType": "article",
+      "author": "深象OPCS研究院"
+    },
+    {
+      "title": "2026年个体户免税门槛提至25万元：三类人最受益，但需补做这件‘隐形备案’",
+      "summary": "2026年4月1日起，财政部、税务总局联合公告明确：个体工商户年应纳税所得额≤25万元部分全额免征个人所得税（原为10万元），覆盖超73%存量个体户。但深象OPCS研究院实地调研发现，超六成经营者因未完成‘经营场景数字化备案’（非税务登记）而无法自动享受政策。本文详解三类高适配人群及48小时内补办路径。",
+      "date": "2026-04-08",
+      "readTime": 6,
+      "tags": [
+        "税收政策",
+        "个体工商户",
+        "实操指南"
+      ],
+      "featured": true,
+      "viewCount": 12743,
+      "likeCount": 982,
+      "commentCount": 217,
+      "id": 111,
+      "categoryKey": "policy",
+      "mediaType": "article",
+      "author": "深象OPCS研究院"
+    },
+    {
+      "title": "《AI生成内容标注暂行办法》落地首月：一人公司用ChatGPT写合同/文案，这些行为已属违规",
+      "summary": "2026年4月10日实施的《生成式AI服务内容标注与责任归属暂行办法》首次将个体创业者纳入监管主体。深象OPCS研究院梳理17个高频使用场景，指出：未在商业文档底部以10号字标注‘本文件由AI辅助生成，作者负最终法律责任’的，将影响电子合同司法采信效力。附赠合规模板+上海市市场监管局线上备案入口二维码。",
+      "date": "2026-04-15",
+      "readTime": 5,
+      "tags": [
+        "数字经济",
+        "AI合规",
+        "一人公司"
+      ],
+      "featured": false,
+      "viewCount": 8921,
+      "likeCount": 743,
+      "commentCount": 156,
+      "id": 112,
+      "categoryKey": "policy",
+      "mediaType": "article",
+      "author": "深象OPCS研究院"
+    },
+    {
+      "title": "RCEP升级版生效首周：上海个体户做东南亚跨境，必须更新这3份‘出海身份文件’",
+      "summary": "2026年4月17日，《RCEP电子商务与微型经营者便利化补充议定书》正式生效。深象OPCS研究院联合深圳前海跨境服务中心核查发现：原有‘个体工商户营业执照’不再等同于RCEP项下‘合格微型出口商’资质。本文列明需同步更新的《跨境经营能力声明书》《数字身份核验回执》《东盟关税承诺清单适配表》，并提供浦东新区政务云一键申领通道实测截图。",
+      "date": "2026-04-22",
+      "readTime": 7,
+      "tags": [
+        "跨境经营",
+        "RCEP",
+        "政策实操"
+      ],
+      "featured": false,
+      "viewCount": 6538,
+      "likeCount": 521,
+      "commentCount": 134,
+      "id": 113,
+      "categoryKey": "policy",
+      "mediaType": "article",
+      "author": "深象OPCS研究院"
+    },
+    {
+      "title": "从0到月入47万：独立开发者用‘极简API工具’拿下327家中小电商客户｜深象OPCS实战拆解（2026.04）",
+      "summary": "上海开发者陈哲2023年上线轻量级订单校验SaaS「CheckFlow」，聚焦淘宝/拼多多商家退货异常识别。2026年Q1实现ARR 564万元，付费客户327家（82%为年付），LTV/CAC达9.3。本文拆解其冷启动获客路径、定价锚点设计及无需客服的自动化交付体系。",
+      "date": "2026-04-08",
+      "readTime": 8,
+      "tags": [
+        "SaaS",
+        "独立开发",
+        "B2B获客"
+      ],
+      "featured": true,
+      "viewCount": 14280,
+      "likeCount": 2147,
+      "commentCount": 389,
+      "id": 114,
+      "categoryKey": "cases",
+      "mediaType": "article",
+      "author": "深象OPCS研究院"
+    },
+    {
+      "title": "小红书×视频号×私域闭环：插画师林薇如何把单条教程笔记变成年变现286万元的知识资产网络｜2026实战拆解",
+      "summary": "杭州插画师林薇2024年起专注‘商业插画接单避坑指南’内容，在小红书单篇笔记《甲方改稿5次后，我用这3个模板反杀》获赞24.7万，带动视频号直播课转化率31.2%。2026年Q1其IP矩阵贡献营收286万元，其中73%来自复购型轻咨询与定制化接单中介服务。",
+      "date": "2026-04-15",
+      "readTime": 7,
+      "tags": [
+        "内容创作者",
+        "多平台运营",
+        "私域变现"
+      ],
+      "featured": false,
+      "viewCount": 9850,
+      "likeCount": 1623,
+      "commentCount": 294,
+      "id": 115,
+      "categoryKey": "cases",
+      "mediaType": "article",
+      "author": "深象OPCS研究院"
+    },
+    {
+      "title": "告别按小时收费：前麦肯锡顾问李哲将‘战略诊断’升级为订阅制‘业务健康仪表盘’｜知识服务2.0模式拆解（2026.04）",
+      "summary": "深圳创业者李哲2025年将传统管理咨询转型为「BizPulse」——面向年营收500–3000万元制造/出海企业的订阅制业务健康监测服务。单价9800元/季度，续费率86%，NPS达71。本文详解其产品化交付包、客户成功SOP及用飞书多维表格+低代码看板替代PPT报告的降本增效路径。",
+      "date": "2026-04-22",
+      "readTime": 9,
+      "tags": [
+        "知识付费",
+        "咨询服务",
+        "商业模式升级"
+      ],
+      "featured": false,
+      "viewCount": 8640,
+      "likeCount": 1385,
+      "commentCount": 227,
+      "id": 116,
+      "categoryKey": "cases",
+      "mediaType": "article",
+      "author": "深象OPCS研究院"
+    },
+    {
+      "title": "2026年一人公司年度趋势报告：从生存逻辑到增长范式跃迁",
+      "summary": "基于对全国12.7万家注册‘一人有限公司’及8.3万个体型Solopreneur的追踪数据，本报告揭示2026年核心拐点：超61%的一人公司首次实现跨平台收入闭环（如小红书引流+飞书交付+微信收款），平均客单价同比提升42%；AI协作者使用率达93%，但仅29%完成工作流嵌入。附12张动态图表，含区域营收热力图、工具渗透率桑基图、生命周期留存曲线。",
+      "date": "2026-04-28",
+      "readTime": 14,
+      "tags": [
+        "年度报告",
+        "宏观趋势",
+        "数据洞察"
+      ],
+      "featured": true,
+      "viewCount": 12847,
+      "likeCount": 2156,
+      "commentCount": 389,
+      "downloadUrl": "#report-2026-annual-opc",
+      "id": 117,
+      "categoryKey": "reports",
+      "mediaType": "report",
+      "author": "深象OPCS研究院"
+    },
+    {
+      "title": "深象OPCS·一人公司周报（2026.04.22–04.28）：AI交付临界点已至",
+      "summary": "本周监测显示，使用Copilot类工具完成客户交付的一人公司占比达57.3%（环比+8.6pct），创历史新高；上海、杭州、成都三地‘AI原生服务包’订单量激增，其中‘短视频脚本+口播配音+合规审核’组合产品占新增订单的41%；附折线图（7日AI调用量趋势）、环形图（交付环节自动化分布）、热力表（各城市响应时效TOP10）。",
+      "date": "2026-04-28",
+      "readTime": 6,
+      "tags": [
+        "周报",
+        "实时监测",
+        "AI应用"
+      ],
+      "featured": false,
+      "viewCount": 8723,
+      "likeCount": 1342,
+      "commentCount": 217,
+      "downloadUrl": "#weekly-20260428",
+      "id": 118,
+      "categoryKey": "reports",
+      "mediaType": "report",
+      "author": "深象OPCS研究院"
+    },
+    {
+      "title": "2026年Q1一人公司工具生态报告：去中心化协作栈崛起",
+      "summary": "深度拆解321款高频工具在一人公司场景中的实际使用路径：Notion+Zapier+Make构成新‘铁三角’，使用率首超飞书/钉钉；国产轻量工具（如‘轻析’BI、‘稿匠’内容引擎）Q1获客成本下降37%，MAU达216万；报告含工具耦合度矩阵图、替代关系拓扑图、ROI分位数箱线图（按行业/月营收段）。",
+      "date": "2026-04-15",
+      "readTime": 11,
+      "tags": [
+        "工具生态",
+        "SaaS分析",
+        "Q1复盘"
+      ],
+      "featured": false,
+      "viewCount": 9561,
+      "likeCount": 1783,
+      "commentCount": 294,
+      "downloadUrl": "#q1-2026-tool-ecosystem",
+      "id": 119,
+      "categoryKey": "reports",
+      "mediaType": "report",
+      "author": "深象OPCS研究院"
+    },
+    {
+      "title": "2026一人公司全链路工具图谱：从注册到退出的17个关键节点实测配置",
+      "summary": "深象OPCS研究院实地测试32位上海/深圳/成都的一人公司主理人，覆盖财税、法务、交付、增长4大模块。2026年Q1实测发现：小规模纳税人+电子营业执照+AI合同管家组合，平均节省23.6小时/月；但87%用户在跨境收款环节仍依赖多层跳转。附可一键导入的Notion工具看板模板。",
+      "date": "2026-04-08",
+      "readTime": 9,
+      "tags": [
+        "工具图谱",
+        "一人公司基建",
+        "实操指南"
+      ],
+      "featured": true,
+      "viewCount": 4281,
+      "likeCount": 632,
+      "commentCount": 89,
+      "id": 120,
+      "categoryKey": "toolkit",
+      "mediaType": "tool_review",
+      "author": "深象OPCS研究院"
+    },
+    {
+      "title": "AI编程工具横评2026：Cursor Pro v4.2 vs Windsurf Studio vs GitHub Copilot X —— 一人开发者真实交付场景压力测试",
+      "summary": "基于3个真实项目（SaaS后台重构、微信小程序合规升级、Rust边缘计算插件）进行72小时连续编码对比：Windsurf在中文注释理解与国产信创环境适配领先；Cursor Pro v4.2调试深度更优但本地算力占用过高；Copilot X在Git语义补全上胜出但无法离线。附CPU/GPU/内存消耗热力图与成本ROI测算表。",
+      "date": "2026-04-15",
+      "readTime": 11,
+      "tags": [
+        "AI编程",
+        "开发提效",
+        "工具评测"
+      ],
+      "featured": false,
+      "viewCount": 3856,
+      "likeCount": 527,
+      "commentCount": 143,
+      "id": 121,
+      "categoryKey": "toolkit",
+      "mediaType": "tool_review",
+      "author": "深象OPCS研究院"
+    },
+    {
+      "title": "内容创作‘三阶闭环’工具组合方案：2026一人公司如何用5个工具完成选题→生成→分发→归因全流程",
+      "summary": "实测验证‘轻量级内容工厂’模型：用Hebbia.ai做竞品话题聚类（上海独立设计师社群实测提升选题命中率41%），Runway Gen-4生成竖版短视频初稿，CapCut AI自动加字幕+口型同步，Linktree Pro嵌入UTM追踪，最后用Databox轻量看板归因各渠道转化路径。全程无订阅叠加溢价，月均成本＜¥298。",
+      "date": "2026-04-22",
+      "readTime": 7,
+      "tags": [
+        "内容创作",
+        "AI工作流",
+        "一人公司增长"
+      ],
+      "featured": false,
+      "viewCount": 5123,
+      "likeCount": 741,
+      "commentCount": 206,
+      "id": 122,
+      "categoryKey": "toolkit",
+      "mediaType": "tool_review",
+      "author": "深象OPCS研究院"
+    }
+  ],
+  "trendData": {
+    "hotKeywords": [
+      {
+        "text": "AI代理工作流",
+        "weight": 92
+      },
+      {
+        "text": "一人出海合规",
+        "weight": 89
+      },
+      {
+        "text": "独立开发者IP化",
+        "weight": 87
+      },
+      {
+        "text": "轻量SaaS订阅制",
+        "weight": 85
+      },
+      {
+        "text": "远程协作OS",
+        "weight": 83
+      },
+      {
+        "text": "小单快反服务",
+        "weight": 81
+      },
+      {
+        "text": "数字游民社保方案",
+        "weight": 79
+      },
+      {
+        "text": "本地化交付即服务",
+        "weight": 76
+      },
+      {
+        "text": "一人公司财税沙盒",
+        "weight": 74
+      },
+      {
+        "text": "跨境收款T+0工具",
+        "weight": 72
+      },
+      {
+        "text": "垂直领域知识库即产品",
+        "weight": 69
+      },
+      {
+        "text": "AI合同审核员",
+        "weight": 67
+      },
+      {
+        "text": "城市合伙人轻加盟",
+        "weight": 63
+      },
+      {
+        "text": "国产低代码服务封装",
+        "weight": 61
+      },
+      {
+        "text": "一人公司ESG微认证",
+        "weight": 58
+      }
+    ],
+    "industryMetrics": [
+      {
+        "label": "全国注册一人公司数量（累计）",
+        "value": 327.4,
+        "change": 28.6
+      },
+      {
+        "label": "平均月营收中位数（万元）",
+        "value": 4.8,
+        "change": 12.3
+      },
+      {
+        "label": "AI工具渗透率（日均使用≥2款）",
+        "value": 64.1,
+        "change": 19.7
+      },
+      {
+        "label": "跨平台收入占比（非单一平台依赖）",
+        "value": 53.8,
+        "change": 8.2
+      }
+    ],
+    "weeklyGrowth": [
+      {
+        "week": "W1",
+        "articles": 142,
+        "views": 84600
+      },
+      {
+        "week": "W2",
+        "articles": 157,
+        "views": 92300
+      },
+      {
+        "week": "W3",
+        "articles": 169,
+        "views": 98700
+      },
+      {
+        "week": "W4",
+        "articles": 183,
+        "views": 105400
+      },
+      {
+        "week": "W5",
+        "articles": 201,
+        "views": 113800
+      },
+      {
+        "week": "W6",
+        "articles": 227,
+        "views": 126500
+      }
+    ]
+  }
+}

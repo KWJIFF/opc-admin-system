@@ -50,9 +50,9 @@
 - [x] 环境配置管理
 
 ## AI 自动化接口层
-- [ ] 所有核心操作 tRPC API 暴露
-- [ ] 结构化操作日志与审计
-- [ ] 阿里系大模型（通义千问）接入预留
+- [x] 核心操作 tRPC API 暴露（auth/website/ai/system/comments/bookmarks/subscriptions）
+- [x] 操作日志与审计（audit_log 表 + 后台日志页面）
+- [x] 阿里系大模型（通义千问）接入（ALIYUN_DASHSCOPE_API_KEY 已配置，优先使用千问 qwen-max）
 
 ## 阿里云部署配置
 - [ ] Dockerfile 与 docker-compose
@@ -338,3 +338,78 @@
 - [x] 调研通义千问百炼平台最新API接入方式和价格
 - [x] 编写独立部署手册：每个购买步骤逐项列出勾选方案
 - [x] 交付独立PDF/Markdown文档给用户
+
+## 博客频道清理
+- [ ] 清空博客频道内容，板块显示"待上线"状态
+
+## 运维自动化与文档（小白友好）
+- [ ] 编写完整的运维手册（README-OPS.md），包含项目介绍、架构说明、部署步骤、常见问题
+- [ ] 编写一键部署脚本（deploy/scripts/deploy.sh）
+- [ ] 编写一键更新脚本（deploy/scripts/update.sh）
+- [ ] 编写数据库备份脚本（deploy/scripts/backup.sh）
+- [ ] 编写数据库恢复脚本（deploy/scripts/restore.sh）
+- [ ] 配置 Docker 自动重启和健康检查
+- [ ] 配置自动日志清理
+- [ ] 让任何开发者都能快速上手维护和升级
+
+## 阿里云安全服务配置
+- [ ] 云安全中心（主机安全防护、漏洞检测）
+- [ ] Web 应用防火墙（WAF）或基础防护
+- [ ] DDoS 防护（检查基础防护状态，评估是否需要升级）
+- [ ] SSL 证书申请（免费 DV 证书，备案后配置 HTTPS）
+- [ ] ECS 安全组规则优化（仅开放必要端口）
+- [ ] 维护手册中列明所有密码与凭证清单（数据库、API Key、服务器等）
+
+## ICP 备案
+- [ ] 在阿里云上提交 ICP 备案申请（opcs.vip）
+
+## 双模式兼容改造（本地登录 + 保留 Manus 升级能力）
+- [x] 数据库 schema 添加 username 和 passwordHash 字段到 users 表
+- [x] 安装 bcryptjs 依赖用于密码哈希
+- [x] pnpm db:push 推送 schema 变更
+- [x] 恢复 env.ts 为双模式兼容（保留 Manus 变量但可选）
+- [x] server/db.ts 添加 getUserByUsername、createLocalUser 函数
+- [x] 新增 server/_core/localAuth.ts 本地登录路由（POST /api/auth/login）
+- [x] server/_core/index.ts 注册本地 auth 路由（与 OAuth 并存）
+- [x] server/_core/context.ts 保持不变（SDK 验证 JWT 通用）
+- [x] server/routers.ts 添加 auth.login mutation
+- [x] client/src/pages/Login.tsx 实现本地登录（调用 tRPC login mutation）
+- [x] client/src/_core/hooks/useAuth.ts 清理 manus-runtime localStorage key
+- [ ] .env.production.example 标注哪些是 Manus 专用（可选）
+- [ ] 本地构建测试通过
+- [ ] 部署到 ECS 并创建管理员账号
+- [ ] 完整测试所有功能模块
+
+## 清除测试数据并重新填充
+- [ ] 清除所有内容数据表（signals, topics, contents, review_tasks, publish_tasks, reports, workflows, audit_logs, comments, bookmarks, likes, article_views, ai_interactions, data_loop_suggestions, insight_tasks, website_posts, calendar_events）
+- [ ] 保留 users 表和 sources/media_accounts/subscribers/team_invites/content_templates 等配置表
+- [ ] 重新填充贴合"一人公司创业者"定位的真实内容数据
+- [ ] 部署到 ECS 并在 ECS 上创建管理员账号
+- [ ] 完整测试所有功能
+
+## AI 内容生成功能实现（后台调用千问 API）
+- [ ] 后端：添加 AI 文章生成 tRPC procedure（调用千问 API 生成文章正文）
+- [ ] 后端：添加 AI 配图生成 procedure（调用千问图像生成 API）
+- [ ] 后端：添加"推送到前台"procedure（将后台内容发布到前台 website articles）
+- [ ] 前端：Contents 页面对接 AI 生成 API（点击按钮即可生成文章）
+- [ ] 前端：Website 页面对接推送功能（一键推送到前台）
+- [ ] 前台：文章详情页渲染完整 Markdown 正文（含表格、图片等）
+- [ ] 修复 auth.me 暴露 passwordHash 安全问题
+- [ ] 本地测试 AI 生成全流程
+- [ ] 部署到 ECS 并完整测试
+
+## 前台页面从数据库读取文章（替代 MOCK_ARTICLES）
+- [x] SiteLanding.tsx 改造：精选文章、最新文章从数据库读取
+- [x] SiteCategoryPage.tsx 改造：板块文章列表从数据库读取
+- [x] SiteArticleDetail.tsx 改造：文章详情从数据库读取，渲染完整 Markdown 正文
+- [x] 视频/播客板块显示"待上线"状态
+- [x] ECS 直接数据库写入脚本（ecs-seed-articles.mjs）
+- [x] 执行内容生成脚本，批量生成 23 篇文章写入数据库（本地通过 Forge API 完成）
+- [ ] 部署更新到 ECS
+- [ ] 完整功能测试
+
+## 千问大模型 API 配置
+- [x] ALIYUN_DASHSCOPE_API_KEY 环境变量配置到 Manus 平台
+- [x] vitest 测试验证千问 API Key 有效（qwen-max 模型调用成功）
+- [x] LLM 优先级逻辑确认：千问 > Forge API（代码中 resolveApiUrl/resolveApiKey/resolveModel）
+- [x] 服务器重启后千问 API 生效

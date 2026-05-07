@@ -55,6 +55,48 @@ export async function getUserByOpenId(openId: string) {
   return result.length > 0 ? result[0] : undefined;
 }
 
+// ==================== Local Auth Helpers ====================
+export async function getUserByUsername(username: string) {
+  const db = await getDb();
+  if (!db) return undefined;
+  const result = await db.select().from(users).where(eq(users.username, username)).limit(1);
+  return result.length > 0 ? result[0] : undefined;
+}
+
+export async function getUserById(id: number) {
+  const db = await getDb();
+  if (!db) return undefined;
+  const result = await db.select().from(users).where(eq(users.id, id)).limit(1);
+  return result.length > 0 ? result[0] : undefined;
+}
+
+export async function createLocalUser(data: {
+  username: string;
+  passwordHash: string;
+  name?: string;
+  email?: string;
+  phone?: string;
+  role?: "user" | "admin";
+}) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  // Use username as openId for local users (prefix with 'local_' to distinguish)
+  const openId = `local_${data.username}`;
+  const result = await db.insert(users).values({
+    openId,
+    username: data.username,
+    passwordHash: data.passwordHash,
+    name: data.name ?? data.username,
+    email: data.email ?? null,
+    phone: data.phone ?? null,
+    loginMethod: "local",
+    role: data.role ?? "user",
+    status: "active",
+    lastSignedIn: new Date(),
+  });
+  return { id: result[0].insertId, openId };
+}
+
 // ==================== Dashboard Stats ====================
 export async function getDashboardStats() {
   const db = await getDb();
@@ -372,4 +414,91 @@ export async function updateSuggestionStatus(id: number, status: string, convert
   const db = await getDb();
   if (!db) return;
   await db.update(dataLoopSuggestions).set({ status: status as any, convertedToTopicId }).where(eq(dataLoopSuggestions.id, id));
+}
+
+// ==================== Website Posts - Extended ====================
+export async function createWebsitePost(data: {
+  title: string;
+  slug?: string;
+  excerpt?: string;
+  body?: string;
+  coverImage?: string;
+  category?: string;
+  tags?: string[];
+  status?: "draft" | "published" | "archived";
+  publishedAt?: Date;
+  contentId?: number;
+  createdBy?: number;
+}) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  const slug = data.slug || data.title.toLowerCase().replace(/[^a-z0-9\u4e00-\u9fff]+/g, "-").replace(/(^-|-$)/g, "").slice(0, 200);
+  const result = await db.insert(websitePosts).values({
+    title: data.title,
+    slug,
+    excerpt: data.excerpt || null,
+    body: data.body || null,
+    coverImage: data.coverImage || null,
+    category: data.category || null,
+    tags: data.tags || [],
+    status: data.status || "draft",
+    publishedAt: data.publishedAt || null,
+    contentId: data.contentId || null,
+    createdBy: data.createdBy || null,
+  });
+  return { id: Number(result[0].insertId), slug };
+}
+
+export async function updateWebsitePost(id: number, data: Partial<{
+  title: string;
+  slug: string;
+  excerpt: string;
+  body: string;
+  coverImage: string;
+  category: string;
+  tags: string[];
+  status: "draft" | "published" | "archived";
+  publishedAt: Date | null;
+}>) {
+  const db = await getDb();
+  if (!db) return;
+  await db.update(websitePosts).set(data as any).where(eq(websitePosts.id, id));
+}
+
+export async function getWebsitePostById(id: number) {
+  const db = await getDb();
+  if (!db) return null;
+  const rows = await db.select().from(websitePosts).where(eq(websitePosts.id, id)).limit(1);
+  return rows[0] || null;
+}
+
+export async function listPublishedPosts(category?: string, limit = 50, offset = 0) {
+  const db = await getDb();
+  if (!db) return [];
+  if (category) {
+    return db.select().from(websitePosts)
+      .where(and(eq(websitePosts.status, "published"), eq(websitePosts.category, category)))
+      .orderBy(desc(websitePosts.publishedAt))
+      .limit(limit).offset(offset);
+  }
+  return db.select().from(websitePosts)
+    .where(eq(websitePosts.status, "published"))
+    .orderBy(desc(websitePosts.publishedAt))
+    .limit(limit).offset(offset);
+}
+
+export async function getFeaturedPosts(limit = 5) {
+  const db = await getDb();
+  if (!db) return [];
+  // Featured = most recent published posts
+  return db.select().from(websitePosts)
+    .where(eq(websitePosts.status, "published"))
+    .orderBy(desc(websitePosts.publishedAt))
+    .limit(limit);
+}
+
+export async function deleteWebsitePost(id: number) {
+  const db = await getDb();
+  if (!db) return;
+  await db.delete(websitePosts).where(eq(websitePosts.id, id));
 }

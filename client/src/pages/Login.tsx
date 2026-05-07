@@ -1,110 +1,52 @@
-import { useState, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/_core/hooks/useAuth";
-import { getLoginUrl } from "@/const";
+import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { toast } from "sonner";
-import { motion, AnimatePresence } from "framer-motion";
-import { Loader2, Smartphone, Mail, KeyRound } from "lucide-react";
+import { motion } from "framer-motion";
+import { Loader2, KeyRound } from "lucide-react";
 
 const LOGO_URL = "https://d2xsxph8kpxj0f.cloudfront.net/310419663029695431/Fb26PagKyopspprUoxxADo/logo-master_f43d4fa5.png";
 
-type LoginMethod = "account" | "phone" | "email";
-
-const methodConfig = [
-  { key: "account" as const, label: "账号登录", icon: KeyRound },
-  { key: "phone" as const, label: "手机登录", icon: Smartphone },
-  { key: "email" as const, label: "邮箱登录", icon: Mail },
-];
-
 export default function LoginPage() {
   const { user } = useAuth();
-  const [method, setMethod] = useState<LoginMethod>("account");
   const [loading, setLoading] = useState(false);
-  const [codeSending, setCodeSending] = useState(false);
-  const [countdown, setCountdown] = useState(0);
-
-  // Account fields
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  // Phone fields
-  const [phone, setPhone] = useState("");
-  const [phoneCode, setPhoneCode] = useState("");
+  const utils = trpc.useUtils();
+  const loginMutation = trpc.auth.login.useMutation({
+    onSuccess: async () => {
+      toast.success("登录成功");
+      await utils.auth.me.refetch();
+    },
+    onError: (err) => {
+      toast.error(err.message || "登录失败，请稍后重试");
+      setLoading(false);
+    },
+  });
 
-  // Email fields
-  const [email, setEmail] = useState("");
-  const [emailCode, setEmailCode] = useState("");
+  // Redirect if already logged in (via useEffect, not in render)
+  useEffect(() => {
+    if (user) {
+      window.location.href = "/";
+    }
+  }, [user]);
 
-  // If already logged in, redirect
+  // If already logged in, show nothing while redirecting
   if (user) {
-    window.location.href = "/";
     return null;
   }
 
-  const startCountdown = useCallback(() => {
-    setCountdown(60);
-    const timer = setInterval(() => {
-      setCountdown((prev) => {
-        if (prev <= 1) {
-          clearInterval(timer);
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-  }, []);
-
-  const handleSendCode = async (type: "phone" | "email") => {
-    const target = type === "phone" ? phone : email;
-    if (!target.trim()) {
-      toast.error(type === "phone" ? "请输入手机号" : "请输入邮箱地址");
+  const handleLogin = async () => {
+    if (!username.trim() || !password.trim()) {
+      toast.error("请输入账号和密码");
       return;
     }
-    setCodeSending(true);
-    // Simulate sending code - in production this would call a real API
-    await new Promise((r) => setTimeout(r, 1000));
-    setCodeSending(false);
-    startCountdown();
-    toast.success(`验证码已发送至 ${target}`);
-  };
-
-  const handleLogin = async () => {
     setLoading(true);
-    try {
-      if (method === "account") {
-        if (!username.trim() || !password.trim()) {
-          toast.error("请输入账号和密码");
-          setLoading(false);
-          return;
-        }
-      } else if (method === "phone") {
-        if (!phone.trim() || phoneCode.length < 6) {
-          toast.error("请输入手机号和完整验证码");
-          setLoading(false);
-          return;
-        }
-      } else {
-        if (!email.trim() || emailCode.length < 6) {
-          toast.error("请输入邮箱和完整验证码");
-          setLoading(false);
-          return;
-        }
-      }
-      // Redirect to OAuth for actual authentication
-      window.location.href = getLoginUrl();
-    } catch {
-      toast.error("登录失败，请稍后重试");
-      setLoading(false);
-    }
-  };
-
-  const slideVariants = {
-    enter: { opacity: 0, x: 16, filter: "blur(4px)" },
-    center: { opacity: 1, x: 0, filter: "blur(0px)" },
-    exit: { opacity: 0, x: -16, filter: "blur(4px)" },
+    loginMutation.mutate({ username: username.trim(), password });
   };
 
   const inputClass = "h-11 bg-muted/20 border-border/50 rounded-xl text-[14px] placeholder:text-muted-foreground/40 focus:ring-2 focus:ring-primary/20 focus:border-primary/40 transition-all";
@@ -142,148 +84,37 @@ export default function LoginPage() {
             </p>
           </div>
 
-          {/* Method Tabs */}
-          <div className="flex bg-muted/40 rounded-2xl p-1 mb-6 gap-0.5">
-            {methodConfig.map((m) => (
-              <button
-                key={m.key}
-                onClick={() => setMethod(m.key)}
-                className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 px-2 rounded-xl text-[12px] font-medium transition-all duration-300 ${
-                  method === m.key
-                    ? "bg-white text-foreground shadow-sm shadow-black/[0.06] ring-1 ring-black/[0.04]"
-                    : "text-muted-foreground hover:text-foreground/70"
-                }`}
-              >
-                <m.icon className="h-3.5 w-3.5" />
-                <span>{m.label}</span>
-              </button>
-            ))}
+          {/* Login Method Indicator */}
+          <div className="flex items-center justify-center gap-2 mb-6 py-2.5 bg-muted/30 rounded-2xl">
+            <KeyRound className="h-4 w-4 text-primary/70" />
+            <span className="text-[13px] font-medium text-foreground/70">账号密码登录</span>
           </div>
 
-          {/* Form Content */}
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={method}
-              variants={slideVariants}
-              initial="enter"
-              animate="center"
-              exit="exit"
-              transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
-            >
-              {method === "account" && (
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <Label className="text-[13px] font-medium text-foreground/70">账号</Label>
-                    <Input
-                      value={username}
-                      onChange={(e) => setUsername(e.target.value)}
-                      placeholder="请输入用户名"
-                      className={inputClass}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label className="text-[13px] font-medium text-foreground/70">密码</Label>
-                    <Input
-                      type="password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      placeholder="请输入密码"
-                      className={inputClass}
-                      onKeyDown={(e) => e.key === "Enter" && handleLogin()}
-                    />
-                  </div>
-                </div>
-              )}
-
-              {method === "phone" && (
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <Label className="text-[13px] font-medium text-foreground/70">手机号</Label>
-                    <div className="flex gap-2">
-                      <div className="flex items-center px-3.5 bg-muted/30 border border-border/50 rounded-xl text-[13px] text-muted-foreground shrink-0 font-medium">
-                        +86
-                      </div>
-                      <Input
-                        value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
-                        placeholder="请输入手机号"
-                        className={inputClass}
-                      />
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <Label className="text-[13px] font-medium text-foreground/70">验证码</Label>
-                    <div className="flex gap-3 items-center">
-                      <InputOTP maxLength={6} value={phoneCode} onChange={setPhoneCode}>
-                        <InputOTPGroup>
-                          {[0, 1, 2, 3, 4, 5].map((i) => (
-                            <InputOTPSlot key={i} index={i} className="h-11 w-10 border-border/50 rounded-lg" />
-                          ))}
-                        </InputOTPGroup>
-                      </InputOTP>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleSendCode("phone")}
-                        disabled={countdown > 0 || codeSending}
-                        className="shrink-0 text-[12px] h-11 px-3.5 border-border/50 rounded-xl btn-press"
-                      >
-                        {codeSending ? (
-                          <Loader2 className="h-3 w-3 animate-spin" />
-                        ) : countdown > 0 ? (
-                          `${countdown}s`
-                        ) : (
-                          "获取验证码"
-                        )}
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {method === "email" && (
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <Label className="text-[13px] font-medium text-foreground/70">邮箱</Label>
-                    <Input
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="请输入邮箱地址"
-                      className={inputClass}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label className="text-[13px] font-medium text-foreground/70">验证码</Label>
-                    <div className="flex gap-3 items-center">
-                      <InputOTP maxLength={6} value={emailCode} onChange={setEmailCode}>
-                        <InputOTPGroup>
-                          {[0, 1, 2, 3, 4, 5].map((i) => (
-                            <InputOTPSlot key={i} index={i} className="h-11 w-10 border-border/50 rounded-lg" />
-                          ))}
-                        </InputOTPGroup>
-                      </InputOTP>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleSendCode("email")}
-                        disabled={countdown > 0 || codeSending}
-                        className="shrink-0 text-[12px] h-11 px-3.5 border-border/50 rounded-xl btn-press"
-                      >
-                        {codeSending ? (
-                          <Loader2 className="h-3 w-3 animate-spin" />
-                        ) : countdown > 0 ? (
-                          `${countdown}s`
-                        ) : (
-                          "获取验证码"
-                        )}
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </motion.div>
-          </AnimatePresence>
+          {/* Account Login Form */}
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label className="text-[13px] font-medium text-foreground/70">账号</Label>
+              <Input
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder="请输入用户名"
+                className={inputClass}
+                autoComplete="username"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label className="text-[13px] font-medium text-foreground/70">密码</Label>
+              <Input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="请输入密码"
+                className={inputClass}
+                autoComplete="current-password"
+                onKeyDown={(e) => e.key === "Enter" && handleLogin()}
+              />
+            </div>
+          </div>
 
           {/* Login Button */}
           <Button
