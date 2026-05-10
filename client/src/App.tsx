@@ -27,6 +27,7 @@ import Monitor from "./pages/Monitor";
 import Sources from "./pages/Sources";
 import SettingsPage from "./pages/Settings";
 import LoginPage from "./pages/Login";
+import RegisterPage from "./pages/Register";
 import AiInteractions from "./pages/AiInteractions";
 import DataLoop from "./pages/DataLoop";
 import Comments from "./pages/Comments";
@@ -80,6 +81,7 @@ function Router() {
   return (
     <Switch>
       <Route path="/login" component={LoginPage} />
+      <Route path="/register" component={RegisterPage} />
       <Route path="/site/article/:id">
         {() => <SiteLayout><SiteArticleDetail /></SiteLayout>}
       </Route>
