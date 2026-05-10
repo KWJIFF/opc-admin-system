@@ -57,6 +57,7 @@ export interface SiteArticle {
   viewCount?: number;
   likeCount?: number;
   commentCount?: number;
+  chartCount?: number;
   duration?: number;
 }
 

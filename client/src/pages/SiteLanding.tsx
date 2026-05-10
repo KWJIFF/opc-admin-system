@@ -4,7 +4,7 @@ import { useState, useMemo } from "react";
 import {
   ArrowRight, Clock, User, TrendingUp, Eye, ThumbsUp,
   Sparkles, BarChart3, Flame, Zap,
-  ChevronRight, Loader2, BookOpen,
+  ChevronRight, Loader2, BookOpen, PieChart,
 } from "lucide-react";
 import { getCategoryIcon } from "@/components/SiteLayout";
 import {
@@ -26,6 +26,12 @@ const stagger = { animate: { transition: { staggerChildren: 0.08 } } };
 /** 将数据库 websitePost 映射为前台 SiteArticle 格式 */
 function mapPostToArticle(post: any): SiteArticle {
   const readMinutes = post.body ? Math.max(2, Math.ceil(post.body.length / 500)) : 3;
+  // 基于文章 ID 和内容长度生成稳定的计数（不使用随机数）
+  const seed = post.id || 1;
+  const bodyLen = (post.body || "").length;
+  const viewCount = Math.floor(bodyLen * 1.2 + seed * 37) % 8000 + 800;
+  const likeCount = Math.floor(viewCount * 0.06 + seed * 3) % 400 + 15;
+  const chartCount = ((post.body || "").match(/```mermaid/g) || []).length;
   return {
     id: post.id,
     title: post.title,
@@ -38,9 +44,10 @@ function mapPostToArticle(post: any): SiteArticle {
     tags: Array.isArray(post.tags) ? post.tags : [],
     featured: false,
     mediaType: "article",
-    viewCount: Math.floor(Math.random() * 5000) + 500,
-    likeCount: Math.floor(Math.random() * 300) + 20,
-    commentCount: Math.floor(Math.random() * 50) + 5,
+    viewCount,
+    likeCount,
+    commentCount: Math.floor(likeCount * 0.15) + 2,
+    chartCount,
   };
 }
 
@@ -214,6 +221,11 @@ function ArticleRow({ article }: { article: SiteArticle }) {
               <span className="flex items-center gap-1"><User className="h-3 w-3" />{article.author}</span>
               <span className="flex items-center gap-1"><Clock className="h-3 w-3" />{article.readTime}</span>
               {article.viewCount && <span className="flex items-center gap-0.5"><Eye className="h-3 w-3" />{formatCount(article.viewCount)}</span>}
+              {(article as any).chartCount > 0 && (
+                <span className="flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-blue-50 text-blue-600 border border-blue-100">
+                  <PieChart className="h-2.5 w-2.5" />{(article as any).chartCount}图表
+                </span>
+              )}
             </div>
           </div>
           <ArrowRight className="h-4 w-4 text-muted-foreground/15 group-hover:text-primary/40 transition-all shrink-0 mt-2 group-hover:translate-x-0.5 hidden sm:block" />

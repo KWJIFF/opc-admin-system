@@ -290,10 +290,19 @@ export const appRouter = router({
 3. 使用粗体强调关键概念
 4. 文章要有深度和洞察力，不要泛泛而谈
 5. 引用真实的工具、平台、人物和案例
-6. 文末加上"深象OPCS研究院"的编辑点评
+6. 文末加上“深象OPCS研究院”的编辑点评
 7. 文章长度：${lengthGuide}
 8. 写作风格：${styleHint}
-9. 日期使用2026年4月的日期`,
+9. 日期使用当前日期
+10. 【重要】可视化图表要求（每篇文章必须包含）：
+   必须包含3-5个Mermaid图表，从以下类型中选择最适合内容的组合：
+   - pie（饼图）：用于占比分析、市场份额、收入结构
+   - xychart-beta（柱状图/折线图）：用于趋势变化、数据对比
+   - flowchart（流程图/架构图）：用于流程说明、系统架构
+   - quadrantChart（象限图）：用于二维对比分析
+   - mindmap（思维导图）：用于知识体系、分类框架
+   - journey（用户旅程图）：用于体验分析
+   图表规范：每个图表用 ${"`"}${"`"}${"`"}mermaid 代码块包裹，数据必须与文章内容强关联，图表类型要多样化`,
             },
             {
               role: "user",
@@ -366,7 +375,8 @@ export const appRouter = router({
 3. 风格：${styleHint}
 4. 引用真实案例和工具
 5. 必须返回严格的JSON格式，包含title、excerpt、body、tags四个字段
-6. body字段中的换行用\n表示`,
+6. body字段中的换行用\n表示
+7. 【重要】必须包含3-5个Mermaid可视化图表，类型从 pie/xychart-beta/flowchart/quadrantChart/mindmap/journey 中选择，图表数据必须与文章内容强关联，类型要多样化`,
             },
             {
               role: "user",

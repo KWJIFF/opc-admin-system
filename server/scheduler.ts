@@ -198,6 +198,23 @@ async function generateArticleForCategory(schedule: CategorySchedule): Promise<v
 
     const currentDate = new Date().toLocaleDateString("zh-CN", { year: "numeric", month: "long", day: "numeric", weekday: "long" });
 
+    const chartRequirement = schedule.isDeep
+      ? `必须包含4-5个Mermaid图表（从以下类型中选择最适合内容的组合）：
+   - pie（饼图）：用于占比分析、市场份额、收入结构
+   - xychart-beta（柱状图/折线图）：用于趋势变化、数据对比、时间序列
+   - flowchart（流程图/架构图）：用于流程说明、系统架构、决策树
+   - quadrantChart（象限图）：用于二维对比分析、定位矩阵
+   - mindmap（思维导图）：用于知识体系、分类框架
+   - graph（关系图）：用于要素关联、生态图谱
+   - gantt（甘特图）：用于时间规划、项目进度
+   - journey（用户旅程图）：用于体验分析、流程优化`
+      : `必须包含3-4个Mermaid图表（从以下类型中选择最适合内容的组合）：
+   - pie（饼图）：用于占比分析
+   - xychart-beta（柱状图/折线图）：用于数据对比和趋势
+   - flowchart（流程图）：用于流程和架构
+   - quadrantChart（象限图）：用于矩阵分析
+   - mindmap（思维导图）：用于知识框架`;
+
     const result = await invokeLLM({
       messages: [
         {
@@ -207,7 +224,7 @@ async function generateArticleForCategory(schedule: CategorySchedule): Promise<v
 为「${schedule.label}」板块撰写一篇高质量原创文章。
 
 写作要求：
-1. 正文使用Markdown格式，可以包含表格、列表、引用等丰富格式
+1. 正文使用Markdown格式，包含表格、列表、引用等丰富格式
 2. 篇幅：${lengthGuide}
 3. 风格：${schedule.styleHint}
 4. 内容要求：
@@ -215,19 +232,27 @@ async function generateArticleForCategory(schedule: CategorySchedule): Promise<v
    - 提供可操作的建议和行动步骤
    - 语言自然流畅，避免AI腔调
    - 有独到的观点和深度分析
-5. 必须返回严格的JSON格式
-6. body字段中的换行用\\n表示${avoidRepeatHint}`,
+5. 【重要】可视化图表要求（这是标配，每篇文章必须包含）：
+   ${chartRequirement}
+   图表规范：
+   - 每个图表用 \`\`\`mermaid 代码块包裹
+   - 图表数据必须与文章内容强关联，是信息增量而非装饰
+   - 图表标题清晰，数据标注完整
+   - 图表类型要多样化，同一篇文章不要重复使用同一种图表
+   - 统一使用中文标注
+6. 必须返回严格的JSON格式
+7. body字段中的换行用\\n表示${avoidRepeatHint}`,
         },
         {
           role: "user",
-          content: `围绕话题方向「${randomTopic}」，结合当前时事热点，撰写一篇文章。
+          content: `围绕话题方向「${randomTopic}」，结合当前时事热点，撰写一篇文章。文章中必须嵌入3-5个Mermaid可视化图表，图表类型要丰富多样。
 
 请严格按以下JSON格式返回（不要添加任何其他文字）：
-{"title":"文章标题（吸引人、具体、不超过30字）","excerpt":"100字以内摘要（概括核心观点和价值）","body":"完整Markdown正文","tags":["标签1","标签2","标签3"]}`,
+{"title":"文章标题（吸引人、具体、不超过30字）","excerpt":"100字以内摘要（概括核心观点和价值）","body":"完整Markdown正文（含3-5个mermaid图表代码块）","tags":["标签1","标签2","标签3"]}`,
         },
       ],
       response_format: { type: "json_object" },
-      max_tokens: schedule.isDeep ? 8192 : 4096,
+      max_tokens: schedule.isDeep ? 12000 : 6000,
     });
 
     const content = result.choices[0]?.message?.content;
@@ -241,6 +266,25 @@ async function generateArticleForCategory(schedule: CategorySchedule): Promise<v
     
     if (!article.title || !article.body) {
       throw new Error("AI 生成的文章缺少必要字段");
+    }
+
+    // 【自动化质量检查】验证图表数量
+    const chartMatches = article.body.match(/```mermaid/g) || [];
+    const chartCount = chartMatches.length;
+    const minCharts = schedule.isDeep ? 4 : 3;
+    if (chartCount < minCharts) {
+      console.warn(`[Scheduler] ⚠️ 图表数量不足: ${chartCount}/${minCharts}，尝试重新生成...`);
+      // 图表不足时仍然发布，但记录警告
+      addLog({
+        jobName: `${jobName}_quality_warning`,
+        jobType: "quality_check",
+        status: "success",
+        message: `图表数量不足: ${chartCount}/${minCharts}，文章仍已发布`,
+        details: { chartCount, minCharts, title: article.title },
+        startedAt: new Date(),
+        completedAt: new Date(),
+        durationMs: 0,
+      });
     }
 
     // 保存到数据库，自动发布

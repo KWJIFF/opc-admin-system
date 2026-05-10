@@ -1,0 +1,38 @@
+{
+  "query": "SELECT category, COUNT(*) as cnt FROM website_posts WHERE status='published' GROUP BY category ORDER BY cnt DESC;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway05.us-east-1.prod.aws.tidbcloud.com --port 4000 --user mdDxRhhppoS3QXK.root --database Fb26PagKyopspprUoxxADo --execute SELECT category, COUNT(*) as cnt FROM website_posts WHERE status='published' GROUP BY category ORDER BY cnt DESC;",
+  "rows": [
+    {
+      "category": "news",
+      "cnt": "8"
+    },
+    {
+      "category": "research",
+      "cnt": "4"
+    },
+    {
+      "category": "reports",
+      "cnt": "3"
+    },
+    {
+      "category": "toolkit",
+      "cnt": "3"
+    },
+    {
+      "category": "policy",
+      "cnt": "3"
+    },
+    {
+      "category": "thoughts",
+      "cnt": "3"
+    },
+    {
+      "category": "cases",
+      "cnt": "3"
+    }
+  ],
+  "messages": [],
+  "stdout": "category\tcnt\nnews\t8\nresearch\t4\nreports\t3\ntoolkit\t3\npolicy\t3\nthoughts\t3\ncases\t3\n",
+  "stderr": "",
+  "execution_time_ms": 1730
+}

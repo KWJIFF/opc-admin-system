@@ -298,18 +298,19 @@ export default function SchedulerPage() {
                 <tr className="border-b">
                   <th className="text-left py-2 pr-4 font-medium">板块</th>
                   <th className="text-left py-2 pr-4 font-medium">更新频率</th>
-                  <th className="text-left py-2 pr-4 font-medium">更新时间（北京时间）</th>
+                  <th className="text-left py-2 pr-4 font-medium">更新时间</th>
+                  <th className="text-left py-2 pr-4 font-medium">图表要求</th>
                   <th className="text-left py-2 font-medium">内容特点</th>
                 </tr>
               </thead>
               <tbody className="text-muted-foreground">
-                <tr className="border-b"><td className="py-2 pr-4 font-medium text-foreground">今日快讯</td><td className="py-2 pr-4">每天3次</td><td className="py-2 pr-4">8:00 / 12:00 / 18:00</td><td className="py-2">简洁快讯，800-1200字</td></tr>
-                <tr className="border-b"><td className="py-2 pr-4 font-medium text-foreground">思想前沿</td><td className="py-2 pr-4">每天1次</td><td className="py-2 pr-4">8:00</td><td className="py-2">深度思考，1500-2500字</td></tr>
-                <tr className="border-b"><td className="py-2 pr-4 font-medium text-foreground">深度研究</td><td className="py-2 pr-4">每周2次</td><td className="py-2 pr-4">周一、周四 8:00</td><td className="py-2">学术研究，3000-5000字</td></tr>
-                <tr className="border-b"><td className="py-2 pr-4 font-medium text-foreground">政策风向</td><td className="py-2 pr-4">每天1次</td><td className="py-2 pr-4">12:00</td><td className="py-2">政策解读，1500-2500字</td></tr>
-                <tr className="border-b"><td className="py-2 pr-4 font-medium text-foreground">实战拆解</td><td className="py-2 pr-4">每天1次</td><td className="py-2 pr-4">18:00</td><td className="py-2">案例分析，1500-2500字</td></tr>
-                <tr className="border-b"><td className="py-2 pr-4 font-medium text-foreground">深度报告</td><td className="py-2 pr-4">每周1次</td><td className="py-2 pr-4">周五 8:00</td><td className="py-2">行业报告，3000-5000字</td></tr>
-                <tr><td className="py-2 pr-4 font-medium text-foreground">工具图谱</td><td className="py-2 pr-4">每周2次</td><td className="py-2 pr-4">周二、周六 12:00</td><td className="py-2">工具评测，1500-2500字</td></tr>
+                <tr className="border-b"><td className="py-2 pr-4 font-medium text-foreground">今日快讯</td><td className="py-2 pr-4">每天3次</td><td className="py-2 pr-4">8/12/18:00</td><td className="py-2 pr-4"><Badge className="bg-blue-50 text-blue-600 text-[10px]">3图表+</Badge></td><td className="py-2">简洁快讯，800-1200字</td></tr>
+                <tr className="border-b"><td className="py-2 pr-4 font-medium text-foreground">思想前沿</td><td className="py-2 pr-4">每天1次</td><td className="py-2 pr-4">8:00</td><td className="py-2 pr-4"><Badge className="bg-blue-50 text-blue-600 text-[10px]">3图表+</Badge></td><td className="py-2">深度思考，1500-2500字</td></tr>
+                <tr className="border-b"><td className="py-2 pr-4 font-medium text-foreground">深度研究</td><td className="py-2 pr-4">每周2次</td><td className="py-2 pr-4">周一/四 8:00</td><td className="py-2 pr-4"><Badge className="bg-indigo-50 text-indigo-600 text-[10px]">4-5图表</Badge></td><td className="py-2">学术研究，3000-5000字</td></tr>
+                <tr className="border-b"><td className="py-2 pr-4 font-medium text-foreground">政策风向</td><td className="py-2 pr-4">每天1次</td><td className="py-2 pr-4">12:00</td><td className="py-2 pr-4"><Badge className="bg-blue-50 text-blue-600 text-[10px]">3图表+</Badge></td><td className="py-2">政策解读，1500-2500字</td></tr>
+                <tr className="border-b"><td className="py-2 pr-4 font-medium text-foreground">实战拆解</td><td className="py-2 pr-4">每天1次</td><td className="py-2 pr-4">18:00</td><td className="py-2 pr-4"><Badge className="bg-blue-50 text-blue-600 text-[10px]">3图表+</Badge></td><td className="py-2">案例分析，1500-2500字</td></tr>
+                <tr className="border-b"><td className="py-2 pr-4 font-medium text-foreground">深度报告</td><td className="py-2 pr-4">每周1次</td><td className="py-2 pr-4">周五 8:00</td><td className="py-2 pr-4"><Badge className="bg-indigo-50 text-indigo-600 text-[10px]">4-5图表</Badge></td><td className="py-2">行业报告，3000-5000字</td></tr>
+                <tr><td className="py-2 pr-4 font-medium text-foreground">工具图谱</td><td className="py-2 pr-4">每周2次</td><td className="py-2 pr-4">周二/六 12:00</td><td className="py-2 pr-4"><Badge className="bg-blue-50 text-blue-600 text-[10px]">3图表+</Badge></td><td className="py-2">工具评测，1500-2500字</td></tr>
               </tbody>
             </table>
           </div>

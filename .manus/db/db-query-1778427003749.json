@@ -1,0 +1,40 @@
+{
+  "query": "SELECT id, title, category, LENGTH(body) as body_len FROM website_posts ORDER BY id LIMIT 5;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway05.us-east-1.prod.aws.tidbcloud.com --port 4000 --user mdDxRhhppoS3QXK.root --database Fb26PagKyopspprUoxxADo --execute SELECT id, title, category, LENGTH(body) as body_len FROM website_posts ORDER BY id LIMIT 5;",
+  "rows": [
+    {
+      "id": "120009",
+      "title": "2026年5月AI创业工具生态风云变幻：一人公司如何乘风破浪？",
+      "category": "news",
+      "body_len": "5322"
+    },
+    {
+      "id": "120010",
+      "title": "独立创业生态风云再起：2026春季融资并购深度盘点",
+      "category": "news",
+      "body_len": "8175"
+    },
+    {
+      "id": "120011",
+      "title": "2026内容平台算法剧变：微信、小红书、抖音、B站新规深度解析",
+      "category": "news",
+      "body_len": "7254"
+    },
+    {
+      "id": "120012",
+      "title": "2026全球远程办公与数字游民政策新动向：机遇与挑战",
+      "category": "news",
+      "body_len": "9258"
+    },
+    {
+      "id": "120013",
+      "title": "一人公司的反脆弱性：在不确定时代构建韧性商业体",
+      "category": "thoughts",
+      "body_len": "9955"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\ttitle\tcategory\tbody_len\n120009\t2026年5月AI创业工具生态风云变幻：一人公司如何乘风破浪？\tnews\t5322\n120010\t独立创业生态风云再起：2026春季融资并购深度盘点\tnews\t8175\n120011\t2026内容平台算法剧变：微信、小红书、抖音、B站新规深度解析\tnews\t7254\n120012\t2026全球远程办公与数字游民政策新动向：机遇与挑战\tnews\t9258\n120013\t一人公司的反脆弱性：在不确定时代构建韧性商业体\tthoughts\t9955\n",
+  "stderr": "",
+  "execution_time_ms": 1727
+}

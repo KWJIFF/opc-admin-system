@@ -1,6 +1,7 @@
 import { Link, useParams } from "wouter";
 import { motion } from "framer-motion";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef, useEffect } from "react";
+import { useMermaidRenderer } from "@/components/MermaidRenderer";
 import {
   ArrowLeft, Clock, User, Tag, Share2, Eye, MessageCircle,
   Bookmark, Heart, Send, ChevronRight, Loader2, BookOpen,
@@ -59,6 +60,7 @@ export default function SiteArticleDetail() {
   const Icon = cat ? getCategoryIcon(cat.iconName) : null;
   const tags: string[] = Array.isArray(article.tags) ? article.tags : [];
   const readMinutes = article.body ? Math.max(2, Math.ceil(article.body.length / 500)) : 3;
+  const chartCount = (article.body || "").match(/```mermaid/g)?.length || 0;
   const dateStr = article.publishedAt
     ? new Date(article.publishedAt).toLocaleDateString("zh-CN", { year: "numeric", month: "long", day: "numeric" })
     : new Date(article.createdAt).toLocaleDateString("zh-CN", { year: "numeric", month: "long", day: "numeric" });
@@ -139,6 +141,12 @@ export default function SiteArticleDetail() {
             </div>
             <span className="w-px h-4 bg-border/40" />
             <span className="flex items-center gap-1.5"><Clock className="h-3.5 w-3.5" />{readMinutes} 分钟阅读</span>
+            {chartCount > 0 && (
+              <span className="flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-blue-50 text-blue-600 border border-blue-100 text-[11px] font-medium">
+                <svg className="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+                {chartCount} 张可视化图表
+              </span>
+            )}
             <span className="flex items-center gap-1.5"><BookOpen className="h-3.5 w-3.5" />深度文章</span>
           </div>
         </header>
@@ -155,12 +163,10 @@ export default function SiteArticleDetail() {
           </div>
         )}
 
-        {/* 文章正文 — 使用 article-body 杂志级排版 */}
+        {/* 文章正文 — 使用 article-body 杂志级排版 + Mermaid 图表 */}
         <div className="mb-10 sm:mb-12">
           {article.body ? (
-            <div className="article-body">
-              <Streamdown>{article.body}</Streamdown>
-            </div>
+            <ArticleBody content={article.body} />
           ) : (
             <div className="p-8 rounded-2xl bg-secondary/30 border border-border/30 text-center">
               <BookOpen className="h-10 w-10 text-muted-foreground/15 mx-auto mb-3" />
@@ -307,6 +313,23 @@ export default function SiteArticleDetail() {
           </div>
         </motion.section>
       )}
+    </div>
+  );
+}
+
+/** 文章正文渲染组件，支持 Mermaid 图表 */
+function ArticleBody({ content }: { content: string }) {
+  const bodyRef = useRef<HTMLDivElement>(null);
+  const { reset } = useMermaidRenderer(bodyRef);
+
+  useEffect(() => {
+    // 当内容变化时重置 mermaid 渲染状态
+    reset();
+  }, [content]);
+
+  return (
+    <div className="article-body" ref={bodyRef}>
+      <Streamdown>{content}</Streamdown>
     </div>
   );
 }
