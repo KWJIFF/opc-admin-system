@@ -1,5 +1,6 @@
 import { useState } from "react";
 import PageShell from "@/components/PageShell";
+import { trpc } from "@/lib/trpc";
 import DataTable, { StatusBadge } from "@/components/DataTable";
 import {
   Globe, Bot, Sparkles, Pencil, Image, LayoutTemplate, Search, Share2,
@@ -106,6 +107,41 @@ function AIAutopilotPanel() {
   const [expanded, setExpanded] = useState(false);
   const [pipeline, setPipeline] = useState(defaultPipeline);
   const [activeTab, setActiveTab] = useState<"pipeline" | "config" | "logs">("pipeline");
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [generationLog, setGenerationLog] = useState<Array<{time: string; type: "success" | "info" | "error"; message: string}>>(mockLogs);
+
+  const generateMutation = trpc.ai.generateAndPublish.useMutation({
+    onSuccess: (data) => {
+      setIsGenerating(false);
+      const now = new Date();
+      const timeStr = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+      setGenerationLog(prev => [{ time: timeStr, type: "success", message: `AI 生成完成：《${data.title}》已${data.status === 'published' ? '发布' : '保存为草稿'}` }, ...prev]);
+      toast.success("AI 文章生成成功", { description: `《${data.title}》已${data.status === 'published' ? '自动发布到前台' : '保存为草稿'}` });
+    },
+    onError: (err) => {
+      setIsGenerating(false);
+      const now = new Date();
+      const timeStr = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+      setGenerationLog(prev => [{ time: timeStr, type: "error", message: `AI 生成失败：${err.message}` }, ...prev]);
+      toast.error("AI 生成失败", { description: err.message });
+    },
+  });
+
+  const handleManualRun = () => {
+    if (isGenerating) return;
+    setIsGenerating(true);
+    const categories = ["news", "thoughts", "research", "policy", "cases", "reports", "toolkit"];
+    const randomCategory = categories[Math.floor(Math.random() * categories.length)];
+    const now = new Date();
+    const timeStr = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+    setGenerationLog(prev => [{ time: timeStr, type: "info", message: `正在调用千问大模型生成文章（板块：${randomCategory}）...` }, ...prev]);
+    toast.info("正在调用千问大模型...", { description: "AI 正在生成文章，预计需要 1-2 分钟" });
+    generateMutation.mutate({
+      category: randomCategory,
+      length: "medium",
+      autoPublish: true,
+    });
+  };
 
   const toggleStep = (stepId: string) => {
     setPipeline(prev => prev.map(s => s.id === stepId ? { ...s, enabled: !s.enabled } : s));
@@ -254,8 +290,18 @@ function AIAutopilotPanel() {
                   </div>
 
                   <div className="flex justify-end mt-3 gap-2">
-                    <Button variant="outline" size="sm" onClick={() => toast.info("正在手动触发完整流水线...")} className="text-xs gap-1.5">
-                      <Play className="h-3.5 w-3.5" /> 手动运行一次
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={handleManualRun} 
+                      disabled={isGenerating}
+                      className="text-xs gap-1.5"
+                    >
+                      {isGenerating ? (
+                        <><span className="h-3.5 w-3.5 border-2 border-violet-400 border-t-transparent rounded-full animate-spin" /> 生成中...</>
+                      ) : (
+                        <><Play className="h-3.5 w-3.5" /> 手动运行一次</>
+                      )}
                     </Button>
                     <Button variant="outline" size="sm" onClick={() => toast.info("所有任务已暂停")} className="text-xs gap-1.5">
                       <Pause className="h-3.5 w-3.5" /> 暂停所有
@@ -324,20 +370,25 @@ function AIAutopilotPanel() {
               {activeTab === "logs" && (
                 <div className="space-y-1.5 max-h-64 overflow-y-auto">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs text-muted-foreground">今日运行日志 · 2026-04-09</span>
-                    <Button variant="ghost" size="sm" className="text-xs h-7" onClick={() => toast.info("查看完整日志")}>
-                      查看全部
+                    <span className="text-xs text-muted-foreground">运行日志</span>
+                    <Button variant="ghost" size="sm" className="text-xs h-7" onClick={() => setGenerationLog([])}>
+                      清空日志
                     </Button>
                   </div>
-                  {mockLogs.map((log, i) => (
+                  {generationLog.length === 0 && (
+                    <div className="text-center py-6 text-xs text-muted-foreground">暂无日志，点击"手动运行一次"触发 AI 生成</div>
+                  )}
+                  {generationLog.map((log, i) => (
                     <div key={i} className="flex items-start gap-2.5 py-1.5 px-3 rounded-xl bg-white/80 border border-border/30">
                       <span className="text-xs text-muted-foreground font-mono whitespace-nowrap mt-0.5">{log.time}</span>
                       {log.type === "success" ? (
                         <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 mt-0.5 shrink-0" />
+                      ) : log.type === "error" ? (
+                        <AlertCircle className="h-3.5 w-3.5 text-red-500 mt-0.5 shrink-0" />
                       ) : (
                         <FileText className="h-3.5 w-3.5 text-blue-500 mt-0.5 shrink-0" />
                       )}
-                      <span className="text-xs text-foreground">{log.message}</span>
+                      <span className={`text-xs ${log.type === 'error' ? 'text-red-600' : 'text-foreground'}`}>{log.message}</span>
                     </div>
                   ))}
                 </div>

@@ -222,6 +222,7 @@ function SiteFooter() {
         <div className="border-t border-border/40 mt-8 sm:mt-10 pt-5 sm:pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-muted-foreground/50 text-xs">&copy; {new Date().getFullYear()} 深象科技. All rights reserved.</p>
           <div className="flex items-center gap-4 text-muted-foreground/50 text-xs">
+            <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer" className="hover:text-muted-foreground transition-colors">沪ICP备2026019026号</a>
             <span className="hover:text-muted-foreground transition-colors cursor-pointer">隐私政策</span>
             <span className="hover:text-muted-foreground transition-colors cursor-pointer">服务条款</span>
           </div>

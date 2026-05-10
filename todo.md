@@ -413,3 +413,21 @@
 - [x] vitest 测试验证千问 API Key 有效（qwen-max 模型调用成功）
 - [x] LLM 优先级逻辑确认：千问 > Forge API（代码中 resolveApiUrl/resolveApiKey/resolveModel）
 - [x] 服务器重启后千问 API 生效
+
+## 大模型调用记录
+- [ ] 创建 llm_call_logs 数据库表记录每次 AI 调用
+- [ ] 在 LLM 调用时自动写入日志（模型、token 用量、耗时、状态）
+- [ ] 管理后台"运行日志"标签页展示调用记录列表
+- [ ] 支持查看调用详情（输入 prompt、输出内容）
+
+## 手动运行按钮接入真实 AI 流水线 + ECS 部署
+- [ ] "手动运行一次"按钮接入真实 ai.generateAndPublish API
+- [ ] 添加运行状态反馈（loading、成功、失败提示）
+- [ ] 部署最新代码到阿里云 ECS
+- [ ] ECS 上验证千问 AI 生成功能
+
+## ICP 备案号与最终部署
+- [x] 在前台 SiteFooter 底部添加 ICP 备案号（沪ICP备2026019026号）并链接到 beian.miit.gov.cn
+- [ ] 通过 ECS 工作台浏览器终端部署应用到阿里云 ECS
+- [ ] 推送最新代码到 GitHub
+- [ ] 保存最终 checkpoint

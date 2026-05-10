@@ -359,38 +359,40 @@ export const appRouter = router({
             {
               role: "system",
               content: `你是深象OPCS研究院的资深内容编辑。为「${catLabel}」板块撰写一篇高质量文章。
-写作要求：Markdown格式，含表格和数据对比，${lengthGuide}，风格：${styleHint}，引用真实案例和工具。`,
+写作要求：
+1. 正文使用Markdown格式，含表格和数据对比
+2. 篇幅：${lengthGuide}
+3. 风格：${styleHint}
+4. 引用真实案例和工具
+5. 必须返回严格的JSON格式，包含title、excerpt、body、tags四个字段
+6. body字段中的换行用\n表示`,
             },
             {
               role: "user",
-              content: `${topicHint}。返回JSON：{"title":"...","excerpt":"...","body":"...","tags":[...]}`,
+              content: `${topicHint}。\n\n请严格按以下JSON格式返回（不要添加任何其他文字）：\n{"title":"文章标题","excerpt":"100字以内摘要","body":"完整Markdown正文","tags":["标签1","标签2","标签3"]}`,
             },
           ],
-          response_format: {
-            type: "json_schema",
-            json_schema: {
-              name: "article",
-              strict: true,
-              schema: {
-                type: "object",
-                properties: {
-                  title: { type: "string" },
-                  excerpt: { type: "string" },
-                  body: { type: "string" },
-                  tags: { type: "array", items: { type: "string" } },
-                },
-                required: ["title", "excerpt", "body", "tags"],
-                additionalProperties: false,
-              },
-            },
-          },
+          response_format: { type: "json_object" },
         });
 
         const content = result.choices[0]?.message?.content;
         if (!content || typeof content !== "string") {
-          throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "AI 生成失败" });
+          console.error('[AI] 千问返回内容为空:', JSON.stringify(result));
+          throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "AI 生成失败：模型未返回内容" });
         }
-        const article = JSON.parse(content) as { title: string; excerpt: string; body: string; tags: string[] };
+        console.log(`[AI] 千问返回内容长度: ${content.length} 字符`);
+        let article: { title: string; excerpt: string; body: string; tags: string[] };
+        try {
+          // 清理可能的控制字符
+          const cleaned = content.replace(/[\x00-\x1f\x7f]/g, (ch) => ch === '\n' || ch === '\t' ? ch : '');
+          article = JSON.parse(cleaned);
+        } catch (parseErr: any) {
+          console.error('[AI] JSON解析失败:', parseErr.message, '\n原始内容前200字:', content.substring(0, 200));
+          throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: `AI 生成的内容格式错误: ${parseErr.message}` });
+        }
+        if (!article.title || !article.body) {
+          throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "AI 生成的文章缺少必要字段" });
+        }
 
         // 保存到数据库
         const status = input.autoPublish ? "published" : "draft";
