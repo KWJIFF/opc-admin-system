@@ -52,6 +52,7 @@ import {
   RefreshCw,
   MessageSquare,
   Mail,
+  Clock,
 } from "lucide-react";
 import { CSSProperties, useEffect, useRef, useState } from "react";
 import { useLocation } from "wouter";
@@ -105,6 +106,7 @@ const menuGroups: MenuGroup[] = [
       { icon: Bot, label: "AI 互动管理", path: "/ai-interactions" },
       { icon: RefreshCw, label: "数据循环建议", path: "/data-loop" },
       { icon: Workflow, label: "工作流", path: "/workflows" },
+      { icon: Clock, label: "AI 自动化任务", path: "/scheduler" },
     ],
   },
   {

@@ -223,6 +223,10 @@ function SiteFooter() {
           <p className="text-muted-foreground/50 text-xs">&copy; {new Date().getFullYear()} 深象科技. All rights reserved.</p>
           <div className="flex items-center gap-4 text-muted-foreground/50 text-xs">
             <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer" className="hover:text-muted-foreground transition-colors">沪ICP备2026019026号</a>
+            <a href="https://www.beian.gov.cn/" target="_blank" rel="noopener noreferrer" className="hover:text-muted-foreground transition-colors flex items-center gap-1">
+              <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABdSURBVDhPY/j//z8DsRgkRjRgYGBgZCASM4F0EYuJdhKxmGgn/f//n4FYzMTAwMBILGZiIBIzMRCJmRiIxEwMRGImBiIxEwORmImBSMzEQCRmYiASMzEQiQEAL3oLDpNFnLYAAAAASUVORK5CYII=" alt="" className="w-3.5 h-3.5" />
+              公安备案号办理中
+            </a>
             <span className="hover:text-muted-foreground transition-colors cursor-pointer">隐私政策</span>
             <span className="hover:text-muted-foreground transition-colors cursor-pointer">服务条款</span>
           </div>

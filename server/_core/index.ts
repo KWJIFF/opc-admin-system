@@ -9,6 +9,7 @@ import { isManusMode, isSelfHostedMode } from "./env";
 import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
+import { startScheduler } from "../scheduler";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -72,6 +73,8 @@ async function startServer() {
     if (isSelfHostedMode()) {
       console.log("[Server] Self-hosted mode: use local username/password login at /login");
     }
+    // 启动 AI 自动化定时任务系统
+    startScheduler();
   });
 }
 

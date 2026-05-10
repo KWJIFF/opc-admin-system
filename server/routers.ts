@@ -8,6 +8,7 @@ import * as db from "./db";
 import bcrypt from "bcryptjs";
 import { sdk } from "./_core/sdk";
 import { invokeLLM } from "./_core/llm";
+import { getSchedulerStatus, getRecentLogs, triggerContentGeneration, triggerHealthCheck } from "./scheduler";
 
 export const appRouter = router({
   system: systemRouter,
@@ -417,6 +418,42 @@ export const appRouter = router({
         });
 
         return { ...article, postId: post.id, status };
+      }),
+  }),
+
+  // ==================== Scheduler / AI 自动化 ====================
+  scheduler: router({
+    status: protectedProcedure.query(async () => {
+      return getSchedulerStatus();
+    }),
+    logs: protectedProcedure
+      .input(z.object({ limit: z.number().optional() }).optional())
+      .query(async ({ input }) => {
+        return getRecentLogs(input?.limit || 50);
+      }),
+    triggerContent: adminProcedure
+      .input(z.object({ category: z.string() }))
+      .mutation(async ({ input, ctx }) => {
+        await triggerContentGeneration(input.category);
+        await db.createAuditLog({
+          userId: ctx.user.id,
+          userName: ctx.user.name ?? undefined,
+          action: "scheduler_trigger",
+          resource: "content_generation",
+          details: { category: input.category },
+        });
+        return { success: true, message: `已触发「${input.category}」板块内容生成` };
+      }),
+    triggerHealthCheck: adminProcedure
+      .mutation(async ({ ctx }) => {
+        await triggerHealthCheck();
+        await db.createAuditLog({
+          userId: ctx.user.id,
+          userName: ctx.user.name ?? undefined,
+          action: "scheduler_trigger",
+          resource: "health_check",
+        });
+        return { success: true, message: "已触发健康检查" };
       }),
   }),
 

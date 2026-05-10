@@ -31,6 +31,7 @@ import AiInteractions from "./pages/AiInteractions";
 import DataLoop from "./pages/DataLoop";
 import Comments from "./pages/Comments";
 import Subscribers from "./pages/Subscribers";
+import SchedulerPage from "./pages/SchedulerPage";
 
 // Site (Public) Pages
 import SiteLanding from "./pages/SiteLanding";
@@ -64,6 +65,7 @@ function DashboardRouter() {
         <Route path="/data-loop" component={DataLoop} />
         <Route path="/comments" component={Comments} />
         <Route path="/subscribers" component={Subscribers} />
+        <Route path="/scheduler" component={SchedulerPage} />
         <Route component={NotFound} />
       </Switch>
     </DashboardLayout>

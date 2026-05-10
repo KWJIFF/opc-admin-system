@@ -364,3 +364,38 @@ export const dataLoopSuggestions = mysqlTable("data_loop_suggestions", {
   convertedToTopicId: int("convertedToTopicId"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
+
+
+// ==================== 定时任务与 AI 自动化 ====================
+
+export const cronJobs = mysqlTable("cron_jobs", {
+  id: int("id").autoincrement().primaryKey(),
+  name: varchar("name", { length: 200 }).notNull().unique(),
+  description: text("description"),
+  cronExpression: varchar("cronExpression", { length: 100 }).notNull(),
+  jobType: mysqlEnum("jobType", ["content_generation", "health_check", "maintenance", "security_scan"]).notNull(),
+  config: json("config").$type<Record<string, unknown>>(),
+  enabled: boolean("enabled").default(true).notNull(),
+  lastRunAt: timestamp("lastRunAt"),
+  lastRunStatus: mysqlEnum("lastRunStatus", ["success", "failed", "running", "skipped"]),
+  lastRunMessage: text("lastRunMessage"),
+  nextRunAt: timestamp("nextRunAt"),
+  totalRuns: int("totalRuns").default(0).notNull(),
+  totalSuccesses: int("totalSuccesses").default(0).notNull(),
+  totalFailures: int("totalFailures").default(0).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export const cronLogs = mysqlTable("cron_logs", {
+  id: int("id").autoincrement().primaryKey(),
+  jobId: int("jobId").notNull(),
+  jobName: varchar("jobName", { length: 200 }).notNull(),
+  jobType: varchar("jobType", { length: 50 }).notNull(),
+  status: mysqlEnum("status", ["success", "failed", "running", "skipped"]).notNull(),
+  message: text("message"),
+  details: json("details").$type<Record<string, unknown>>(),
+  startedAt: timestamp("startedAt").defaultNow().notNull(),
+  completedAt: timestamp("completedAt"),
+  durationMs: int("durationMs"),
+});
