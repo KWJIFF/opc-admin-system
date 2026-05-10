@@ -429,5 +429,11 @@
 ## ICP 备案号与最终部署
 - [x] 在前台 SiteFooter 底部添加 ICP 备案号（沪ICP备2026019026号）并链接到 beian.miit.gov.cn
 - [ ] 通过 ECS 工作台浏览器终端部署应用到阿里云 ECS
-- [ ] 推送最新代码到 GitHub
+- [x] 推送最新代码到 GitHub
 - [ ] 保存最终 checkpoint
+
+## 阿里云 ECS 部署（最终发布）
+- [ ] 通过 ECS 工作台检查服务器环境
+- [ ] 在 ECS 上拉取最新 GitHub 代码并构建部署
+- [ ] 验证阿里云上网站运行正常（opcs.vip）
+- [ ] 保存 checkpoint 并发布
