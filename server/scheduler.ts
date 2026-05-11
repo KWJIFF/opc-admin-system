@@ -252,7 +252,7 @@ async function generateArticleForCategory(schedule: CategorySchedule): Promise<v
         },
       ],
       response_format: { type: "json_object" },
-      max_tokens: schedule.isDeep ? 12000 : 6000,
+      max_tokens: schedule.isDeep ? 7000 : 5000,
     });
 
     const content = result.choices[0]?.message?.content;

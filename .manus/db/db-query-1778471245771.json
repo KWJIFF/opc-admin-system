@@ -1,0 +1,164 @@
+{
+  "query": "SELECT id, title, category, (LENGTH(body) - LENGTH(REPLACE(body, '```mermaid', ''))) / LENGTH('```mermaid') as chart_count, CASE WHEN body LIKE '%xychart-beta%' THEN 'xychart-beta' WHEN body LIKE '%quadrantChart%' THEN 'quadrantChart' WHEN body LIKE '%quadrant%' THEN 'quadrant' ELSE 'standard' END as chart_type_issue FROM website_posts ORDER BY id;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway05.us-east-1.prod.aws.tidbcloud.com --port 4000 --user mdDxRhhppoS3QXK.root --database Fb26PagKyopspprUoxxADo --execute SELECT id, title, category, (LENGTH(body) - LENGTH(REPLACE(body, '```mermaid', ''))) / LENGTH('```mermaid') as chart_count, CASE WHEN body LIKE '%xychart-beta%' THEN 'xychart-beta' WHEN body LIKE '%quadrantChart%' THEN 'quadrantChart' WHEN body LIKE '%quadrant%' THEN 'quadrant' ELSE 'standard' END as chart_type_issue FROM website_posts ORDER BY id;",
+  "rows": [
+    {
+      "id": "120009",
+      "title": "2026年5月AI创业工具生态风云变幻：一人公司如何乘风破浪？",
+      "category": "news",
+      "chart_count": "3.0000",
+      "chart_type_issue": "quadrantChart"
+    },
+    {
+      "id": "120010",
+      "title": "独立创业生态风云再起：2026春季融资并购深度盘点",
+      "category": "news",
+      "chart_count": "3.0000",
+      "chart_type_issue": "quadrantChart"
+    },
+    {
+      "id": "120011",
+      "title": "2026内容平台算法剧变：微信、小红书、抖音、B站新规深度解析",
+      "category": "news",
+      "chart_count": "3.0000",
+      "chart_type_issue": "quadrantChart"
+    },
+    {
+      "id": "120012",
+      "title": "2026全球远程办公与数字游民政策新动向：机遇与挑战",
+      "category": "news",
+      "chart_count": "3.0000",
+      "chart_type_issue": "quadrantChart"
+    },
+    {
+      "id": "120013",
+      "title": "一人公司的反脆弱性：在不确定时代构建韧性商业体",
+      "category": "thoughts",
+      "chart_count": "3.0000",
+      "chart_type_issue": "quadrantChart"
+    },
+    {
+      "id": "120014",
+      "title": "AI时代的认知杠杆：一人公司如何用智能工具放大个体价值边界",
+      "category": "thoughts",
+      "chart_count": "3.0000",
+      "chart_type_issue": "quadrantChart"
+    },
+    {
+      "id": "120015",
+      "title": "中国一人公司生态全景研究报告（2026年春季）：新个体经济的崛起与机遇",
+      "category": "research",
+      "chart_count": "4.0000",
+      "chart_type_issue": "xychart-beta"
+    },
+    {
+      "id": "120016",
+      "title": "AI赋能独立创业者：生产力、风险与人机协作深度解析",
+      "category": "research",
+      "chart_count": "4.0000",
+      "chart_type_issue": "quadrantChart"
+    },
+    {
+      "id": "120017",
+      "title": "2026年个体工商户与自由职业者税收政策深度解析与筹划",
+      "category": "policy",
+      "chart_count": "4.0000",
+      "chart_type_issue": "quadrantChart"
+    },
+    {
+      "id": "120018",
+      "title": "一人公司知识产权守护指南：品牌与内容资产实操策略",
+      "category": "policy",
+      "chart_count": "3.0000",
+      "chart_type_issue": "xychart-beta"
+    },
+    {
+      "id": "120019",
+      "title": "从0到月入10万：技术博主知识变现全路径拆解与实战攻略",
+      "category": "cases",
+      "chart_count": "3.0000",
+      "chart_type_issue": "quadrantChart"
+    },
+    {
+      "id": "120020",
+      "title": "一人多号：AI驱动的公众号矩阵变现策略",
+      "category": "cases",
+      "chart_count": "4.0000",
+      "chart_type_issue": "quadrantChart"
+    },
+    {
+      "id": "120021",
+      "title": "独立开发者出海实录：效率工具QueryPro如何年入百万",
+      "category": "cases",
+      "chart_count": "3.0000",
+      "chart_type_issue": "xychart-beta"
+    },
+    {
+      "id": "120022",
+      "title": "2026年春季中国内容创业市场：挑战、机遇与AI驱动的新生态",
+      "category": "reports",
+      "chart_count": "3.0000",
+      "chart_type_issue": "quadrantChart"
+    },
+    {
+      "id": "120023",
+      "title": "2026年AI写作工具深度横评：中文写作能力实测与选型指南",
+      "category": "toolkit",
+      "chart_count": "3.0000",
+      "chart_type_issue": "quadrantChart"
+    },
+    {
+      "id": "120024",
+      "title": "一人公司财务管理全指南：从记账到税务，精选工具助您高效运营",
+      "category": "toolkit",
+      "chart_count": "3.0000",
+      "chart_type_issue": "quadrantChart"
+    },
+    {
+      "id": "120025",
+      "title": "从副业到主业的心理拓扑学：创业者身份转换的深层机制与应对框架",
+      "category": "thoughts",
+      "chart_count": "4.0000",
+      "chart_type_issue": "xychart-beta"
+    },
+    {
+      "id": "120026",
+      "title": "2026年一人公司创业者工具链生态报告",
+      "category": "reports",
+      "chart_count": "4.0000",
+      "chart_type_issue": "xychart-beta"
+    },
+    {
+      "id": "120027",
+      "title": "无代码建站工具2026年终极对比：8款工具助你独立站搭建不求人",
+      "category": "toolkit",
+      "chart_count": "3.0000",
+      "chart_type_issue": "xychart-beta"
+    },
+    {
+      "id": "120028",
+      "title": "2026年个体工商户与自由职业者税收政策全解读",
+      "category": "policy",
+      "chart_count": "3.0000",
+      "chart_type_issue": "xychart-beta"
+    },
+    {
+      "id": "150001",
+      "title": "从副业到主业：心态转变与成功路径",
+      "category": "thoughts",
+      "chart_count": "4.0000",
+      "chart_type_issue": "xychart-beta"
+    },
+    {
+      "id": "150002",
+      "title": "AI工具最新动态：2026年5月趋势解析与应用指南",
+      "category": "news",
+      "chart_count": "3.0000",
+      "chart_type_issue": "quadrantChart"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\ttitle\tcategory\tchart_count\tchart_type_issue\n120009\t2026年5月AI创业工具生态风云变幻：一人公司如何乘风破浪？\tnews\t3.0000\tquadrantChart\n120010\t独立创业生态风云再起：2026春季融资并购深度盘点\tnews\t3.0000\tquadrantChart\n120011\t2026内容平台算法剧变：微信、小红书、抖音、B站新规深度解析\tnews\t3.0000\tquadrantChart\n120012\t2026全球远程办公与数字游民政策新动向：机遇与挑战\tnews\t3.0000\tquadrantChart\n120013\t一人公司的反脆弱性：在不确定时代构建韧性商业体\tthoughts\t3.0000\tquadrantChart\n120014\tAI时代的认知杠杆：一人公司如何用智能工具放大个体价值边界\tthoughts\t3.0000\tquadrantChart\n120015\t中国一人公司生态全景研究报告（2026年春季）：新个体经济的崛起与机遇\tresearch\t4.0000\txychart-beta\n120016\tAI赋能独立创业者：生产力、风险与人机协作深度解析\tresearch\t4.0000\tquadrantChart\n120017\t2026年个体工商户与自由职业者税收政策深度解析与筹划\tpolicy\t4.0000\tquadrantChart\n120018\t一人公司知识产权守护指南：品牌与内容资产实操策略\tpolicy\t3.0000\txychart-beta\n120019\t从0到月入10万：技术博主知识变现全路径拆解与实战攻略\tcases\t3.0000\tquadrantChart\n120020\t一人多号：AI驱动的公众号矩阵变现策略\tcases\t4.0000\tquadrantChart\n120021\t独立开发者出海实录：效率工具QueryPro如何年入百万\tcases\t3.0000\txychart-beta\n120022\t2026年春季中国内容创业市场：挑战、机遇与AI驱动的新生态\treports\t3.0000\tquadrantChart\n120023\t2026年AI写作工具深度横评：中文写作能力实测与选型指南\ttoolkit\t3.0000\tquadrantChart\n120024\t一人公司财务管理全指南：从记账到税务，精选工具助您高效运营\ttoolkit\t3.0000\tquadrantChart\n120025\t从副业到主业的心理拓扑学：创业者身份转换的深层机制与应对框架\tthoughts\t4.0000\txychart-beta\n120026\t2026年一人公司创业者工具链生态报告\treports\t4.0000\txychart-beta\n120027\t无代码建站工具2026年终极对比：8款工具助你独立站搭建不求人\ttoolkit\t3.0000\txychart-beta\n120028\t2026年个体工商户与自由职业者税收政策全解读\tpolicy\t3.0000\txychart-beta\n150001\t从副业到主业：心态转变与成功路径\tthoughts\t4.0000\txychart-beta\n150002\tAI工具最新动态：2026年5月趋势解析与应用指南\tnews\t3.0000\tquadrantChart\n",
+  "stderr": "",
+  "execution_time_ms": 1733
+}

@@ -1,0 +1,82 @@
+{
+  "query": "SELECT SUBSTRING(body, LOCATE('flowchart TD', body), 500) AS flowchart_code FROM website_posts WHERE id = 120023",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway05.us-east-1.prod.aws.tidbcloud.com --port 4000 --user mdDxRhhppoS3QXK.root --database Fb26PagKyopspprUoxxADo --execute SELECT SUBSTRING(body, LOCATE('flowchart TD', body), 500) AS flowchart_code FROM website_posts WHERE id = 120023",
+  "rows": [
+    {
+      "flowchart_code": "flowchart TD"
+    },
+    {
+      "flowchart_code": " A[开始] --> B{主要需求是什么？}"
+    },
+    {
+      "flowchart_code": " B --> C{通用写作/对话？}"
+    },
+    {
+      "flowchart_code": " C -- 是 --> D{追求极致中文地道性？}"
+    },
+    {
+      "flowchart_code": " D -- 是 --> E[文心一言/通义千问]"
+    },
+    {
+      "flowchart_code": " D -- 否 --> F{追求长文连贯性/创意？}"
+    },
+    {
+      "flowchart_code": " F -- 是 --> G[Claude/ChatGPT]"
+    },
+    {
+      "flowchart_code": " F -- 否 --> H[ChatGPT]"
+    },
+    {
+      "flowchart_code": " C -- 否 --> I{营销文案/短内容？}"
+    },
+    {
+      "flowchart_code": " I -- 是 --> J{需要丰富模板/高效产出？}"
+    },
+    {
+      "flowchart_code": " J -- 是 --> K[Jasper/Copy.ai]"
+    },
+    {
+      "flowchart_code": " J -- 否 --> L[ChatGPT/Claude (辅助)]"
+    },
+    {
+      "flowchart_code": " B --> M{开发者/企业级集成？}"
+    },
+    {
+      "flowchart_code": " M -- 是 --> N{API稳定性/文档是首要？}"
+    },
+    {
+      "flowchart_code": " N -- 是 --> O[ChatGPT API/Claude API]"
+    },
+    {
+      "flowchart_code": " N -- 否 --> P[文心一言 API/通义千问 API]"
+    },
+    {
+      "flowchart_code": " E --> Q[结束]"
+    },
+    {
+      "flowchart_code": " G --> Q"
+    },
+    {
+      "flowchart_code": " H --> Q"
+    },
+    {
+      "flowchart_code": " K --> Q"
+    },
+    {
+      "flowchart_code": " L --> Q"
+    },
+    {
+      "flowchart_code": " O --> Q"
+    },
+    {
+      "flowchart_code": " P --> Q"
+    },
+    {
+      "flowchart_code": "```"
+    }
+  ],
+  "messages": [],
+  "stdout": "flowchart_code\nflowchart TD\n A[开始] --> B{主要需求是什么？}\n\n B --> C{通用写作/对话？}\n C -- 是 --> D{追求极致中文地道性？}\n D -- 是 --> E[文心一言/通义千问]\n D -- 否 --> F{追求长文连贯性/创意？}\n F -- 是 --> G[Claude/ChatGPT]\n F -- 否 --> H[ChatGPT]\n\n C -- 否 --> I{营销文案/短内容？}\n I -- 是 --> J{需要丰富模板/高效产出？}\n J -- 是 --> K[Jasper/Copy.ai]\n J -- 否 --> L[ChatGPT/Claude (辅助)]\n\n B --> M{开发者/企业级集成？}\n M -- 是 --> N{API稳定性/文档是首要？}\n N -- 是 --> O[ChatGPT API/Claude API]\n N -- 否 --> P[文心一言 API/通义千问 API]\n\n E --> Q[结束]\n G --> Q\n H --> Q\n K --> Q\n L --> Q\n O --> Q\n P --> Q\n```\n\n",
+  "stderr": "",
+  "execution_time_ms": 1931
+}

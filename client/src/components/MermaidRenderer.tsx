@@ -68,7 +68,11 @@ export function useMermaidRenderer(containerRef: React.RefObject<HTMLElement | n
         mermaidPres.forEach(async (pre, index) => {
           const code = pre.querySelector("code");
           if (!code) return;
-          const chartDef = code.textContent || "";
+          let chartDef = code.textContent || "";
+          // Fix: Markdown renderer may escape brackets/parens in mermaid code
+          chartDef = chartDef.replace(/\\\[/g, '[').replace(/\\\]/g, ']');
+          chartDef = chartDef.replace(/\\\(/g, '(').replace(/\\\)/g, ')');
+          chartDef = chartDef.replace(/\\_/g, '_');
           try {
             const id = `mermaid-chart-${Date.now()}-${index}`;
             const { svg } = await mermaid.render(id, chartDef.trim());
@@ -108,7 +112,11 @@ export function useMermaidRenderer(containerRef: React.RefObject<HTMLElement | n
       codeBlocks.forEach(async (codeEl, index) => {
         const pre = codeEl.parentElement;
         if (!pre) return;
-        const chartDef = codeEl.textContent || "";
+        let chartDef = codeEl.textContent || "";
+        // Fix: Markdown renderer may escape brackets/parens in mermaid code
+        chartDef = chartDef.replace(/\\\[/g, '[').replace(/\\\]/g, ']');
+        chartDef = chartDef.replace(/\\\(/g, '(').replace(/\\\)/g, ')');
+        chartDef = chartDef.replace(/\\_/g, '_');
         try {
           const id = `mermaid-chart-${Date.now()}-${index}`;
           const { svg } = await mermaid.render(id, chartDef.trim());

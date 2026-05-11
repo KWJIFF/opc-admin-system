@@ -1,0 +1,49 @@
+{
+  "query": "SELECT SUBSTRING(body, LOCATE('xychart-beta', body), 500) as xychart_code FROM website_posts WHERE id = 120015",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway05.us-east-1.prod.aws.tidbcloud.com --port 4000 --user mdDxRhhppoS3QXK.root --database Fb26PagKyopspprUoxxADo --execute SELECT SUBSTRING(body, LOCATE('xychart-beta', body), 500) as xychart_code FROM website_posts WHERE id = 120015",
+  "rows": [
+    {
+      "xychart_code": "xychart-beta"
+    },
+    {
+      "xychart_code": "  title 一人公司未来发展关键趋势"
+    },
+    {
+      "xychart_code": "  x-axis [\"2024\", \"2025\", \"2026\", \"2027\", \"2028\"]"
+    },
+    {
+      "xychart_code": "  y-axis \"重要性指数\""
+    },
+    {
+      "xychart_code": "  bar AI赋能: [70, 75, 85, 90, 95]"
+    },
+    {
+      "xychart_code": "  bar 垂直化运营: [65, 70, 78, 85, 90]"
+    },
+    {
+      "xychart_code": "  bar 私域深度运营: [60, 68, 75, 82, 88]"
+    },
+    {
+      "xychart_code": "  bar 多平台协同: [55, 62, 70, 78, 85]"
+    },
+    {
+      "xychart_code": "  line 法律规范健全: [40, 48, 55, 65, 75]"
+    },
+    {
+      "xychart_code": "```"
+    },
+    {
+      "xychart_code": "### 结论"
+    },
+    {
+      "xychart_code": "2026年春季的中国一人公司生态，是一个充满活力、机遇与挑战并存的领域。它不仅是就业结构优化的重要体现，更是数字化时代个体创造力与商业潜能的集中爆发。成功的一人公司往往具备深厚的专业能力、强大的个人品牌、高效的运营策略，并能充分利用数字化工具和平台优势。同时，面对平台规则变动、收入不稳、时间管理等挑战，一人公司需要不断提升自身综合能力和抗风险能力。"
+    },
+    {
+      "xychart_code": "展望未来，AI技术的深度融合、市场垂直化与精细化、私域流量的价值凸显、多平"
+    }
+  ],
+  "messages": [],
+  "stdout": "xychart_code\nxychart-beta\n  title 一人公司未来发展关键趋势\n  x-axis [\"2024\", \"2025\", \"2026\", \"2027\", \"2028\"]\n  y-axis \"重要性指数\"\n  bar AI赋能: [70, 75, 85, 90, 95]\n  bar 垂直化运营: [65, 70, 78, 85, 90]\n  bar 私域深度运营: [60, 68, 75, 82, 88]\n  bar 多平台协同: [55, 62, 70, 78, 85]\n  line 法律规范健全: [40, 48, 55, 65, 75]\n```\n\n### 结论\n\n2026年春季的中国一人公司生态，是一个充满活力、机遇与挑战并存的领域。它不仅是就业结构优化的重要体现，更是数字化时代个体创造力与商业潜能的集中爆发。成功的一人公司往往具备深厚的专业能力、强大的个人品牌、高效的运营策略，并能充分利用数字化工具和平台优势。同时，面对平台规则变动、收入不稳、时间管理等挑战，一人公司需要不断提升自身综合能力和抗风险能力。\n\n展望未来，AI技术的深度融合、市场垂直化与精细化、私域流量的价值凸显、多平\n",
+  "stderr": "",
+  "execution_time_ms": 1718
+}

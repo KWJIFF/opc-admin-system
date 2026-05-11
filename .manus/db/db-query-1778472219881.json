@@ -1,0 +1,55 @@
+{
+  "query": "SELECT SUBSTRING(body, LOCATE('graph TD', body), 500) FROM website_posts WHERE id = 120009",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway05.us-east-1.prod.aws.tidbcloud.com --port 4000 --user mdDxRhhppoS3QXK.root --database Fb26PagKyopspprUoxxADo --execute SELECT SUBSTRING(body, LOCATE('graph TD', body), 500) FROM website_posts WHERE id = 120009",
+  "rows": [
+    {
+      "SUBSTRING(body, LOCATE('graph TD', body), 500)": "graph TD"
+    },
+    {
+      "SUBSTRING(body, LOCATE('graph TD', body), 500)": "  A[\"AI工具定位分析 （2026年5月）\"] --> B[\"高影响区域\"]"
+    },
+    {
+      "SUBSTRING(body, LOCATE('graph TD', body), 500)": "  A --> C[\"低影响区域\"]"
+    },
+    {
+      "SUBSTRING(body, LOCATE('graph TD', body), 500)": "  B --> B0[\"quadrant-4 \"强大定制\"]"
+    },
+    {
+      "SUBSTRING(body, LOCATE('graph TD', body), 500)": "  B --> B1[\"Claude 3.5\"]"
+    },
+    {
+      "SUBSTRING(body, LOCATE('graph TD', body), 500)": "  B --> B2[\"Midjourney V7\"]"
+    },
+    {
+      "SUBSTRING(body, LOCATE('graph TD', body), 500)": "  C --> C0[\"Notion AI\"]"
+    },
+    {
+      "SUBSTRING(body, LOCATE('graph TD', body), 500)": "  C --> C1[\"Stable Diffusion （本地部署）\"]"
+    },
+    {
+      "SUBSTRING(body, LOCATE('graph TD', body), 500)": "  C --> C2[\"ChatGPT Plus\"]"
+    },
+    {
+      "SUBSTRING(body, LOCATE('graph TD', body), 500)": "  style A fill:#e44106,color:#fff,stroke:#e44106"
+    },
+    {
+      "SUBSTRING(body, LOCATE('graph TD', body), 500)": "  style B fill:#ff6b35,color:#fff,stroke:#ff6b35"
+    },
+    {
+      "SUBSTRING(body, LOCATE('graph TD', body), 500)": "  style C fill:#ffa366,color:#fff,stroke:#ffa366"
+    },
+    {
+      "SUBSTRING(body, LOCATE('graph TD', body), 500)": "```"
+    },
+    {
+      "SUBSTRING(body, LOCATE('graph TD', body), 500)": "### 展望未来：集成与个性化"
+    },
+    {
+      "SUBSTRING(body, LOCATE('graph TD', body), 500)": "展望未来，我们预计AI工具的生态将进一步走向集成化和个性化。API经济的繁荣将促使更多工具之间实现无缝连接，形成更加强大的“AI工作流”。同时，针对特定行业和特定需求进行优化的垂"
+    }
+  ],
+  "messages": [],
+  "stdout": "SUBSTRING(body, LOCATE('graph TD', body), 500)\ngraph TD\n  A[\"AI工具定位分析 （2026年5月）\"] --> B[\"高影响区域\"]\n  A --> C[\"低影响区域\"]\n  B --> B0[\"quadrant-4 \"强大定制\"]\n  B --> B1[\"Claude 3.5\"]\n  B --> B2[\"Midjourney V7\"]\n  C --> C0[\"Notion AI\"]\n  C --> C1[\"Stable Diffusion （本地部署）\"]\n  C --> C2[\"ChatGPT Plus\"]\n  style A fill:#e44106,color:#fff,stroke:#e44106\n  style B fill:#ff6b35,color:#fff,stroke:#ff6b35\n  style C fill:#ffa366,color:#fff,stroke:#ffa366\n```\n\n### 展望未来：集成与个性化\n\n展望未来，我们预计AI工具的生态将进一步走向集成化和个性化。API经济的繁荣将促使更多工具之间实现无缝连接，形成更加强大的“AI工作流”。同时，针对特定行业和特定需求进行优化的垂\n",
+  "stderr": "",
+  "execution_time_ms": 1796
+}

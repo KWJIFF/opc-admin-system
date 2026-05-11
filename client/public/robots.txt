@@ -1,0 +1,27 @@
+User-agent: *
+Allow: /site/
+Allow: /site
+Disallow: /api/
+Disallow: /website
+Disallow: /scheduler
+Disallow: /intelligence
+Disallow: /topics
+Disallow: /content-factory
+Disallow: /review
+Disallow: /publish
+Disallow: /accounts
+Disallow: /calendar
+Disallow: /reports
+Disallow: /analytics
+Disallow: /ai-interact
+Disallow: /data-loop
+Disallow: /workflow
+Disallow: /comments
+Disallow: /subscriptions
+Disallow: /team
+Disallow: /permissions
+Disallow: /monitoring
+Disallow: /sources
+Disallow: /settings
+
+Sitemap: https://opcs.deepxiang.com/sitemap.xml

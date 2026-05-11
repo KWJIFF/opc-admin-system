@@ -1,0 +1,70 @@
+{
+  "query": "SELECT SUBSTRING(body, LOCATE('quadrantChart', body), 500) as quadrant_code FROM website_posts WHERE id = 120015",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway05.us-east-1.prod.aws.tidbcloud.com --port 4000 --user mdDxRhhppoS3QXK.root --database Fb26PagKyopspprUoxxADo --execute SELECT SUBSTRING(body, LOCATE('quadrantChart', body), 500) as quadrant_code FROM website_posts WHERE id = 120015",
+  "rows": [
+    {
+      "quadrant_code": "quadrantChart"
+    },
+    {
+      "quadrant_code": "  title 一人公司挑战与风险矩阵"
+    },
+    {
+      "quadrant_code": "  x-axis \"低可控性\" --> \"高可控性\""
+    },
+    {
+      "quadrant_code": "  y-axis \"低影响程度\" --> \"高影响程度\""
+    },
+    {
+      "quadrant_code": "  quadrant-1 \"外部冲击 / 核心运营\""
+    },
+    {
+      "quadrant_code": "  quadrant-2 \"边缘风险 / 效率优化\""
+    },
+    {
+      "quadrant_code": "  平台政策变化: [0.2, 0.8]"
+    },
+    {
+      "quadrant_code": "  宏观经济波动: [0.1, 0.7]"
+    },
+    {
+      "quadrant_code": "  收入不稳定: [0.7, 0.9]"
+    },
+    {
+      "quadrant_code": "  时间管理挑战: [0.8, 0.7]"
+    },
+    {
+      "quadrant_code": "  个人能力瓶颈: [0.6, 0.8]"
+    },
+    {
+      "quadrant_code": "  品牌声誉风险: [0.7, 0.6]"
+    },
+    {
+      "quadrant_code": "  市场信息过载: [0.3, 0.2]"
+    },
+    {
+      "quadrant_code": "  客户获取效率: [0.8, 0.3]"
+    },
+    {
+      "quadrant_code": "  内容更新压力: [0.9, 0.4]"
+    },
+    {
+      "quadrant_code": "```"
+    },
+    {
+      "quadrant_code": "### 趋势预测"
+    },
+    {
+      "quadrant_code": "展望未来，中国一人公司生态将呈现以下几个显著趋势："
+    },
+    {
+      "quadrant_code": "1.  **AI赋能与效率飞跃：** 人工智能工具将在内容创作（文案、图片、视频生成）、数据分析、客户服务、运营管理等方面发挥关键作用，极大地提升一人公司的生产效率和专业水平。AI将成为一人公司的“超级助理”。"
+    },
+    {
+      "quadrant_code": "2.  **垂直化与精细化运营：** 市"
+    }
+  ],
+  "messages": [],
+  "stdout": "quadrant_code\nquadrantChart\n  title 一人公司挑战与风险矩阵\n  x-axis \"低可控性\" --> \"高可控性\"\n  y-axis \"低影响程度\" --> \"高影响程度\"\n  quadrant-1 \"外部冲击 / 核心运营\"\n  quadrant-2 \"边缘风险 / 效率优化\"\n  平台政策变化: [0.2, 0.8]\n  宏观经济波动: [0.1, 0.7]\n  收入不稳定: [0.7, 0.9]\n  时间管理挑战: [0.8, 0.7]\n  个人能力瓶颈: [0.6, 0.8]\n  品牌声誉风险: [0.7, 0.6]\n  市场信息过载: [0.3, 0.2]\n  客户获取效率: [0.8, 0.3]\n  内容更新压力: [0.9, 0.4]\n```\n\n### 趋势预测\n\n展望未来，中国一人公司生态将呈现以下几个显著趋势：\n\n1.  **AI赋能与效率飞跃：** 人工智能工具将在内容创作（文案、图片、视频生成）、数据分析、客户服务、运营管理等方面发挥关键作用，极大地提升一人公司的生产效率和专业水平。AI将成为一人公司的“超级助理”。\n2.  **垂直化与精细化运营：** 市\n",
+  "stderr": "",
+  "execution_time_ms": 1726
+}
