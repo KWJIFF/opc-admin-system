@@ -102,7 +102,7 @@ function SiteNav() {
                 <Info className="h-4 w-4" />
               </span>
             </Link>
-            <Link href="/">
+            <Link href="/admin">
               <span className="hidden sm:flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-[13px] font-semibold text-primary/70 hover:text-primary hover:bg-primary/8 transition-all duration-200 border border-primary/10 hover:border-primary/20">
                 <LayoutDashboard className="h-3.5 w-3.5" />
                 管理后台
@@ -168,7 +168,7 @@ function SiteNav() {
                     关于我们
                   </span>
                 </Link>
-                <Link href="/">
+                <Link href="/admin">
                   <span className="flex items-center gap-3 px-4 py-3.5 rounded-xl text-[15px] text-primary/80 active:bg-primary/8 active:scale-[0.98] transition-all font-medium">
                     <LayoutDashboard className="h-[18px] w-[18px] shrink-0 opacity-60" />
                     管理后台

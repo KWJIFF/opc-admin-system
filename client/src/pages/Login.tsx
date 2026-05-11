@@ -32,7 +32,7 @@ export default function LoginPage() {
   // Redirect if already logged in (via useEffect, not in render)
   useEffect(() => {
     if (user) {
-      window.location.href = "/";
+      window.location.href = "/admin";
     }
   }, [user]);
 

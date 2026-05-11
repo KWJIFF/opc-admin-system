@@ -1,7 +1,7 @@
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/NotFound";
-import { Route, Switch } from "wouter";
+import { Route, Switch, Redirect } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import DashboardLayout from "./components/DashboardLayout";
@@ -45,28 +45,28 @@ function DashboardRouter() {
   return (
     <DashboardLayout>
       <Switch>
-        <Route path="/" component={Home} />
-        <Route path="/signals" component={Signals} />
-        <Route path="/topics" component={Topics} />
-        <Route path="/contents" component={Contents} />
-        <Route path="/reviews" component={Reviews} />
-        <Route path="/publish" component={Publish} />
-        <Route path="/accounts" component={Accounts} />
-        <Route path="/calendar" component={ContentCalendar} />
-        <Route path="/website" component={Website} />
-        <Route path="/reports" component={Reports} />
-        <Route path="/insights" component={Insights} />
-        <Route path="/workflows" component={Workflows} />
-        <Route path="/team" component={Team} />
-        <Route path="/permissions" component={Permissions} />
-        <Route path="/monitor" component={Monitor} />
-        <Route path="/sources" component={Sources} />
-        <Route path="/settings" component={SettingsPage} />
-        <Route path="/ai-interactions" component={AiInteractions} />
-        <Route path="/data-loop" component={DataLoop} />
-        <Route path="/comments" component={Comments} />
-        <Route path="/subscribers" component={Subscribers} />
-        <Route path="/scheduler" component={SchedulerPage} />
+        <Route path="/admin" component={Home} />
+        <Route path="/admin/signals" component={Signals} />
+        <Route path="/admin/topics" component={Topics} />
+        <Route path="/admin/contents" component={Contents} />
+        <Route path="/admin/reviews" component={Reviews} />
+        <Route path="/admin/publish" component={Publish} />
+        <Route path="/admin/accounts" component={Accounts} />
+        <Route path="/admin/calendar" component={ContentCalendar} />
+        <Route path="/admin/website" component={Website} />
+        <Route path="/admin/reports" component={Reports} />
+        <Route path="/admin/insights" component={Insights} />
+        <Route path="/admin/workflows" component={Workflows} />
+        <Route path="/admin/team" component={Team} />
+        <Route path="/admin/permissions" component={Permissions} />
+        <Route path="/admin/monitor" component={Monitor} />
+        <Route path="/admin/sources" component={Sources} />
+        <Route path="/admin/settings" component={SettingsPage} />
+        <Route path="/admin/ai-interactions" component={AiInteractions} />
+        <Route path="/admin/data-loop" component={DataLoop} />
+        <Route path="/admin/comments" component={Comments} />
+        <Route path="/admin/subscribers" component={Subscribers} />
+        <Route path="/admin/scheduler" component={SchedulerPage} />
         <Route component={NotFound} />
       </Switch>
     </DashboardLayout>
@@ -96,7 +96,11 @@ function Router() {
       <Route path="/site">
         {() => <SiteLayout><SiteLanding /></SiteLayout>}
       </Route>
-      <Route component={DashboardRouter} />
+      <Route path="/admin/:rest*" component={DashboardRouter} />
+      <Route path="/">
+        {() => <Redirect to="/site" />}
+      </Route>
+      <Route component={NotFound} />
     </Switch>
   );
 }
