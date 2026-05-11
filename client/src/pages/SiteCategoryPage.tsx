@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { useMemo } from "react";
 import {
   ArrowRight, Clock, User, Tag, Eye, ThumbsUp,
-  MessageCircle, Loader2, Rocket, BookOpen, ChevronRight, BarChart3,
+  MessageCircle, Loader2, Rocket, BookOpen, ChevronRight,
 } from "lucide-react";
 import { getCategoryIcon } from "@/components/SiteLayout";
 import {
@@ -19,7 +19,7 @@ function mapPostToArticle(post: any): SiteArticle {
   const bodyLen = (post.body || "").length;
   const viewCount = Math.floor(bodyLen * 1.2 + seed * 37) % 8000 + 800;
   const likeCount = Math.floor(viewCount * 0.06 + seed * 3) % 400 + 15;
-  const chartCount = ((post.body || "").match(/```mermaid/g) || []).length;
+
   return {
     id: post.id,
     title: post.title,
@@ -35,7 +35,7 @@ function mapPostToArticle(post: any): SiteArticle {
     viewCount,
     likeCount,
     commentCount: Math.floor(likeCount * 0.15) + 2,
-    chartCount,
+
   };
 }
 
@@ -108,11 +108,7 @@ function ArticleCard({ article, index }: { article: SiteArticle; index: number }
               <span className="flex items-center gap-1"><Clock className="h-3 w-3" />{article.readTime}</span>
               <span>{article.date}</span>
               {article.viewCount && <span className="flex items-center gap-1"><Eye className="h-3 w-3" />{formatCount(article.viewCount)}</span>}
-              {(article.chartCount || 0) > 0 && (
-                <span className="flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-blue-50 text-blue-600 border border-blue-100">
-                  <BarChart3 className="h-2.5 w-2.5" />{article.chartCount}图表
-                </span>
-              )}
+
               {article.tags.length > 0 && (
                 <div className="hidden sm:flex items-center gap-1.5">
                   {article.tags.slice(0, 2).map((t) => (
