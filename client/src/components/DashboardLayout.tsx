@@ -58,7 +58,7 @@ import { CSSProperties, useEffect, useRef, useState } from "react";
 import { useLocation } from "wouter";
 import { DashboardLayoutSkeleton } from "./DashboardLayoutSkeleton";
 import { Button } from "./ui/button";
-import { motion, AnimatePresence } from "framer-motion";
+// framer-motion removed for production stability
 
 const LOGO_URL = "https://d2xsxph8kpxj0f.cloudfront.net/310419663029695431/Fb26PagKyopspprUoxxADo/logo-master_f43d4fa5.png";
 
@@ -161,19 +161,14 @@ export default function DashboardLayout({
           <div className="absolute -top-32 -right-32 w-80 h-80 bg-primary/5 rounded-full blur-3xl" />
           <div className="absolute -bottom-32 -left-32 w-80 h-80 bg-primary/3 rounded-full blur-3xl" />
         </div>
-        <motion.div
-          initial={{ opacity: 0, y: 20, scale: 0.98 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+        <div
           className="flex flex-col items-center gap-8 p-10 max-w-md w-full relative"
         >
           <div className="flex flex-col items-center gap-4">
-            <motion.img
+            <img
               src={LOGO_URL}
               alt="深象科技"
               className="w-18 h-18 rounded-[22px] shadow-xl shadow-primary/15"
-              whileHover={{ scale: 1.05 }}
-              transition={{ duration: 0.2 }}
             />
             <h1 className="text-2xl font-bold tracking-tight text-center text-foreground">
               深象 × OPCS
@@ -191,7 +186,7 @@ export default function DashboardLayout({
           >
             登录
           </Button>
-        </motion.div>
+        </div>
       </div>
     );
   }
@@ -400,17 +395,13 @@ function DashboardLayoutContent({
           </div>
         )}
         <main className="flex-1 p-6 lg:p-8">
-          <AnimatePresence mode="wait">
-            <motion.div
+          
+            <div
               key={location}
-              initial={{ opacity: 0, y: 4 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -4 }}
-              transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
             >
               {children}
-            </motion.div>
-          </AnimatePresence>
+            </div>
+          
         </main>
       </SidebarInset>
     </>

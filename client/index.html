@@ -15,9 +15,7 @@
     <meta property="og:type" content="website" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="深象 × OPCS - 一人公司创业者服务平台" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=JetBrains+Mono:wght@500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&family=Noto+Serif+SC:wght@500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,500&display=swap" rel="stylesheet" />
+    <!-- 使用系统字体，避免外部字体加载问题 -->
     <style>
       #app-loader {
         position: fixed;
@@ -35,7 +33,7 @@
         visibility: hidden;
       }
       #app-loader .brand {
-        font-family: 'Inter', 'Noto Sans SC', sans-serif;
+        font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
         font-size: 28px;
         font-weight: 700;
         color: #1a1a1a;
@@ -46,7 +44,7 @@
         color: #e8613a;
       }
       #app-loader .subtitle {
-        font-family: 'Noto Sans SC', sans-serif;
+        font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
         font-size: 14px;
         color: #888;
         margin-bottom: 32px;
