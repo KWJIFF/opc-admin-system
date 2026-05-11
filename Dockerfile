@@ -24,11 +24,11 @@ RUN pnpm run build
 FROM node:22-alpine AS runner
 WORKDIR /app
 
-# 安装生产依赖
+# 安装所有依赖（服务端打包引用了vite作为开发服务器，但生产模式不会调用）
 COPY package.json pnpm-lock.yaml ./
 COPY patches/ ./patches/
 RUN corepack enable && corepack prepare pnpm@10.4.1 --activate
-RUN pnpm install --frozen-lockfile --prod
+RUN pnpm install --frozen-lockfile --prod=false
 
 # 复制构建产物（前端构建输出在 dist/public，后端在 dist/index.js）
 COPY --from=builder /app/dist ./dist
