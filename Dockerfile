@@ -30,9 +30,8 @@ COPY patches/ ./patches/
 RUN corepack enable && corepack prepare pnpm@10.4.1 --activate
 RUN pnpm install --frozen-lockfile --prod
 
-# 复制构建产物
+# 复制构建产物（前端构建输出在 dist/public，后端在 dist/index.js）
 COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/client/dist ./client/dist
 COPY --from=builder /app/drizzle ./drizzle
 COPY --from=builder /app/shared ./shared
 
