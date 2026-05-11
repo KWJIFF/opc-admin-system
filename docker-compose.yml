@@ -49,8 +49,9 @@ services:
       - PORT=3000
       - REDIS_URL=redis://redis:6379
       - DATABASE_URL=mysql://root:${MYSQL_ROOT_PASSWORD:-OpcsMysql2025!}@mysql:3306/opcs_db
-    ports:
-      - "127.0.0.1:3000:3000"
+    # nginx通过内部网络访问app，无需暴露端口到宿主机
+    expose:
+      - "3000"
     depends_on:
       mysql:
         condition: service_healthy
