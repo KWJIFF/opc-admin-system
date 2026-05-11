@@ -97,6 +97,7 @@ function Router() {
         {() => <SiteLayout><SiteLanding /></SiteLayout>}
       </Route>
       <Route path="/admin/:rest*" component={DashboardRouter} />
+      <Route path="/admin" component={DashboardRouter} />
       <Route path="/">
         {() => <Redirect to="/site" />}
       </Route>
