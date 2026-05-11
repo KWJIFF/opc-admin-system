@@ -542,7 +542,19 @@
 - [x] 推送代码到 GitHub
 
 ## 性能优化（2026-05-11）
-- [ ] 将 Mermaid 图表库改为动态懒加载（减小主bundle从2.3MB）
-- [ ] Vite 代码分割优化（vendor chunk splitting）
-- [ ] 重新构建部署到 ECS
-- [ ] 验证加载速度提升
+- [x] 将 Mermaid 图表库改为动态懒加载（减小主bundle从2.3MB）
+- [x] Vite 代码分割优化（vendor chunk splitting）
+- [x] 移除 streamdown/shiki 依赖，改用轻量 react-markdown
+- [x] 主 JS 包从 2.3MB 降到 1.3MB（gzip 273KB）
+- [x] 重新构建部署到 ECS
+- [x] 验证加载速度提升
+
+## 阿里云 ECS 部署完成（2026-05-11）
+- [x] ECS 服务器连接并部署 Docker 容器
+- [x] MySQL 数据库 schema 推送（25个表）
+- [x] 填充 7 个板块 31 篇文章
+- [x] 域名 DNS 解析（opcs.vip + www.opcs.vip → 112.124.25.136）
+- [x] HTTPS SSL 证书配置（Let's Encrypt，自动续期）
+- [x] HTTP 自动 301 重定向到 HTTPS
+- [x] Nginx 反向代理 + Gzip 压缩 + 静态资源缓存
+- [x] 网站公开可访问确认
