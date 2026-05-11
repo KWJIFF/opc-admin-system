@@ -10,7 +10,9 @@ import { getCategoryIcon } from "@/components/SiteLayout";
 import { getCategoryByKey, formatCount } from "@shared/siteConfig";
 import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
-import { Streamdown } from "streamdown";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import rehypeRaw from "rehype-raw";
 
 export default function SiteArticleDetail() {
   const params = useParams<{ id: string }>();
@@ -329,7 +331,9 @@ function ArticleBody({ content }: { content: string }) {
 
   return (
     <div className="article-body" ref={bodyRef}>
-      <Streamdown>{content}</Streamdown>
+      <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]}>
+        {content}
+      </ReactMarkdown>
     </div>
   );
 }

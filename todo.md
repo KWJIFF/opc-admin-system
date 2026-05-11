@@ -540,3 +540,9 @@
 - [x] 后台管理路由迁移到 /admin 前缀
 - [x] 登录成功后重定向到 /admin
 - [x] 推送代码到 GitHub
+
+## 性能优化（2026-05-11）
+- [ ] 将 Mermaid 图表库改为动态懒加载（减小主bundle从2.3MB）
+- [ ] Vite 代码分割优化（vendor chunk splitting）
+- [ ] 重新构建部署到 ECS
+- [ ] 验证加载速度提升
